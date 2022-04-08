@@ -60,6 +60,7 @@ class MultipleDatasets(Dataset):
 
 def get_data_loaders(cfg):
     if cfg.TRAIN.OVERLAP:
+        #  the length of the sequence
         overlap = ((cfg.DATASET.SEQLEN-1)/float(cfg.DATASET.SEQLEN))
     else:
         overlap = 0
