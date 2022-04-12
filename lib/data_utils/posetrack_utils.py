@@ -90,6 +90,7 @@ def read_data(folder, set):
 
             bbox = np.zeros((len(annot_pid),4))
             # perm_idxs = get_perm_idxs('posetrack', 'common')
+            # annot_pid
             kp_2d = np.zeros((len(annot_pid), len(annot_pid[0][0])//3 ,3))
             img_paths = np.zeros((len(annot_pid)))
 
@@ -102,7 +103,9 @@ def read_data(folder, set):
                 img_paths[i] = image_id
                 key2djnts[2::3] = len(key2djnts[2::3])*[1]
 
+                # what is i means here?
                 kp_2d[i,:] = np.array(key2djnts).reshape(int(len(key2djnts)/3),3) # [perm_idxs, :]
+                print('kp_2d',np.shape(kp_2d))
                 for kp_loc in kp_2d[i,:]:
                     if kp_loc[0] == 0 and kp_loc[1] == 0:
                         kp_loc[2] = 0
@@ -138,8 +141,10 @@ def read_data(folder, set):
             if bbox.size == 0 or bbox.shape[0] < min_frame_number:
                 nn_corrupted += 1
                 continue
-
+            # print('kp_2d',kp_2d,np.shape(kp_2d))
+            print('kp_2d',np.shape(kp_2d))
             kp_2d = convert_kps(kp_2d, src='posetrack', dst='spin')
+            print('kp_2d_uti',np.shape(kp_2d))
 
             dataset['vid_name'].append(np.array([f'{fname}_{p_id}']*img_paths.shape[0]))
             dataset['img_name'].append(np.array(img_paths))

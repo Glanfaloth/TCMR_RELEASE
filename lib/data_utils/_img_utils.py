@@ -51,14 +51,19 @@ def rotate_2d(pt_2d, rot_rad):
     return np.array([xx, yy], dtype=np.float32)
 
 def gen_trans_from_patch_cv(c_x, c_y, src_width, src_height, dst_width, dst_height, scale, rot, inv=False):
+    # given the original image and bbox and target patch size,
+    # this function calculate the affine trannsformation between original image to target one
+    # 
     # augment size with scale
-    src_w = src_width * scale
+    src_w = src_width * scale # box size as we thought
     src_h = src_height * scale
     src_center = np.zeros(2)
     src_center[0] = c_x
     src_center[1] = c_y # np.array([c_x, c_y], dtype=np.float32)
     # augment rotation
+    # TODO the bbox is around the target person but when rotate too much maybe people is outside so scale is important here
     rot_rad = np.pi * rot / 180
+    # The agumentation means is not always 
     src_downdir = rotate_2d(np.array([0, src_h * 0.5], dtype=np.float32), rot_rad)
     src_rightdir = rotate_2d(np.array([src_w * 0.5, 0], dtype=np.float32), rot_rad)
 
@@ -70,7 +75,7 @@ def gen_trans_from_patch_cv(c_x, c_y, src_width, src_height, dst_width, dst_heig
 
     src = np.zeros((3, 2), dtype=np.float32)
     src[0, :] = src_center
-    src[1, :] = src_center + src_downdir
+    src[1, :] = src_center + src_downdir # TODO what is this point means?
     src[2, :] = src_center + src_rightdir
 
     dst = np.zeros((3, 2), dtype=np.float32)
@@ -81,6 +86,7 @@ def gen_trans_from_patch_cv(c_x, c_y, src_width, src_height, dst_width, dst_heig
     if inv:
         trans = cv2.getAffineTransform(np.float32(dst), np.float32(src))
     else:
+        # src center is image center
         trans = cv2.getAffineTransform(np.float32(src), np.float32(dst))
 
     return trans
@@ -93,6 +99,8 @@ def generate_patch_image_cv(cvimg, c_x, c_y, bb_width, bb_height, patch_width, p
         img = img[:, ::-1, :]
         c_x = img_width - c_x - 1
 
+    # since patch width and height is 224 so back is square
+    # what is trans means here
     trans = gen_trans_from_patch_cv(c_x, c_y, bb_width, bb_height, patch_width, patch_height, scale, rot, inv=False)
 
     img_patch = cv2.warpAffine(img, trans, (int(patch_width), int(patch_height)),
@@ -181,6 +189,7 @@ from lib.data_utils._occ_utils import occlude_with_objects, paste_over
 
 
 def get_single_image_crop(image, occluders, bbox, scale=1.3, occ=False):
+    # 
     if isinstance(image, str):
         if os.path.isfile(image):
             image = cv2.cvtColor(cv2.imread(image), cv2.COLOR_BGR2RGB)

@@ -75,6 +75,7 @@ def extract_features(model, occluders, video, bbox, debug=False, batch_size=200,
         ).to(device)
     else:
         # crop bbox locations
+        # TODO Is the crop result normazlie to same size or what?
         video = torch.cat(
             [get_single_image_crop(image, occluders, bbox, scale=scale).unsqueeze(0) for idx, (image, bbox) in enumerate(zip(video, bbox))], dim=0
         ).to(device)
