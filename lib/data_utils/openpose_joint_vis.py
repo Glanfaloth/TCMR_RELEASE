@@ -9,16 +9,17 @@ from tqdm import tqdm
 import cv2
 import argparse
 
+## rename openpoe to openpose
+## patty28 patty27 delete json
 parser = argparse.ArgumentParser(description='Vis openpose 2D joints.')
-parser.add_argument("--recording_root", default='/home/glanfaloth/TCMR_RELEASE/data/you2me/kinect')  # 'C:/Users/siwei/Desktop/record_20210907'
-parser.add_argument("--recording_name", default='catch37')
+parser.add_argument("--recording_root", default='/home/glanfaloth/TCMR_RELEASE/data/you2me/')  # 'C:/Users/siwei/Desktop/record_20210907'
+parser.add_argument("--recording_name", default='catch36')
 parser.add_argument("--keypoints_folder_name", default='keypoints_vis')
-
 
 args = parser.parse_args()
 
-if __name__ == '__main__':
-    keypoint_names = [name for name in os.listdir(osp.join(args.recording_root, args.recording_name, 'features/openpose/output_json/')) if name.endswith('_keypoints.json')]
+def openpose_joint_vis(recording_root, recording_name):
+    keypoint_names = [name for name in os.listdir(osp.join(args.recording_root, recording_root, recording_name, 'features/openpose/output_json/')) if name.endswith('_keypoints.json')]
     keypoint_names = sorted(keypoint_names)
     # print('keypoint_names',keypoint_names)
     # first_frame_id = int(keypoint_names[0][6:11])
@@ -27,13 +28,13 @@ if __name__ == '__main__':
 
     # visualize 2d joints
     hand_joint_idx = [2, 4, 5, 8, 9, 12, 13, 16, 17, 20]  # vis 2 joints for each finger (end / tip)
-    output_img_path = osp.join(args.recording_root, args.recording_name, 'features','openpose', '{}_img'.format(args.keypoints_folder_name))
+    output_img_path = osp.join(args.recording_root, recording_root, recording_name, 'features','openpose', '{}_img'.format(args.keypoints_folder_name))
     if not osp.exists(output_img_path):
         os.mkdir(output_img_path)
-    print('process view {}...'.format(args.recording_name))
+    print('process view {}...'.format(recording_name))
     # for cur_view in ['master', 'sub_1', 'sub_2']:
     for keypoint_name in tqdm(keypoint_names):
-        keypoint_fn = osp.join(args.recording_root, args.recording_name,'features/openpose/output_json/', keypoint_name)
+        keypoint_fn = osp.join(args.recording_root, recording_root, recording_name,'features/openpose/output_json/', keypoint_name)
         if not os.path.exists(keypoint_fn):  # in case this frame is not captured
             continue
         with open(keypoint_fn) as keypoint_file:
@@ -42,7 +43,7 @@ if __name__ == '__main__':
             
         img_n = keypoint_name.split('_')[0]
         # print('img_n',img_n)
-        img_fn = osp.join(args.recording_root, args.recording_name, 'synchronized','frames', img_n+'.jpg')
+        img_fn = osp.join(args.recording_root, recording_root, recording_name, 'synchronized','frames', img_n+'.jpg')
         cur_img = cv2.imread(img_fn)
         cur_img = cur_img[:, :, ::-1]
         # cur_img = cv2.resize(src=cur_img, dsize=(int(1920/args.scale), int(1080/args.scale)), interpolation=cv2.INTER_AREA)  # resolution/4
@@ -108,3 +109,11 @@ if __name__ == '__main__':
         save_path = osp.join(output_img_path, img_n + '.jpg')
         output_img.save(save_path)
 
+
+if __name__ == '__main__':
+    
+    for file in os.listdir("./data/you2me"):
+        print(file)
+        for sequence in os.listdir(osp.join('./data/you2me', file)):
+            if osp.isdir(osp.join('./data/you2me', file, sequence)):
+                openpose_joint_vis(file, sequence)
