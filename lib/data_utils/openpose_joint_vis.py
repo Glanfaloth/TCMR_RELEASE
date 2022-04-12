@@ -10,7 +10,7 @@ import cv2
 import argparse
 
 parser = argparse.ArgumentParser(description='Vis openpose 2D joints.')
-parser.add_argument("--recording_root", default='/media/qimaqi/Alexander/you2me/kinect')  # 'C:/Users/siwei/Desktop/record_20210907'
+parser.add_argument("--recording_root", default='/home/glanfaloth/TCMR_RELEASE/data/you2me/kinect')  # 'C:/Users/siwei/Desktop/record_20210907'
 parser.add_argument("--recording_name", default='catch37')
 parser.add_argument("--keypoints_folder_name", default='keypoints_vis')
 

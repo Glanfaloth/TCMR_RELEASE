@@ -43,7 +43,7 @@ def show_upp(joints):
 	plt.show()
 
 import json
-json_file = '/media/qimaqi/Alexander/you2me/cmu/1-catch1/synchronized/gt-skeletons/body3DScene_453.json'
+json_file = '/home/glanfaloth/TCMR_RELEASE/data/you2me/cmu/1-catch1/synchronized/gt-skeletons/body3DScene_453.json'
 json_data = json.load(open(json_file, 'r'))
 people = json_data['bodies']
 body_0_joints = people[0]["joints19"]
