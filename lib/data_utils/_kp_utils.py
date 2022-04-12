@@ -26,6 +26,8 @@ def keypoint_hflip(kp, img_width):
     return kp
 
 def convert_kps(joints2d, src, dst):
+    # what is eval function doing here?
+    # 
     src_names = eval(f'get_{src}_joint_names')()
     dst_names = eval(f'get_{dst}_joint_names')()
 
@@ -33,6 +35,9 @@ def convert_kps(joints2d, src, dst):
 
     for idx, jn in enumerate(dst_names):
         if jn in src_names:
+            # print('joints2d',np.shape(joints2d))
+            # print('jn',jn)
+            # print('src_names.index(jn)',src_names.index(jn))
             out_joints2d[:, idx] = joints2d[:, src_names.index(jn)]
 
     return out_joints2d
@@ -726,3 +731,56 @@ def get_smpl_skeleton():
             [21, 23],
         ]
     )
+
+def get_you2me2d_joint_names():
+    return [
+        "nose",      # 0
+        "neck",      # 1
+        "rshoulder", # 2
+        "relbow",    # 3
+        "rwrist",    # 4
+        "lshoulder", # 5
+        "lelbow",    # 6
+        "lwrist",    # 7
+        "midhip",    # 8
+        "rhip",      # 9
+        "rknee",     # 10
+        "rankle",    # 11
+        "lhip",      # 12
+        "lknee",     # 13
+        "lankle",    # 14
+        "reye",      # 15
+        "leye",      # 16
+        "rear",      # 17
+        "lear",      # 18
+        "lbigtoe",   # 19
+        "lsmalltoe", # 20
+        "lheel",     # 21
+        "rbigtoe",   # 22
+        "rsmalltoe", # 23
+        "rheel",     # 24
+        "background" # 25
+    ]
+
+def get_you2me_cmu_3d_joint_names():
+    return [
+        "neck",      # 0
+        "nose",      # 1
+        "bodycenter",# 2
+        "lshoulder", # 3
+        "lelbow",    # 4
+        "lwrist",    # 5
+        "lhip",      # 6
+        "lknee",     # 7
+        "lankle",    # 8
+        "rshoulder", # 9
+        "relbow",    # 10
+        "rwrist",    # 11
+        "rhip",      # 12
+        "rknee",     # 13
+        "rankle",    # 14
+        "leye",      # 15
+        "lear",      # 16
+        "reye",      # 17
+        "rear",      # 18
+    ]
