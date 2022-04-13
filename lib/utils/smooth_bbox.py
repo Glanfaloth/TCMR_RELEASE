@@ -47,6 +47,8 @@ def kp_to_bbox_param(kp, vis_thresh):
     if kp is None:
         return
     vis = kp[:, 2] > vis_thresh
+    # debug
+    # print('vis',vis)
     if not np.any(vis):
         return
     min_pt = np.min(kp[vis, :2], axis=0)
@@ -91,6 +93,8 @@ def get_all_bbox_params(kps, vis_thresh=2):
 
         if num_to_interpolate > 0:
             # Linearly interpolate each param.
+            # debug
+   
             previous = bbox_params[-1]
             # This will be 3x(n+2)
             interpolated = np.array(

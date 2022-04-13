@@ -784,3 +784,33 @@ def get_you2me_cmu_3d_joint_names():
         "reye",      # 17
         "rear",      # 18
     ]
+
+
+def get_you2me_kinect_3d_joint_names():
+    return [
+        'hips',       # 0
+        'spine1',     # 1
+        'neck', # 2
+        "head", # 3
+        "leftShoulder",    # 4
+        "lelbow",    # 5
+        "lwrist",      # 6
+        "leftHand",     # 7
+        "rightShoulder",    # 8
+        "relbow", # 9
+        "rwrist",    # 10
+        "rightHand",    # 11
+        "leftUpLeg",      # 12
+        "leftLeg",     # 13
+        "leftFoot",    # 14
+        "leftToeBase",      # 15
+        "rightUpLeg",      # 16
+        "rightLeg",      # 17
+        "rightFoot",      # 18
+        "rightToeBase", #19
+        "spine4", #20 #TODO
+        "leftHandIndex1",
+        "leftthumbIndex1",
+        "rightHandIndex1",
+        "rightthumbIndex1",
+    ]

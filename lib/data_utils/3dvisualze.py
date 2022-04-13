@@ -42,16 +42,25 @@ def show_upp(joints):
 	set_axes_equal(ax)
 	plt.show()
 
-import json
-json_file = '/media/qimaqi/Alexander/you2me/cmu/1-catch1/synchronized/gt-skeletons/body3DScene_453.json'
-json_data = json.load(open(json_file, 'r'))
-people = json_data['bodies']
-body_0_joints = people[0]["joints19"]
-body_0_joints = np.array(body_0_joints).reshape(19,4)
-body_1_joints = people[1]["joints19"]
-body_1_joints = np.array(body_1_joints).reshape(19,4)
+# import json
+# json_file = '/media/qimaqi/Alexander/you2me/cmu/1-catch1/synchronized/gt-skeletons/body3DScene_453.json'
+# json_data = json.load(open(json_file, 'r'))
+# people = json_data['bodies']
+# body_0_joints = people[0]["joints19"]
+# body_0_joints = np.array(body_0_joints).reshape(19,4)
+# body_1_joints = people[1]["joints19"]
+# body_1_joints = np.array(body_1_joints).reshape(19,4)
 
 
-show_upp(body_0_joints)
+# show_upp(body_0_joints)
 
-show_upp(body_1_joints)
+# show_upp(body_1_joints)
+txt_path = '/media/qimaqi/Alexander/you2me/kinect/catch37/synchronized/gt-interactee/pose2_216.txt'
+
+# with open(txt_path, 'r') as f:
+file = open(txt_path)
+h = np.array(file.read().split()).astype(np.float64).reshape(25,3)
+print("h",h)
+show_upp(h)
+# print('h',len(h))
+

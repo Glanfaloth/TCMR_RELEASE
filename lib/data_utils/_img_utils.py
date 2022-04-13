@@ -299,6 +299,7 @@ def torch_vid2numpy(video):
 
 def get_bbox_from_kp2d(kp_2d):
     # get bbox
+    print('kp_2d',kp_2d)
     if len(kp_2d.shape) > 2:
         ul = np.array([kp_2d[:, :, 0].min(axis=1), kp_2d[:, :, 1].min(axis=1)])  # upper left
         lr = np.array([kp_2d[:, :, 0].max(axis=1), kp_2d[:, :, 1].max(axis=1)])  # lower right
