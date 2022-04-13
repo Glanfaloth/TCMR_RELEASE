@@ -18,6 +18,8 @@ parser.add_argument("--keypoints_folder_name", default='keypoints_vis')
 
 args = parser.parse_args()
 
+more_than_two = {}
+
 def openpose_joint_vis(recording_root, recording_name):
     keypoint_names = [name for name in os.listdir(osp.join(args.recording_root, recording_root, recording_name, 'features/openpose/output_json/')) if name.endswith('_keypoints.json')]
     keypoint_names = sorted(keypoint_names)
@@ -52,6 +54,12 @@ def openpose_joint_vis(recording_root, recording_name):
         num_people = len(data['people'])
         if num_people != 1:
             print('{} people detected for {}!'.format(len(data['people']), img_n))
+        if num_people > 2:
+            path = recording_root + "/" + recording_name + "/" + img_n
+            if num_people in more_than_two:
+                more_than_two[num_people].append(path)
+            else:
+                more_than_two[num_people] = [path]
         output_img = pil_img.fromarray(cur_img)
         draw = ImageDraw.Draw(output_img)
 
@@ -117,3 +125,4 @@ if __name__ == '__main__':
         for sequence in os.listdir(osp.join('./data/you2me', file)):
             if osp.isdir(osp.join('./data/you2me', file, sequence)):
                 openpose_joint_vis(file, sequence)
+    print(more_than_two)
