@@ -28,7 +28,7 @@ THREEDPW_DIR = 'data/3dpw'
 H36M_DIR = 'data/h36m'
 PENNACTION_DIR = 'data/penn_action'
 POSETRACK_DIR = 'data/posetrack'
-YOU2ME = 'data/you2me'
+YOU2ME_DIR = '/cluster/scratch/qimaqi/you2me'
 BASE_DATA_DIR = 'data/base_data'
 
 # Configuration variables

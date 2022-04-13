@@ -14,7 +14,7 @@ import sys
 sys.path.append('.')
 
 from lib.models import spin
-from lib.core.config import YOU2ME, TCMR_DB_DIR
+from lib.core.config import YOU2ME_DIR, TCMR_DB_DIR
 from lib.utils.utils import tqdm_enumerate
 from lib.data_utils._kp_utils import convert_kps
 from lib.data_utils._img_utils import get_bbox_from_kp2d
@@ -24,8 +24,8 @@ from lib.utils.smooth_bbox import get_smooth_bbox_params, get_all_bbox_params
 from lib.data_utils._occ_utils import load_occluders
 
 VIS_THRESH = 0.3
-
-cmu_train_list = ['1-catch1', '10-hand1', '11-hand2', '12-hand3', 
+# '11-hand2', '12-hand3',
+cmu_train_list = ['1-catch1', '10-hand1',  
                 '13-sports1', '14-sports2', 
                 '2-catch2', '3-catch3', 
                 '4-convo1', '5-convo2', '6-convo3', '7-convo4', '8-convo5', '9-convo6']
