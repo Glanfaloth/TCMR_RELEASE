@@ -351,8 +351,8 @@ def perspective_projection(points, rotation, translation,
     return projected_points[:, :, :-1]
 
 
-def get_pretrained_hmr():
-    device = 'cuda'
+def get_pretrained_hmr(device):
+    # device = 'cpu'
     model = hmr().to(device)
     checkpoint = torch.load(osp.join(BASE_DATA_DIR, 'spin_model_checkpoint.pth.tar'))
     model.load_state_dict(checkpoint['model'], strict=False)

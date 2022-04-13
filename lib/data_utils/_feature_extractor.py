@@ -27,7 +27,7 @@ from lib.utils.vis import batch_visualize_preds
 from lib.data_utils._img_utils import get_single_image_crop, convert_cvimg_to_tensor
 
 
-def extract_features(model, occluders, video, bbox, debug=False, batch_size=200, kp_2d=None, dataset=None, scale=1.3):
+def extract_features(model, device, occluders, video, bbox, debug=False, batch_size=200, kp_2d=None, dataset=None, scale=1.3):
     '''
     :param model: pretrained HMR model, use lib/models/hmr.py:get_pretrained_hmr()
     :param video: video filename, torch.Tensor in shape (num_frames,W,H,C)
@@ -36,7 +36,7 @@ def extract_features(model, occluders, video, bbox, debug=False, batch_size=200,
     :param batch_size: batch size for HMR input
     :return: features: resnet50 features np.ndarray -> shape (num_frames, 4)
     '''
-    device = 'cuda'
+    # device = 'cpu'
 
     if isinstance(video, torch.Tensor) or isinstance(video, np.ndarray):
         video = video
