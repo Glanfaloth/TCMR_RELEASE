@@ -17,9 +17,9 @@ from lib.core.trainer import Trainer
 from lib.core.config import parse_args, BASE_DATA_DIR
 from lib.utils.utils import prepare_output_dir
 from lib.models import TCMR, MotionDiscriminator
-from lib.dataset._loaders import get_data_loaders
+from lib.dataset._loaders import you2me_loader
 from lib.utils.utils import create_logger, get_optimizer
-
+from lib.dataset.you2me import YOU2ME
 
 def main(cfg):
     if cfg.SEED_VALUE >= 0:
@@ -45,7 +45,7 @@ def main(cfg):
     writer.add_text('config', pprint.pformat(cfg), 0)
 
     # ========= Dataloaders ========= #
-    data_loaders = get_data_loaders(cfg)
+    data_loaders = you2me_loader(cfg)
 
     # ========= Compile Loss ========= #
     loss = TCMRLoss(

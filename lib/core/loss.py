@@ -75,60 +75,60 @@ class TCMRLoss(nn.Module):
         # accumulate all predicted thetas from IEF
         accumulate_thetas = lambda x: torch.cat([output['theta'] for output in x],0)
 
-        if data_2d:
-            sample_2d_count = data_2d['kp_2d'].shape[0]
-            real_2d = torch.cat((data_2d['kp_2d'], data_3d['kp_2d']), 0)
-        else:
-            sample_2d_count = 0
-            real_2d = data_3d['kp_2d']
+        # if data_2d:
+        #     sample_2d_count = data_2d['kp_2d'].shape[0]
+        #     real_2d = torch.cat((data_2d['kp_2d'], data_3d['kp_2d']), 0)
+        # else:
+        #     sample_2d_count = 0
+        #     real_2d = data_3d['kp_2d']
 
-        real_2d = reduce(real_2d)
+        # real_2d = reduce(real_2d)
+        # real_3d = reduce(data_3d['kp_3d'])
+        # # data_3d_theta = reduce(data_3d['theta'])
+        # #
+        # # w_3d = data_3d['w_3d'].type(torch.bool)
+        # # w_smpl = data_3d['w_smpl'].type(torch.bool)
+        #
+        # total_predict_thetas = accumulate_thetas(generator_outputs)
+        #
         real_3d = reduce(data_3d['kp_3d'])
-        data_3d_theta = reduce(data_3d['theta'])
-
-        w_3d = data_3d['w_3d'].type(torch.bool)
-        w_smpl = data_3d['w_smpl'].type(torch.bool)
-
-        total_predict_thetas = accumulate_thetas(generator_outputs)
-
         preds = generator_outputs[-1]
-        pred_j3d = preds['kp_3d'][sample_2d_count:]
-        pred_theta = preds['theta'][sample_2d_count:]
-
-        theta_size = pred_theta.shape[:2]
-
-        pred_theta = reduce(pred_theta)
-        pred_j2d = reduce(preds['kp_2d'])
-        pred_j3d = reduce(pred_j3d)
-
-        w_3d = flatten(w_3d)
-        w_smpl = flatten(w_smpl)
-
-        pred_theta = pred_theta[w_smpl]
-        pred_j3d = pred_j3d[w_3d]
-        data_3d_theta = data_3d_theta[w_smpl]
-        real_3d = real_3d[w_3d]
+        # pred_j3d = preds['kp_3d'][sample_2d_count:]
+        # pred_theta = preds['theta'][sample_2d_count:]
+        #
+        # theta_size = pred_theta.shape[:2]
+        #
+        # pred_theta = reduce(pred_theta)
+        # pred_j2d = reduce(preds['kp_2d'])
+        pred_j3d = reduce(preds['kp_3d'])
+        #
+        # w_3d = flatten(w_3d)
+        # w_smpl = flatten(w_smpl)
+        #
+        # pred_theta = pred_theta[w_smpl]
+        # pred_j3d = pred_j3d[w_3d]
+        # data_3d_theta = data_3d_theta[w_smpl]
+        # real_3d = real_3d[w_3d]
 
         # Generator Loss
-        loss_kp_2d = self.keypoint_loss(pred_j2d, real_2d, openpose_weight=1., gt_weight=1.) * self.e_loss_weight
+        # loss_kp_2d = self.keypoint_loss(pred_j2d, real_2d, openpose_weight=1., gt_weight=1.) * self.e_loss_weight
         loss_kp_3d = self.keypoint_3d_loss(pred_j3d, real_3d)
         loss_kp_3d = loss_kp_3d * self.e_3d_loss_weight
         # loss_accel_3d = self.accel_3d_loss(pred_accel, real_accel) * 100 #self.e_3d_loss_weight
         # loss_attention = self.attetion_loss(pred_scores)
-
-        real_shape, pred_shape = data_3d_theta[:, 75:], pred_theta[:, 75:]
-        real_pose, pred_pose = data_3d_theta[:, 3:75], pred_theta[:, 3:75]
+        #
+        # real_shape, pred_shape = data_3d_theta[:, 75:], pred_theta[:, 75:]
+        # real_pose, pred_pose = data_3d_theta[:, 3:75], pred_theta[:, 3:75]
 
         loss_dict = {
-            'loss_kp_2d': loss_kp_2d,
             'loss_kp_3d': loss_kp_3d,
         }
-        if pred_theta.shape[0] > 0:
-            loss_pose, loss_shape = self.smpl_losses(pred_pose, pred_shape, real_pose, real_shape)
-            loss_shape = loss_shape * self.e_shape_loss_weight
-            loss_pose = loss_pose * self.e_pose_loss_weight
-            loss_dict['loss_shape'] = loss_shape
-            loss_dict['loss_pose'] = loss_pose
+        # if pred_theta.shape[0] > 0:
+        #     loss_pose, loss_shape = self.smpl_losses(pred_pose, pred_shape, real_pose, real_shape)
+        #     loss_shape = loss_shape * self.e_shape_loss_weight
+        #     loss_pose = loss_pose * self.e_pose_loss_weight
+        #     loss_dict['loss_shape'] = loss_shape
+        #     loss_dict['loss_pose'] = loss_pose
 
         gen_loss = torch.stack(list(loss_dict.values())).sum()
 

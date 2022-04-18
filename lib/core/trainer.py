@@ -227,7 +227,7 @@ class Trainer():
             # total_loss = gen_loss + motion_dis_loss
 
             losses.update(total_loss.item(), inp.size(0))
-            kp_2d_loss.update(loss_dict['loss_kp_2d'].item(), inp.size(0))
+            # kp_2d_loss.update(loss_dict['loss_kp_2d'].item(), inp.size(0))
             kp_3d_loss.update(loss_dict['loss_kp_3d'].item(), inp.size(0))
 
             timer['backward'] = time.time() - start
@@ -235,7 +235,7 @@ class Trainer():
             start = time.time()
 
             summary_string = f'({i + 1}/{self.num_iters_per_epoch}) | Total: {bar.elapsed_td} | ' \
-                             f'ETA: {bar.eta_td:} | loss: {losses.avg:.2f} | 2d: {kp_2d_loss.avg:.2f} ' \
+                             f'ETA: {bar.eta_td:} | loss: {losses.avg:.2f} ' \
                              f'| 3d: {kp_3d_loss.avg:.2f} '
 
             for k, v in loss_dict.items():
@@ -247,14 +247,14 @@ class Trainer():
 
             self.writer.add_scalar('train_loss/loss', total_loss.item(), global_step=self.train_global_step)
 
-            if self.debug:
-                print('==== Visualize ====')
-                from lib.utils.vis import batch_visualize_vid_preds
-                video = target_3d['video']
-                dataset = 'spin'
-                vid_tensor = batch_visualize_vid_preds(video, preds[-1], target_3d.copy(),
-                                                       vis_hmr=False, dataset=dataset)
-                self.writer.add_video('train-video', vid_tensor, global_step=self.train_global_step, fps=10)
+            # if self.debug:
+            #     print('==== Visualize ====')
+            #     from lib.utils.vis import batch_visualize_vid_preds
+            #     video = target_3d['video']
+            #     dataset = 'spin'
+            #     vid_tensor = batch_visualize_vid_preds(video, preds[-1], target_3d.copy(),
+            #                                            vis_hmr=False, dataset=dataset)
+            #     self.writer.add_video('train-video', vid_tensor, global_step=self.train_global_step, fps=10)
 
             self.train_global_step += 1
             bar.suffix = summary_string
@@ -335,14 +335,14 @@ class Trainer():
         for epoch in range(self.start_epoch, self.end_epoch):
             self.epoch = epoch
             self.train()
-            self.validate()
-            performance = self.evaluate()
+            # self.validate()
+            # performance = self.evaluate()
 
-            if self.lr_scheduler is not None:
-                self.lr_scheduler.step(performance)
-
-            if self.motion_lr_scheduler is not None:
-                self.motion_lr_scheduler.step(performance)
+            # if self.lr_scheduler is not None:
+            #     self.lr_scheduler.step(performance)
+            #
+            # if self.motion_lr_scheduler is not None:
+            #     self.motion_lr_scheduler.step(performance)
 
             # log the learning rate
             for param_group in self.gen_optimizer.param_groups:
@@ -353,9 +353,9 @@ class Trainer():
                 print(f'Learning rate {param_group["lr"]}')
                 self.writer.add_scalar('lr/dis_lr', param_group['lr'], global_step=self.epoch)
 
-            logger.info(f'Epoch {epoch+1} performance: {performance:.4f}')
+            # logger.info(f'Epoch {epoch+1} performance: {performance:.4f}')
 
-            self.save_model(performance, epoch)
+            # self.save_model(performance, epoch)
 
         self.writer.close()
 
@@ -414,21 +414,21 @@ class Trainer():
         target_j3ds = torch.from_numpy(target_j3ds).float()
 
         print(f'Evaluating on {pred_j3ds.shape[0]} number of poses...')
-        pred_pelvis = (pred_j3ds[:,[2],:] + pred_j3ds[:,[3],:]) / 2.0
-        target_pelvis = (target_j3ds[:,[2],:] + target_j3ds[:,[3],:]) / 2.0
-
-        pred_j3ds -= pred_pelvis
-        target_j3ds -= target_pelvis
-
+        # pred_pelvis = (pred_j3ds[:,[2],:] + pred_j3ds[:,[3],:]) / 2.0
+        # target_pelvis = (target_j3ds[:,[2],:] + target_j3ds[:,[3],:]) / 2.0
+        #
+        # pred_j3ds -= pred_pelvis
+        # target_j3ds -= target_pelvis
+        #
         errors = torch.sqrt(((pred_j3ds - target_j3ds) ** 2).sum(dim=-1)).mean(dim=-1).cpu().numpy()
         S1_hat = batch_compute_similarity_transform_torch(pred_j3ds, target_j3ds)
         errors_pa = torch.sqrt(((S1_hat - target_j3ds) ** 2).sum(dim=-1)).mean(dim=-1).cpu().numpy()
-        pred_verts = self.evaluation_accumulators['pred_verts']
-        target_theta = self.evaluation_accumulators['target_theta']
+        # pred_verts = self.evaluation_accumulators['pred_verts']
+        # target_theta = self.evaluation_accumulators['target_theta']
 
         m2mm = 1000
 
-        pve = np.mean(compute_error_verts(target_theta=target_theta, pred_verts=pred_verts)) * m2mm
+        # pve = np.mean(compute_error_verts(target_theta=target_theta, pred_verts=pred_verts)) * m2mm
         accel = np.mean(compute_accel(pred_j3ds)) * m2mm
         accel_err = np.mean(compute_error_accel(joints_pred=pred_j3ds, joints_gt=target_j3ds)) * m2mm
         mpjpe = np.mean(errors) * m2mm
@@ -438,7 +438,6 @@ class Trainer():
             'mpjpe': mpjpe,
             'pa-mpjpe': pa_mpjpe,
             'accel': accel,
-            'pve': pve,
             'accel_err': accel_err
         }
 

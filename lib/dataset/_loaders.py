@@ -19,6 +19,7 @@ import numpy as np
 from torch.utils.data import Dataset, ConcatDataset, DataLoader
 
 from lib.dataset import *
+from lib.dataset.you2me import YOU2ME
 
 
 class MultipleDatasets(Dataset):
@@ -60,17 +61,16 @@ class MultipleDatasets(Dataset):
 
 def get_data_loaders(cfg):
     if cfg.TRAIN.OVERLAP:
-        #  the length of the sequence
         overlap = ((cfg.DATASET.SEQLEN-1)/float(cfg.DATASET.SEQLEN))
     else:
         overlap = 0
 
-    def get_2d_datasets(dataset_names):
-        datasets = []
-        for dataset_name in dataset_names:
-            db = eval(dataset_name)(load_opt=cfg.TITLE,  seqlen=cfg.DATASET.SEQLEN, overlap=overlap, debug=cfg.DEBUG)
-            datasets.append(db)
-        return ConcatDataset(datasets)
+    # def get_2d_datasets(dataset_names):
+    #     datasets = []
+    #     for dataset_name in dataset_names:
+    #         db = eval(dataset_name)(load_opt=cfg.TITLE,  seqlen=cfg.DATASET.SEQLEN, overlap=overlap, debug=cfg.DEBUG)
+    #         datasets.append(db)
+    #     return ConcatDataset(datasets)
 
     def get_3d_datasets(dataset_names):
         datasets = []
@@ -81,17 +81,17 @@ def get_data_loaders(cfg):
 
     # ===== 2D keypoint datasets =====
     train_2d_dataset_names = cfg.TRAIN.DATASETS_2D
-    train_2d_db = get_2d_datasets(train_2d_dataset_names)
+    # train_2d_db = get_2d_datasets(train_2d_dataset_names)
 
-    data_2d_batch_size = int(cfg.TRAIN.BATCH_SIZE * cfg.TRAIN.DATA_2D_RATIO)
-    data_3d_batch_size = cfg.TRAIN.BATCH_SIZE - data_2d_batch_size
+    # data_2d_batch_size = int(cfg.TRAIN.BATCH_SIZE * cfg.TRAIN.DATA_2D_RATIO)
+    data_3d_batch_size = cfg.TRAIN.BATCH_SIZE
 
-    train_2d_loader = DataLoader(
-        dataset=train_2d_db,
-        batch_size=data_2d_batch_size,
-        shuffle=True,
-        num_workers=cfg.NUM_WORKERS,
-    )
+    # train_2d_loader = DataLoader(
+    #     dataset=train_2d_db,
+    #     batch_size=data_2d_batch_size,
+    #     shuffle=True,
+    #     num_workers=cfg.NUM_WORKERS,
+    # )
 
     # ===== 3D keypoint datasets =====
     train_3d_dataset_names = cfg.TRAIN.DATASETS_3D
@@ -126,7 +126,51 @@ def get_data_loaders(cfg):
         shuffle=False,
         num_workers=cfg.NUM_WORKERS,
     )
-
+    train_2d_loader = None
     return train_2d_loader, train_3d_loader, valid_loader
     # exclude motion discriminator
     # return train_2d_loader, train_3d_loader, motion_disc_loader, valid_loader
+
+def you2me_loader(cfg):
+    if cfg.TRAIN.OVERLAP:
+        overlap = ((cfg.DATASET.SEQLEN-1)/float(cfg.DATASET.SEQLEN))
+    else:
+        overlap = 0
+
+
+    def get_3d_datasets(dataset_names):
+        datasets = []
+        for dataset_name in dataset_names:
+            db = YOU2ME(load_opt=cfg.TITLE, set='train', seqlen=cfg.DATASET.SEQLEN, overlap=overlap, debug=cfg.DEBUG)
+            datasets.append(db)
+        return ConcatDataset(datasets)
+
+
+    data_3d_batch_size = cfg.TRAIN.BATCH_SIZE
+
+
+    train_3d_dataset_names = 'YOU2ME'
+    train_3d_db = get_3d_datasets(train_3d_dataset_names)
+
+    train_3d_loader = DataLoader(
+        dataset=train_3d_db,
+        batch_size=data_3d_batch_size,
+        shuffle=True,
+        num_workers=cfg.NUM_WORKERS,
+    )
+
+
+    # ===== Evaluation dataset =====
+    # overlap = ((cfg.DATASET.SEQLEN-1)/float(cfg.DATASET.SEQLEN))
+    # valid_db = YOU2ME(load_opt=cfg.TITLE, set='val', seqlen=cfg.DATASET.SEQLEN, overlap=overlap, debug=cfg.DEBUG)
+    #
+    #
+    # valid_loader = DataLoader(
+    #     dataset=valid_db,
+    #     batch_size=cfg.TRAIN.BATCH_SIZE,
+    #     shuffle=False,
+    #     num_workers=cfg.NUM_WORKERS,
+    # )
+    train_2d_loader = None
+    valid_loader = None
+    return train_2d_loader, train_3d_loader, valid_loader
