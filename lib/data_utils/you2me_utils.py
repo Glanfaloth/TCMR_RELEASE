@@ -674,10 +674,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     dataset = read_train_data(args.dir, args.device, args.data_type, args.debug)
-    joblib.dump(dataset, osp.join(TCMR_DB_DIR, 'you2me_train_db.pt'))
+    joblib.dump(dataset, osp.join(TCMR_DB_DIR, 'you2me_train_db_'+ args.data_type + '.pt'))
 
     dataset = read_val_data(args.dir,args.device,args.data_type,args.debug)
-    joblib.dump(dataset, osp.join(TCMR_DB_DIR, 'you2me_val_db.pt'))
+    joblib.dump(dataset, osp.join(TCMR_DB_DIR, 'you2me_val_db_'+ args.data_type + '.pt'))
 
 
 
