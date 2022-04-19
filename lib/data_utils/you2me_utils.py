@@ -33,16 +33,17 @@ cmu_train_list = ['1-catch1', '10-hand1',
 cmu_val_list = ['2-catch2','7-convo4']
 
 kinect_train_list = ['catch36', 'catch37', 'catch39', 'catch40', 'catch41', 'catch42', 'catch55',
-                     'convo43', 'convo46', 'convo47', 'convo53', 'convo54', 'convo59',
-                     'patty1', 'patty2', 'patty26', 'patty27', 'patty28', 'patty30', 'patty31', 'patty32', 'patty34',
-                     'patty35', 'patty5',
-                     'sport56', 'sport57', 'sport58']
-kinect_val_list = ['catch36', 'catch37', 'catch39', 'catch40', 'catch41', 'catch42', 'catch55',
-                     'convo43', 'convo46', 'convo47', 'convo53', 'convo54', 'convo59',
-                     'patty1', 'patty2', 'patty26', 'patty27', 'patty28', 'patty30', 'patty31', 'patty32', 'patty34',
-                     'patty35', 'patty5',
+                     'convo43', 'convo46', 'convo47', 'convo53', 'convo54',
+                     'patty26', 'patty27', 'patty28', 'patty30', 'patty31', 'patty32', 'patty34',
+                     'patty35', 
                      'sport56', 'sport57', 'sport58']
 
+kinect_val_list = ['sport57', 'sport58']
+# ['catch36', 'catch37', 'catch39', 'catch40', 'catch41', 'catch42', 'catch55',
+#                      'convo43', 'convo46', 'convo47', 'convo53', 'convo54', 'convo59',
+#                      'patty1', 'patty2', 'patty26', 'patty27', 'patty28', 'patty30', 'patty31', 'patty32', 'patty34',
+#                      'patty35', 'patty5',
+#                      'sport56', 'sport57', 'sport58']
 def read_pose3Dtxt(txt_file):
     txt_data = np.loadtxt(txt_file).astype(np.float64)
     return txt_data
