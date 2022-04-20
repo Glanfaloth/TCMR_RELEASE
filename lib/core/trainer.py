@@ -111,7 +111,8 @@ class Trainer():
         self.epoch = 0
         self.best_performance = float('inf') if performance_type == 'min' else -float('inf')
 
-        self.evaluation_accumulators = dict.fromkeys(['pred_j3d', 'target_j3d', 'target_theta', 'pred_verts'])
+        self.evaluation_accumulators = dict.fromkeys(['pred_j3d', 'target_j3d'])
+        #dict.fromkeys(['pred_j3d', 'target_j3d', 'target_theta', '[pred_verts]'])
 
         self.num_iters_per_epoch = num_iters_per_epoch
 
@@ -428,8 +429,8 @@ class Trainer():
         target_j3ds = torch.from_numpy(target_j3ds).float()
 
         print(f'Evaluating on {pred_j3ds.shape[0]} number of poses...')
-        # pred_pelvis = (pred_j3ds[:,[2],:] + pred_j3ds[:,[3],:]) / 2.0
-        # target_pelvis = (target_j3ds[:,[2],:] + target_j3ds[:,[3],:]) / 2.0
+        # pred_pelvis = (evaluation_accumulatorspred_j3ds[:,[2],:] + pred_j3ds[:,[3],:]) / 2.0
+        # target_pelvis =evaluation_accumulators (target_j3ds[:,[2],:] + target_j3ds[:,[3],:]) / 2.0
         #
         # pred_j3ds -= pred_pelvis
         # target_j3ds -= target_pelvis
