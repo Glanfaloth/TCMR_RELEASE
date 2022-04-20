@@ -312,11 +312,11 @@ class Trainer():
                 n_kp = preds[-1]['kp_3d'].shape[-2]
                 pred_j3d = preds[-1]['kp_3d'].view(-1, n_kp, 3).cpu().numpy()
                 target_j3d = target['kp_3d'].view(-1, n_kp, 3).cpu().numpy()
-                pred_verts = preds[-1]['verts'].view(-1, 6890, 3).cpu().numpy()
-                target_theta = target['theta'].view(-1, 85).cpu().numpy()
+                # pred_verts = preds[-1]['verts'].view(-1, 6890, 3).cpu().numpy()
+                # target_theta = target['theta'].view(-1, 85).cpu().numpy()
 
-                self.evaluation_accumulators['pred_verts'].append(pred_verts)
-                self.evaluation_accumulators['target_theta'].append(target_theta)
+                # self.evaluation_accumulators['pred_verts'].append(pred_verts)
+                # self.evaluation_accumulators['target_theta'].append(target_theta)
 
                 self.evaluation_accumulators['pred_j3d'].append(pred_j3d)
                 self.evaluation_accumulators['target_j3d'].append(target_j3d)
