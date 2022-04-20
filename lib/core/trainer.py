@@ -34,11 +34,11 @@ from lib.utils.eval_utils import (
 
 logger = logging.getLogger(__name__)
 
-import wandb
-from datetime import date
-today = date.today()
-project_name = today.strftime("%d_%m_%Y")
-wandb.init(project=project_name)
+# import wandb
+# from datetime import date
+# today = date.today()
+# project_name = today.strftime("%d_%m_%Y")
+# wandb.init(project=project_name)
 
 class Trainer():
     def __init__(
@@ -65,8 +65,8 @@ class Trainer():
     ):
         # init wandb config
         # 2. Save model inputs and hyperparameters
-        w_config = wandb.config
-        w_config.epochs  = end_epoch - start_epoch
+        # w_config = wandb.config
+        # w_config.epochs  = end_epoch - start_epoch
 
 
         # exclude motion discriminator
@@ -146,7 +146,7 @@ class Trainer():
         self.generator.train()
         self.motion_discriminator.train()
 
-        wandb.watch(self.generator)
+        # wandb.watch(self.generator)
 
         start = time.time()
 
@@ -259,7 +259,7 @@ class Trainer():
                 summary_string += f' | {k}: {v:.2f}'
 
             self.writer.add_scalar('train_loss/loss', total_loss.item(), global_step=self.train_global_step)
-            wandb.log({"loss":  total_loss.item()})
+            # wandb.log({"loss":  total_loss.item()})
 
             # if self.debug:
             #     print('==== Visualize ====')

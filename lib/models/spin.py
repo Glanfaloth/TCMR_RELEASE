@@ -226,7 +226,7 @@ class Regressor(nn.Module):
         self.smpl = SMPL(
             SMPL_MODEL_DIR,
             batch_size=64,
-            create_transl=False,
+            create_transl=False,Regressor
         )
 
         mean_params = np.load(smpl_mean_params)

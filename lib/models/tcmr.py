@@ -128,6 +128,7 @@ class TCMR(nn.Module):
             )
 
         # regressor can predict cam, pose and shape params in an iterative way
+        # Qi: Change to pure 3D regressor instead of smpl
         self.regressor = Regressor()
 
         if pretrained and os.path.isfile(pretrained):
