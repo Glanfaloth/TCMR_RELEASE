@@ -349,14 +349,14 @@ class Trainer():
         for epoch in range(self.start_epoch, self.end_epoch):
             self.epoch = epoch
             self.train()
-            # self.validate()
-            # performance = self.evaluate()
+            self.validate()
+            performance = self.evaluate()
 
-            # if self.lr_scheduler is not None:
-            #     self.lr_scheduler.step(performance)
-            #
-            # if self.motion_lr_scheduler is not None:
-            #     self.motion_lr_scheduler.step(performance)
+            if self.lr_scheduler is not None:
+                self.lr_scheduler.step(performance)
+            
+            if self.motion_lr_scheduler is not None:
+                self.motion_lr_scheduler.step(performance)
 
             # log the learning rate
             for param_group in self.gen_optimizer.param_groups:
@@ -367,9 +367,9 @@ class Trainer():
                 print(f'Learning rate {param_group["lr"]}')
                 self.writer.add_scalar('lr/dis_lr', param_group['lr'], global_step=self.epoch)
 
-            # logger.info(f'Epoch {epoch+1} performance: {performance:.4f}')
+            logger.info(f'Epoch {epoch+1} performance: {performance:.4f}')
 
-            # self.save_model(performance, epoch)
+            self.save_model(performance, epoch)
 
         self.writer.close()
 
