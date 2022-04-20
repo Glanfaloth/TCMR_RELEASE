@@ -296,10 +296,10 @@ class Trainer():
             for k,v in self.evaluation_accumulators.items():
                 self.evaluation_accumulators[k] = []
 
-        J_regressor = torch.from_numpy(np.load(osp.join(BASE_DATA_DIR, 'J_regressor_extra.npy'))).float()
+        J_regressor = torch.from_numpy(np.load(osp.join(BASE_DATA_DIR, 'J_regressor_h36m.npy'))).float()
         # Qi: TODO 'J_regressor_h36m.npy'
         for i, target in enumerate(self.valid_loader):
-            
+
             print("target[-1]['kp_3d']",target['kp_3d'].shape)
             move_dict_to_device(target, self.device)
 
