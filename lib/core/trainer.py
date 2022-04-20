@@ -300,11 +300,13 @@ class Trainer():
         # Qi: TODO 'J_regressor_h36m.npy'
         for i, target in enumerate(self.valid_loader):
 
-            print("target[-1]['kp_3d']",target['kp_3d'].shape)
+            # print("target[-1]['kp_3d']",target['kp_3d'].shape)
             move_dict_to_device(target, self.device)
 
             # <=============
             with torch.no_grad():
+                 # to reduce time dimension
+                reduce = lambda x: x.contiguous().view((x.shape[0] * x.shape[1],) + x.shape[2:])
                 inp = target['features']
                 batch = len(inp)
                 # Qi: using J regressor from h36 will lead to different output size
@@ -318,8 +320,10 @@ class Trainer():
                 print("target[-1]['kp_3d']",target['kp_3d'].shape)
                 # [32,3,49,3]
 
-                pred_j3d = preds[-1]['kp_3d'].view(-1, n_kp, 3).cpu().numpy()
-                target_j3d = target['kp_3d'].view(-1, n_kp, 3).cpu().numpy()
+                pred_j3d_reduced = reduce(preds['kp_3d'][-1])
+                target_j3d_reduced = reduce(target['kp_3d'])
+                pred_j3d = pred_j3d_reduced.view(-1, n_kp, 3).cpu().numpy()
+                target_j3d = target_j3d_reduced.view(-1, n_kp, 3).cpu().numpy()
 
                 print("pred_j3d",np.shape(pred_j3d))
                 # [32,14,3]

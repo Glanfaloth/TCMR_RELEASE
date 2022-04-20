@@ -100,6 +100,7 @@ class TCMRLoss(nn.Module):
         #
         # pred_theta = reduce(pred_theta)
         # pred_j2d = reduce(preds['kp_2d'])
+        print('pred_j3d',preds['kp_3d'].shape)
         pred_j3d = reduce(preds['kp_3d'])
         #
         # w_3d = flatten(w_3d)
