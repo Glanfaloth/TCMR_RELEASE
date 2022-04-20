@@ -401,6 +401,7 @@ class Trainer():
         }
 
         filename = osp.join(self.logdir, 'checkpoint.pth.tar')
+        print('filename saving',filename)
         torch.save(save_dict, filename)
 
         if self.performance_type == 'min':
