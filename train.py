@@ -48,6 +48,7 @@ def main(cfg):
     data_loaders = you2me_loader(cfg)
 
     # ========= Compile Loss ========= #
+    # Qi: loss weight setting
     loss = TCMRLoss(
         e_loss_weight=cfg.LOSS.KP_2D_W,
         e_3d_loss_weight=cfg.LOSS.KP_3D_W,
@@ -55,8 +56,9 @@ def main(cfg):
         e_shape_loss_weight=cfg.LOSS.SHAPE_W,
         d_motion_loss_weight=cfg.LOSS.D_MOTION_LOSS_W,
     )
-
+    # 
     # ========= Initialize networks, optimizers and lr_schedulers ========= #
+    # TGRU generator setting
     generator = TCMR(
         n_layers=cfg.MODEL.TGRU.NUM_LAYERS,
         batch_size=cfg.TRAIN.BATCH_SIZE,

@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 import wandb
 from datetime import date
 today = date.today()
-project_name = today.strftime("%d/%m/%Y")
+project_name = today.strftime("%d_%m_%Y")
 wandb.init(project=project_name)
 
 class Trainer():
