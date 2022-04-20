@@ -1,7 +1,7 @@
 TITLE: 'repr_table6_you2me_cmu_model'
 DEBUG: false
 DEBUG_FREQ: 5
-LOGDIR: ''
+LOGDIR: '/cluster/scratch/qimaqi/cmu_output'
 DEVICE: 'cuda'
 EXP_NAME: 'tcmr'
 OUTPUT_DIR: 'experiments'
