@@ -296,30 +296,35 @@ class Trainer():
             for k,v in self.evaluation_accumulators.items():
                 self.evaluation_accumulators[k] = []
 
-        J_regressor = torch.from_numpy(np.load(osp.join(BASE_DATA_DIR, 'J_regressor_h36m.npy'))).float()
-
+        J_regressor = torch.from_numpy(np.load(osp.join(BASE_DATA_DIR, 'J_regressor_extra.npy'))).float()
+        # Qi: TODO 'J_regressor_h36m.npy'
         for i, target in enumerate(self.valid_loader):
-
+            
+            print("target[-1]['kp_3d']",target['kp_3d'].shape)
             move_dict_to_device(target, self.device)
 
             # <=============
             with torch.no_grad():
                 inp = target['features']
                 batch = len(inp)
-
+                # Qi: using J regressor from h36 will lead to different output size
                 preds, _ = self.generator(inp, J_regressor=J_regressor)
 
                 # convert to 14 keypoint format for evaluation
                 n_kp = preds[-1]['kp_3d'].shape[-2]
                 # Qi debug
                 print("preds[-1]['kp_3d']",preds[-1]['kp_3d'].shape)
+                # [32,14,3]
                 print("target[-1]['kp_3d']",target['kp_3d'].shape)
+                # [32,3,49,3]
 
                 pred_j3d = preds[-1]['kp_3d'].view(-1, n_kp, 3).cpu().numpy()
                 target_j3d = target['kp_3d'].view(-1, n_kp, 3).cpu().numpy()
 
                 print("pred_j3d",np.shape(pred_j3d))
+                # [32,14,3]
                 print("target_j3d", np.shape(target_j3d))
+                # [336,14,3]
                 # pred_verts = preds[-1]['verts'].view(-1, 6890, 3).cpu().numpy()
                 # target_theta = target['theta'].view(-1, 85).cpu().numpy()
 
