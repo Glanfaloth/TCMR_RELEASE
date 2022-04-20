@@ -301,6 +301,7 @@ class Trainer():
         for i, target in enumerate(self.valid_loader):
 
             # print("target[-1]['kp_3d']",target['kp_3d'].shape)
+            # ([32, 3, 49, 3])
             move_dict_to_device(target, self.device)
 
             # <=============
@@ -315,14 +316,13 @@ class Trainer():
                 # convert to 14 keypoint format for evaluation
                 n_kp = preds[-1]['kp_3d'].shape[-2]
                 # Qi debug
-                print("preds[-1]['kp_3d']",preds[-1]['kp_3d'].shape)
+                # print("preds[-1]['kp_3d']",preds[-1]['kp_3d'].shape)
                 # [32,14,3]
-                print("target[-1]['kp_3d']",target['kp_3d'].shape)
+                # print("target[-1]['kp_3d']",target['kp_3d'].shape)
                 # [32,3,49,3]
-
-                pred_j3d_reduced = reduce(preds['kp_3d'][-1])
-                target_j3d_reduced = reduce(target['kp_3d'])
-                pred_j3d = pred_j3d_reduced.view(-1, n_kp, 3).cpu().numpy()
+        
+                target_j3d_reduced = (target['kp_3d'][:,0,:,:])[:, 25:39, :]
+                pred_j3d = preds[-1]['kp_3d'].view(-1, n_kp, 3).cpu().numpy()
                 target_j3d = target_j3d_reduced.view(-1, n_kp, 3).cpu().numpy()
 
                 print("pred_j3d",np.shape(pred_j3d))
