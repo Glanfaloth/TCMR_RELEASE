@@ -198,12 +198,14 @@ class Dataset3D(Dataset):
 
             # kp_2d_tensor[idx] = kp_2d[idx]
             # theta_tensor[idx] = theta
+            # [32, 49, 3]
             kp_3d_tensor[idx] = kp_3d[idx]
 
         # (N-2)xnjx3
         # accel_gt = kp_3d_tensor[:-2] - 2 * kp_3d_tensor[1:-1] + kp_3d_tensor[2:]
         # accel_gt = np.linalg.norm(accel_gt, axis=2) # (N-2)xnj
 
+        # Qi: TODO add targets for needed, why need repeated?
         repeat_num = 3
         target = {
             'features': input,
@@ -212,6 +214,7 @@ class Dataset3D(Dataset):
             # 'kp_2d': torch.from_numpy(kp_2d_tensor).float()[self.mid_frame].repeat(repeat_num, 1, 1),
             # 2D keypoints transformed according to bbox cropping
             'kp_3d': torch.from_numpy(kp_3d_tensor).float()[self.mid_frame].repeat(repeat_num, 1, 1),  # 3D keypoints
+            # [32,3,49,3]
             # 'w_smpl': w_smpl[self.mid_frame].repeat(repeat_num),
             # 'w_3d': w_3d[self.mid_frame].repeat(repeat_num),
         }
