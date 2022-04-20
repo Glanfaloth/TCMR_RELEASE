@@ -140,6 +140,14 @@ class Dataset3D(Dataset):
         elif self.set == 'val' and self.dataset_name == 'mpii3d':
             db_file = osp.join(TCMR_DB_DIR, f'{self.dataset_name}_{self.set}_scale12_db.pt')
 
+        elif self.set == 'val' and self.dataset_name == 'you2me':
+            if self.load_opt == 'repr_table6_you2me_cmu_model':
+                db_file = osp.join(TCMR_DB_DIR, f'{self.dataset_name}_{self.set}_db_cmu.pt')
+            elif self.load_opt == 'repr_table6_you2me_kinect_model':
+                db_file = osp.join(TCMR_DB_DIR, f'{self.dataset_name}_{self.set}_db_kinect.pt')
+
+
+
         if osp.isfile(db_file):
             db = joblib.load(db_file)
         else:
