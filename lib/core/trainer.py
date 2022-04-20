@@ -325,9 +325,9 @@ class Trainer():
                 pred_j3d = preds[-1]['kp_3d'].view(-1, n_kp, 3).cpu().numpy()
                 target_j3d = target_j3d_reduced.view(-1, n_kp, 3).cpu().numpy()
 
-                print("pred_j3d",np.shape(pred_j3d))
+                # print("pred_j3d",np.shape(pred_j3d))
                 # [32,14,3]
-                print("target_j3d", np.shape(target_j3d))
+                # print("target_j3d", np.shape(target_j3d))
                 # [336,14,3]
                 # pred_verts = preds[-1]['verts'].view(-1, 6890, 3).cpu().numpy()
                 # target_theta = target['theta'].view(-1, 85).cpu().numpy()
