@@ -131,6 +131,7 @@ class TCMR(nn.Module):
         # Qi: Change to pure 3D regressor instead of smpl
         self.regressor = Regressor()
 
+        # Qi: no smpl allowed if no regressor
         if pretrained and os.path.isfile(pretrained):
             pretrained_dict = torch.load(pretrained)['model']
 
@@ -144,6 +145,7 @@ class TCMR(nn.Module):
         feature, scores = self.encoder(input, is_train=is_train)
         feature = feature.reshape(-1, feature.size(-1))
 
+        # Qi: to changes
         smpl_output = self.regressor(feature, is_train=is_train, J_regressor=J_regressor)
 
         if not is_train:
