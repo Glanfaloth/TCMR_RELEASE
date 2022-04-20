@@ -151,6 +151,7 @@ def you2me_loader(cfg):
 
     train_3d_dataset_names = 'YOU2ME'
     train_3d_db = get_3d_datasets(train_3d_dataset_names)
+    valid_db = eval(cfg.TRAIN.DATASET_EVAL)(load_opt=cfg.TITLE, set='val', seqlen=cfg.DATASET.SEQLEN, overlap=overlap, debug=cfg.DEBUG)
 
     train_3d_loader = DataLoader(
         dataset=train_3d_db,
@@ -165,12 +166,12 @@ def you2me_loader(cfg):
     # valid_db = YOU2ME(load_opt=cfg.TITLE, set='val', seqlen=cfg.DATASET.SEQLEN, overlap=overlap, debug=cfg.DEBUG)
     #
     #
-    # valid_loader = DataLoader(
-    #     dataset=valid_db,
-    #     batch_size=cfg.TRAIN.BATCH_SIZE,
-    #     shuffle=False,
-    #     num_workers=cfg.NUM_WORKERS,
-    # )
+    valid_loader = DataLoader(
+        dataset=valid_db,
+        batch_size=cfg.TRAIN.BATCH_SIZE,
+        shuffle=False,
+        num_workers=cfg.NUM_WORKERS,
+    )
     train_2d_loader = None
-    valid_loader = None
+    # valid_loader = None
     return train_2d_loader, train_3d_loader, valid_loader

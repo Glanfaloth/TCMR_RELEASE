@@ -58,7 +58,7 @@ def main(cfg):
     )
     # 
     # ========= Initialize networks, optimizers and lr_schedulers ========= #
-    # TGRU generator setting
+    # Qi:TGRU generator setting
     generator = TCMR(
         n_layers=cfg.MODEL.TGRU.NUM_LAYERS,
         batch_size=cfg.TRAIN.BATCH_SIZE,
@@ -75,6 +75,8 @@ def main(cfg):
         momentum=cfg.TRAIN.GEN_MOMENTUM,
     )
 
+    # Qi:TODO what motion discriminator doing here
+    # No need to change and no pretrained model
     motion_discriminator = MotionDiscriminator(
         rnn_size=cfg.TRAIN.MOT_DISCR.HIDDEN_SIZE,
         input_size=69,
@@ -101,7 +103,7 @@ def main(cfg):
         patience=cfg.TRAIN.LR_PATIENCE,
         verbose=True,
     )
-
+    # Qi:TODO two kinds of scheduler which is for which
     lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         gen_optimizer,
         mode='min',
