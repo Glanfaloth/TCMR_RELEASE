@@ -18,6 +18,7 @@ from lib.utils.demo_utils import convert_crop_cam_to_orig_img, images_to_video
 from lib.utils.eval_utils import compute_accel, compute_error_accel, batch_compute_similarity_transform_torch, compute_error_verts, compute_errors, plot_accel
 from lib.utils.slerp_filter_utils import quaternion_from_matrix, quaternion_slerp, quaternion_matrix
 from lib.utils.renderer import Renderer
+from lib.core.config import TCMR_DB_DIR
 
 
 def get_sequence(start_index, end_index, seqlen=16):
@@ -127,10 +128,10 @@ if __name__ == "__main__":
     elif target_dataset == 'you2me':
         if cfg.TITLE == 'repr_table6_you2me_cmu_model':
             set = 'val'
-            data_path = osp.join(TCMR_DB_DIR, f'{self.dataset_name}_{self.set}_db_cmu.pt')
+            data_path = osp.join(TCMR_DB_DIR, f'{target_dataset}_{set}_db_cmu.pt')
         elif cfg.TITLE == 'repr_table6_you2me_kinect_model':
             set = 'val'
-            data_path = osp.join(TCMR_DB_DIR, f'{self.dataset_name}_{self.set}_db_kinect.pt')
+            data_path = osp.join(TCMR_DB_DIR, f'{target_dataset}_{set}_db_kinect.pt')
     else:
         print("Wrong target dataset! Exiting...")
         import sys; sys.exit()
