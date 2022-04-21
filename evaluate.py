@@ -75,7 +75,7 @@ if __name__ == "__main__":
     target_action = args.seq
     render = args.render or args.render_plain
     render_plain = args.render_plain
-    only_img = False
+    only_img = True
     render_frame_start = args.frame
     plot = args.plot
     avg_filter = args.filter
