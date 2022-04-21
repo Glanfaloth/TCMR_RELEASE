@@ -167,6 +167,9 @@ if __name__ == "__main__":
             data_keyed[u_n]['shape'] = np.zeros((len(valids), 10))
             data_keyed[u_n]['valid_i'] = dataset_data['valid_i'][indexes][valids]
             J_regressor = None
+        elif 'you2me' in data_path:
+            data_keyed[u_n]['pose'] = np.zeros((len(valids), 72))
+            data_keyed[u_n]['shape'] = np.zeros((len(valids), 10))
         else:
             data_keyed[u_n]['pose'] = dataset_data['pose'][indexes][valids]
             data_keyed[u_n]['shape'] = dataset_data['shape'][indexes][valids]
