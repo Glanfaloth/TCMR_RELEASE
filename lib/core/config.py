@@ -43,7 +43,7 @@ cfg.LOGDIR = ''
 cfg.NUM_WORKERS = 8
 cfg.DEBUG_FREQ = 1000
 cfg.SEED_VALUE = -1
-cfg.render = False
+cfg.render = True
 
 cfg.CUDNN = CN()
 cfg.CUDNN.BENCHMARK = True
