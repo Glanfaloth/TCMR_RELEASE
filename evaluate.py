@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
 
     """ Evaluation Options """
-    target_dataset = args.dataset  # 'mpii3d' '3dpw' 'h36m'
+    target_dataset = args.dataset  # 'mpii3d' '3dpw' 'h36m', 'you2me'
     set = 'test'
     target_action = args.seq
     render = args.render or args.render_plain
@@ -124,6 +124,13 @@ if __name__ == "__main__":
     elif target_dataset == 'mpii3d':
         set = 'val'
         data_path = f'./data/preprocessed_data/{target_dataset}_{set}_scale12_db.pt'  #
+    elif target_dataset == 'you2me':
+        if cfg.TITLE == 'repr_table6_you2me_cmu_model':
+            set = 'val'
+            data_path = osp.join(TCMR_DB_DIR, f'{self.dataset_name}_{self.set}_db_cmu.pt')
+        elif cfg.TITLE == 'repr_table6_you2me_kinect_model':
+            set = 'val'
+            data_path = osp.join(TCMR_DB_DIR, f'{self.dataset_name}_{self.set}_db_kinect.pt')
     else:
         print("Wrong target dataset! Exiting...")
         import sys; sys.exit()
