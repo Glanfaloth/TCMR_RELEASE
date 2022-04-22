@@ -254,6 +254,15 @@ if __name__ == "__main__":
             dummy_cam = np.repeat(np.array([[1., 0., 0.]]), len(target_j3ds), axis=0)
             target_theta = np.concatenate([dummy_cam, dataset_data[seq_name]['pose'], dataset_data[seq_name]['shape']], axis=1).astype(np.float32)
             target_j3ds, target_theta = target_j3ds[:len(pred_j3ds)], target_theta[:len(pred_j3ds)]
+            if target_dataset == 'you2me':
+                # f, (ax1, ax2, ax3) = plt.subplots(1, 3, sharey=True)
+                # ax1.imshow(img)
+                result_np = np.array(target_j3ds)
+                gt_np = np.array(pred_j3ds)
+                result_name = osp.join(out_dir, save_seq_name, 'pred.npy')
+                gt_name = osp.join(out_dir, save_seq_name, 'gt.npy')
+                result_np.tofile(result_name)
+                gt_np.tofile(gt_name)
 
             """ Rendering """
             if render:
@@ -301,25 +310,31 @@ if __name__ == "__main__":
                         img_height=orig_height
                     )
 
-                    if target_dataset == 'you2me':
-                        # f, (ax1, ax2, ax3) = plt.subplots(1, 3, sharey=True)
-                        # ax1.imshow(img)
-                        print('target_j3ds',np.shape(target_j3ds))
-                        print('pred_j3ds',np.shape(target_j3ds))
-                        print('imgname',np.shape(imgname))
+                    # if target_dataset == 'you2me':
+                    #     # f, (ax1, ax2, ax3) = plt.subplots(1, 3, sharey=True)
+                    #     # ax1.imshow(img)
+                    #     result_np = np.array(target_j3ds)
+                    #     gt_np = np.array(pred_j3ds)
+                    #     result_name = osp.join(out_dir, save_seq_name, f'{count:06d}_pred.npy')
+                    #     gt_name = osp.join(out_dir, save_seq_name, f'{count:06d}_gt.npy')
+                    #     result_np.tofile(result_name)
+                    #     gt_np.tofile(gt_name)
+                        # print('target_j3ds',np.shape(target_j3ds))
+                        # print('pred_j3ds',np.shape(target_j3ds))
+                        # print('imgname',np.shape(imgname))
 
-                        # ax2.scatter(target_j3ds)
-                        #ax3.scatter(pred_j3ds)
-                        #plt.tight_layout(True)
-                        #f.savefig(osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'))
-                        fig = plt.figure(figsize=plt.figaspect(0.5))
-                        ax1 = fig.add_subplot(3, 1, 1)
-                        ax2 = fig.add_subplot(3, 1, 2, projection='3d')
-                        ax3 = fig.add_subplot(3, 1, 3, projection='3d')
-                        ax1.imshow(img)
-                        ax2.scatter(target_j3ds[ii,:,0],target_j3ds[ii,:,1],target_j3ds[ii,:,2])
-                        ax3.scatter(pred_j3ds[ii,:,0],pred_j3ds[ii,:,1],pred_j3ds[ii,:,2])
-                        fig.savefig(osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'))
+                        # # ax2.scatter(target_j3ds)
+                        # #ax3.scatter(pred_j3ds)
+                        # #plt.tight_layout(True)
+                        # #f.savefig(osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'))
+                        # fig = plt.figure(figsize=plt.figaspect(0.5))
+                        # ax1 = fig.add_subplot(3, 1, 1)
+                        # ax2 = fig.add_subplot(3, 1, 2, projection='3d')
+                        # ax3 = fig.add_subplot(3, 1, 3, projection='3d')
+                        # ax1.imshow(img)
+                        # ax2.scatter(target_j3ds[ii,:,0],target_j3ds[ii,:,1],target_j3ds[ii,:,2])
+                        # ax3.scatter(pred_j3ds[ii,:,0],pred_j3ds[ii,:,1],pred_j3ds[ii,:,2])
+                        # fig.savefig(osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'))
                         
 
                     if not only_img:
