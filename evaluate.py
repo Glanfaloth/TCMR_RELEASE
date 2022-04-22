@@ -259,7 +259,7 @@ if __name__ == "__main__":
                 num_frames_to_render = 240
                 imgname = dataset_data[seq_name]['imgname']
                 # Qi: no imgname from loader why here
-                print('imgname',imgname)
+                # print('imgname',imgname)
                 bbox = dataset_data[seq_name]['bbox']
                 pred_cam = np.vstack(pred_thetas).astype(np.float32)[:, :3]
 
@@ -304,6 +304,8 @@ if __name__ == "__main__":
                         f, (ax1, ax2, ax3) = plt.subplots(1, 3, sharey=True)
                         ax1.imshow(img)
                         print('target_j3ds',np.shape(target_j3ds))
+                        print('pred_j3ds',np.shape(target_j3ds))
+                        print('imgname',np.shape(imgname))
                         ax2.scatter(target_j3ds)
                         ax3.scatter(pred_j3ds)
                         plt.tight_layout(True)
