@@ -259,8 +259,8 @@ if __name__ == "__main__":
                 # ax1.imshow(img)
                 result_np = np.array(target_j3ds)
                 gt_np = np.array(pred_j3ds)
-                result_name = osp.join(out_dir, save_seq_name, 'pred.npy')
-                gt_name = osp.join(out_dir, save_seq_name, 'gt.npy')
+                result_name = osp.join(out_dir, target_dataset+'_output', 'pred.npy')
+                gt_name = osp.join(out_dir, target_dataset+'_output', 'gt.npy')
                 result_np.tofile(result_name)
                 gt_np.tofile(gt_name)
 
