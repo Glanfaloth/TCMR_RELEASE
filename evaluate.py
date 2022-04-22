@@ -328,15 +328,15 @@ if __name__ == "__main__":
                     # cv2.putText(img, f'current: {str(scores[count-1][1].round(3))}', (new_width-110, 40), cv2.FONT_HERSHEY_PLAIN, 0.8, (255,255,255))
                     # cv2.putText(img, f'future: {str(scores[count-1][2].round(3))}', (new_width-110, 60), cv2.FONT_HERSHEY_PLAIN, 0.8, (255,255,255))
                     # Qi: check image save path
-                    print('img save path' , osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'))
-                    print('img information', np.shape(img))
+                    # print('img save path' , osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'))
+                    # print('img information', np.shape(img))
                     cv2.imwrite(osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'), img)
 
                 save_path = osp.join(out_dir, 'video', save_seq_name + ".mp4")
                 Path(osp.join(out_dir, 'video')).mkdir(parents=True, exist_ok=True)
                 print(f"Saving result video to {osp.abspath(save_path)}")
                 images_to_video(img_folder=osp.join(out_dir, save_seq_name), output_vid_file=save_path)
-                shutil.rmtree(osp.join(out_dir, save_seq_name))
+                # shutil.rmtree(osp.join(out_dir, save_seq_name))
 
             if 'mpii3d' in data_path:
                 target_j3ds = convert_kps(target_j3ds, src='spin', dst='mpii3d_test')
