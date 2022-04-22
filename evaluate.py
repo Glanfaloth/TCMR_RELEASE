@@ -301,15 +301,24 @@ if __name__ == "__main__":
                     )
 
                     if target_dataset == 'you2me':
-                        f, (ax1, ax2, ax3) = plt.subplots(1, 3, sharey=True)
-                        ax1.imshow(img)
+                        # f, (ax1, ax2, ax3) = plt.subplots(1, 3, sharey=True)
+                        # ax1.imshow(img)
                         print('target_j3ds',np.shape(target_j3ds))
                         print('pred_j3ds',np.shape(target_j3ds))
                         print('imgname',np.shape(imgname))
-                        ax2.scatter(target_j3ds)
-                        ax3.scatter(pred_j3ds)
-                        plt.tight_layout(True)
-                        f.savefig(osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'))
+
+                        # ax2.scatter(target_j3ds)
+                        #ax3.scatter(pred_j3ds)
+                        #plt.tight_layout(True)
+                        #f.savefig(osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'))
+                        fig = plt.figure(figsize=plt.figaspect(0.5))
+                        ax1 = fig.add_subplot(3, 1, 1)
+                        ax2 = fig.add_subplot(3, 1, 2, projection='3d')
+                        ax3 = fig.add_subplot(3, 1, 3, projection='3d')
+                        ax1.imshow(img)
+                        ax2.scatter(target_j3ds[ii,:,0],target_j3ds[ii,:,1],target_j3ds[ii,:,2])
+                        ax3.scatter(pred_j3ds[ii,:,0],pred_j3ds[ii,:,1],pred_j3ds[ii,:,2])
+                        fig.savefig(osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'))
                         
 
                     if not only_img:
