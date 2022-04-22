@@ -7,3 +7,4 @@ output/
 experiments
 results
 .DS_Store
+*.jpg

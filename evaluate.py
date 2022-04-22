@@ -19,7 +19,7 @@ from lib.utils.eval_utils import compute_accel, compute_error_accel, batch_compu
 from lib.utils.slerp_filter_utils import quaternion_from_matrix, quaternion_slerp, quaternion_matrix
 from lib.utils.renderer import Renderer
 from lib.core.config import TCMR_DB_DIR
-
+import matplotlib.pyplot as plt
 
 def get_sequence(start_index, end_index, seqlen=16):
     if start_index != end_index:
@@ -300,6 +300,16 @@ if __name__ == "__main__":
                         img_height=orig_height
                     )
 
+                    if target_dataset == 'you2me':
+                        f, (ax1, ax2, ax3) = plt.subplots(1, 3, sharey=True)
+                        ax1.imshow(img)
+                        print('target_j3ds',np.shape(target_j3ds))
+                        ax2.scatter(target_j3ds)
+                        ax3.scatter(pred_j3ds)
+                        plt.tight_layout(True)
+                        f.savefig(osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'))
+                        
+
                     if not only_img:
                         try:
                             if render_plain:
@@ -334,7 +344,7 @@ if __name__ == "__main__":
 
                 save_path = osp.join(out_dir, 'video', save_seq_name + ".mp4")
                 Path(osp.join(out_dir, 'video')).mkdir(parents=True, exist_ok=True)
-                print(f"Saving result video to {osp.abspath(save_path)}")
+                # print(f"Saving result video to {osp.abspath(save_path)}")
                 images_to_video(img_folder=osp.join(out_dir, save_seq_name), output_vid_file=save_path)
                 # shutil.rmtree(osp.join(out_dir, save_seq_name))
 
