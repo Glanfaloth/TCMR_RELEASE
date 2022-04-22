@@ -352,12 +352,12 @@ if __name__ == "__main__":
                     # Qi: check image save path
                     # print('img save path' , osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'))
                     # print('img information', np.shape(img))
-                    cv2.imwrite(osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'), img)
+                    # cv2.imwrite(osp.join(out_dir, save_seq_name, f'{count:06d}.jpg'), img)
 
                 save_path = osp.join(out_dir, 'video', save_seq_name + ".mp4")
                 Path(osp.join(out_dir, 'video')).mkdir(parents=True, exist_ok=True)
                 # print(f"Saving result video to {osp.abspath(save_path)}")
-                images_to_video(img_folder=osp.join(out_dir, save_seq_name), output_vid_file=save_path)
+                # images_to_video(img_folder=osp.join(out_dir, save_seq_name), output_vid_file=save_path)
                 # shutil.rmtree(osp.join(out_dir, save_seq_name))
 
             if 'mpii3d' in data_path:
