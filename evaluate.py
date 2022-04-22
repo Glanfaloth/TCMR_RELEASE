@@ -80,6 +80,8 @@ if __name__ == "__main__":
     plot = args.plot
     avg_filter = args.filter
     gender = 'neutral'
+    print('render',render)
+    render = True
 
     model = TCMR(
         n_layers=cfg.MODEL.TGRU.NUM_LAYERS,
