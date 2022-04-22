@@ -262,8 +262,10 @@ if __name__ == "__main__":
                 result_name = osp.join(out_dir, target_dataset+'_output', 'pred.npy')
                 gt_name = osp.join(out_dir, target_dataset+'_output', 'gt.npy')
                 Path(osp.join(out_dir, target_dataset+'_output')).mkdir(parents=True, exist_ok=True)
-                result_np.tofile(result_name)
-                gt_np.tofile(gt_name)
+                np.save(gt_name, gt_np)
+                np.save(result_name,result_np )
+                #result_np.tofile(result_name)
+                #gt_np.tofile(gt_name)
 
             """ Rendering """
             if render:
