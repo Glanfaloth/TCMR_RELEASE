@@ -279,7 +279,7 @@ if __name__ == "__main__":
 
                 count = 0
                 # for ii in tqdm(range(len(imgname))):
-                for ii, imgname_i in enumerate(imgname)
+                for ii, imgname_i in enumerate(imgname):
                     # frame_i = int(imgname[ii].split('_')[-1][:-4])
                     # if (frame_i < render_frame_start) or (frame_i > render_frame_start+num_frames_to_render):
                     #     continue
