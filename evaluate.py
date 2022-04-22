@@ -258,6 +258,8 @@ if __name__ == "__main__":
             if render:
                 num_frames_to_render = 240
                 imgname = dataset_data[seq_name]['imgname']
+                # Qi: no imgname from loader why here
+                print('imgname',imgname)
                 bbox = dataset_data[seq_name]['bbox']
                 pred_cam = np.vstack(pred_thetas).astype(np.float32)[:, :3]
 
@@ -276,10 +278,11 @@ if __name__ == "__main__":
                 save_seq_name = 'tcmr_' + save_seq_name + '_' + str(render_frame_start)
 
                 count = 0
-                for ii in tqdm(range(len(imgname))):
-                    frame_i = int(imgname[ii].split('_')[-1][:-4])
-                    if (frame_i < render_frame_start) or (frame_i > render_frame_start+num_frames_to_render):
-                        continue
+                # for ii in tqdm(range(len(imgname))):
+                for ii, imgname_i in enumerate(imgname)
+                    # frame_i = int(imgname[ii].split('_')[-1][:-4])
+                    # if (frame_i < render_frame_start) or (frame_i > render_frame_start+num_frames_to_render):
+                    #     continue
                     count += 1
 
                     Path(osp.join(out_dir, save_seq_name)).mkdir(parents=True, exist_ok=True)
@@ -287,7 +290,7 @@ if __name__ == "__main__":
                     bbox_ii = bbox[0:1].copy() if render_plain else bbox[ii:ii + 1]
                     bbox_ii[:, 2:] = bbox_ii[:, 2:] * 1.2
 
-                    img_path = imgname[ii]
+                    img_path = imgname_i #imgname[ii]
                     img = cv2.imread(img_path)
                     cam = np.array([[1, 0, 0]]) if render_plain else pred_cam[ii:ii + 1]
                     orig_cam = convert_crop_cam_to_orig_img(
