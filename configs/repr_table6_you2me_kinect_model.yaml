@@ -23,7 +23,7 @@ TRAIN:
   EVAL_WEIGHT: '/cluster/home/qimaqi/VH/TCMR_RELEASE/experiments/24-04-2022_18-18-28_tcmr/checkpoint.pth.tar'
   RESUME: '/cluster/scratch/qimaqi/pretrained_model/tcmr_table6_mpii3d_test.pth.tar'
   START_EPOCH: 0
-  END_EPOCH: 30
+  END_EPOCH: 60
   LR_PATIENCE: 5
   DATA_2D_RATIO: 0.6
   OVERLAP: false
