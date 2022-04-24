@@ -18,7 +18,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 from lib.utils.geometry import batch_rodrigues
-
+import os.path as osp
 
 def perm_index_reverse(indices):
     indices_reverse = np.copy(indices)
@@ -200,6 +200,9 @@ class TCMRLoss(nn.Module):
         # print('check 3d gt base', gt_keypoints_3d[:, 39, :])
         pred_keypoints_3d = pred_keypoints_3d[:, 25:39, :]
         gt_keypoints_3d = gt_keypoints_3d[:, 25:39, :]
+        train_gt_np = gt_keypoints_3d[:, 25:39, :].detach().cpu().numpy()
+        target_name = 'train.npy'
+        np.save(target_name, train_gt_np)
         # for i in range(14):
         #     # print('show middle reuslt pred and target', pred_keypoints_3d[0,i,:],gt_keypoints_3d[0,i,:])
         #     print('check 3d gt base', gt_keypoints_3d)

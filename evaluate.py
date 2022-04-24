@@ -158,6 +158,8 @@ if __name__ == "__main__":
             valids = np.ones(dataset_data['features'][indexes].shape[0]).astype(bool)
         # import pdb; pdb.set_trace()
         # valids[:] = 1
+        reduce = lambda x: x.contiguous().view((x.shape[0] * x.shape[1],) + x.shape[2:])
+        
         data_keyed[u_n] = {
             'features': dataset_data['features'][indexes][valids],
             'joints3D': dataset_data['joints3D'][indexes][valids],
@@ -249,6 +251,8 @@ if __name__ == "__main__":
                     scores = np.vstack(scores)
                 except:
                     import pdb; pdb.set_trace()
+
+            
 
             target_j3ds = dataset_data[seq_name]['joints3D']
             pred_verts = np.vstack(pred_verts)
