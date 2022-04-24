@@ -21,7 +21,7 @@ TRAIN:
   PRETRAINED: '/cluster/scratch/qimaqi/pretrained_model/tcmr_table6_mpii3d_test.pth.tar'
   PRETRAINED_REGRESSOR: 'data/base_data/spin_model_checkpoint.pth.tar'
   EVAL_WEIGHT: '/cluster/home/qimaqi/VH/TCMR_RELEASE/experiments/24-04-2022_18-18-28_tcmr/checkpoint.pth.tar'
-  RESUME: ''
+  RESUME: '/cluster/scratch/qimaqi/pretrained_model/tcmr_table6_mpii3d_test.pth.tar'
   START_EPOCH: 0
   END_EPOCH: 30
   LR_PATIENCE: 5

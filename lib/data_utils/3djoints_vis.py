@@ -97,7 +97,8 @@ def _set_axes_radius(ax, origin, radius):
     ax.set_zlim3d([z - radius, z + radius])
 # target path
 #  '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_kinect/you2me_output
-target_path ='/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
+target_path ='/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
+# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
 gt_path = osp.join(target_path,'gt.npy')
 pred_path = osp.join(target_path,'pred.npy')
@@ -161,7 +162,7 @@ for ii in range(length):
     ax3.set_ylabel('Y axis')
     ax3.set_zlabel('Z axis')
     ax2.view_init(azim=-90, elev=-80)
-    ax3.view_init(azim=-90, elev=-80)
+    ax3.view_init(azim=-90, elev=-80)  # kinect -90 110
     # ax2.azim = 180
     set_axes_equal(ax2)
     set_axes_equal(ax3)
