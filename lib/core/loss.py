@@ -197,7 +197,7 @@ class TCMRLoss(nn.Module):
         Compute 3D keypoint loss for the examples that 3D keypoint annotations are available.
         The loss is weighted by the confidence.
         """
-        print('check 3d gt base', gt_keypoints_3d[:, 40, :])
+        print('check 3d gt base', gt_keypoints_3d[:, 39, :])
         pred_keypoints_3d = pred_keypoints_3d[:, 25:39, :]
         gt_keypoints_3d = gt_keypoints_3d[:, 25:39, :]
         # for i in range(14):
