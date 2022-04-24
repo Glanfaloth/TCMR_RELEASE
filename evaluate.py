@@ -176,6 +176,7 @@ if __name__ == "__main__":
         else:
             data_keyed[u_n]['pose'] = dataset_data['pose'][indexes][valids]
             data_keyed[u_n]['shape'] = dataset_data['shape'][indexes][valids]
+            J_regressor = None
     dataset_data = data_keyed
 
     """ Run evaluation """

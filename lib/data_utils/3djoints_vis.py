@@ -96,12 +96,12 @@ def _set_axes_radius(ax, origin, radius):
     ax.set_ylim3d([y - radius, y + radius])
     ax.set_zlim3d([z - radius, z + radius])
 # target path
-target_path = '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
+target_path = '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_output/you2me_output'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
 gt_path = osp.join(target_path,'gt.npy')
 pred_path = osp.join(target_path,'pred.npy')
 
-pred_np= np.load(gt_path)
-gt_np= np.load(pred_path)
+gt_np= np.load(gt_path)
+pred_np= np.load(pred_path)
 
 print('shape of gt',np.shape(gt_np))
 print('shape of pred',np.shape(pred_np))
@@ -131,7 +131,7 @@ for ii in range(length):
     ax3.scatter(pred_np[ii,:,0],pred_np[ii,:,1],pred_np[ii,:,2],c = np.array([0]*12 + [10,10]))
     skeleton = get_common_skeleton()
     for i,(j1,j2) in enumerate(skeleton):
-        if gt_sub_np[ii, j1, 2] > 0 and gt_sub_np[ii, j2, 2] > 0: # if visible
+        if gt_sub_np[ii, j1, 2] * gt_sub_np[ii, j2, 2] > 0: # if visible
             color = np.array(rcolor) if common_lr[i] == 0 else np.array(lcolor)
             line_x = np.array([gt_sub_np[ii,j1,0],gt_sub_np[ii,j2,0]])
             line_y = np.array([gt_sub_np[ii,j1,1],gt_sub_np[ii,j2,1]])
@@ -139,7 +139,7 @@ for ii in range(length):
             ax2.plot3D(line_x, line_y, line_z, c = color/255)
 
     for i,(j1,j2) in enumerate(skeleton):
-        if gt_sub_np[ii, j1, 2] > 0 and gt_sub_np[ii, j2, 2] > 0: # if visible
+        if gt_sub_np[ii, j1, 2] * gt_sub_np[ii, j2, 2] > 0: # if visible
             color = np.array(rcolor) if common_lr[i] == 0 else np.array(lcolor)
             line_x = np.array([pred_np[ii,j1,0],pred_np[ii,j2,0]])
             line_y = np.array([pred_np[ii,j1,1],pred_np[ii,j2,1]])
@@ -154,7 +154,7 @@ for ii in range(length):
     ax3.set_ylabel('Y axis')
     ax3.set_zlabel('Z axis')
     ax2.view_init(azim=0, elev=0)
-    ax3.view_init(azim=0, elev=90)
+    ax3.view_init(azim=0, elev=0)
     # ax2.azim = 180
     set_axes_equal(ax2)
     set_axes_equal(ax3)
