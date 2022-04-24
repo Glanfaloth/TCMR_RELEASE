@@ -20,6 +20,7 @@ TRAIN:
   NUM_ITERS_PER_EPOCH: 500
   PRETRAINED: '/cluster/scratch/qimaqi/pretrained_model/tcmr_table6_mpii3d_test.pth.tar'
   PRETRAINED_REGRESSOR: 'data/base_data/spin_model_checkpoint.pth.tar'
+  EVAL_WEIGHT: '/cluster/home/qimaqi/VH/TCMR_RELEASE/experiments/24-04-2022_22-57-55_tcmr/checkpoint.pth.tar'
   RESUME: ''
   START_EPOCH: 0
   END_EPOCH: 30
