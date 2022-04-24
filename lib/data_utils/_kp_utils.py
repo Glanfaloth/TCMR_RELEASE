@@ -44,8 +44,9 @@ def convert_kps(joints2d, src, dst):
                 print('out_joints2d[:, idx]', jn, joints2d[:, src_names.index(jn)])
     # todo check the convert keypoints
     # from pprint import pprint
-    print('out_joints2d',out_joints2d
-    )
+    if src == 'you2me_cmu_3d' or 'you2me_kinect_3d':
+        print('shape',np.shape(out_joints2d))
+        print('out_joints2d',out_joints2d[:,25:39,:])
     # pprint(out_joints2d)
     return out_joints2d
 
@@ -773,7 +774,7 @@ def get_you2me_cmu_3d_joint_names():
     return [
         "neck",      # 0
         "nose",      # 1
-        "bodycenter",# 2
+        "hip",# 2
         "lshoulder", # 3
         "lelbow",    # 4
         "lwrist",    # 5
