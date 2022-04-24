@@ -133,7 +133,7 @@ for ii in range(length):
     print('gt_sub_np',gt_sub_np[ii,:,:])
     print('pred_np',pred_np[ii,:,:])
     ax2.scatter(gt_sub_np[ii,:-1,0],gt_sub_np[ii,:-1,1],gt_sub_np[ii,:-1,2], c=color_list)
-    ax3.scatter(pred_np[ii,:,0],pred_np[ii,:,1],pred_np[ii,:,2],c = np.array([0]*12 + [10,10]))
+    # ax3.scatter(pred_np[ii,:,0],pred_np[ii,:,1],pred_np[ii,:,2],c = np.array([0]*12 + [10,10]))
     skeleton = get_common_skeleton()
     for i,(j1,j2) in enumerate(skeleton):
         if gt_sub_np[ii, j1, 2] * gt_sub_np[ii, j2, 2] > 0: # if visible
@@ -143,25 +143,25 @@ for ii in range(length):
             line_z =  np.array([gt_sub_np[ii,j1,2],gt_sub_np[ii,j2,2]])
             ax2.plot3D(line_x, line_y, line_z, c = color/255)
 
-    for i,(j1,j2) in enumerate(skeleton):
-        if gt_sub_np[ii, j1, 2] * gt_sub_np[ii, j2, 2] > 0: # if visible
-            color = np.array(rcolor) if common_lr[i] == 0 else np.array(lcolor)
-            line_x = np.array([pred_np[ii,j1,0],pred_np[ii,j2,0]])
-            line_y = np.array([pred_np[ii,j1,1],pred_np[ii,j2,1]])
-            line_z =  np.array([pred_np[ii,j1,2],pred_np[ii,j2,2]])
-            ax3.plot3D(line_x, line_y, line_z, c = color/255)
+    # for i,(j1,j2) in enumerate(skeleton):
+    #     if gt_sub_np[ii, j1, 2] * gt_sub_np[ii, j2, 2] > 0: # if visible
+    #         color = np.array(rcolor) if common_lr[i] == 0 else np.array(lcolor)
+    #         line_x = np.array([pred_np[ii,j1,0],pred_np[ii,j2,0]])
+    #         line_y = np.array([pred_np[ii,j1,1],pred_np[ii,j2,1]])
+    #         line_z =  np.array([pred_np[ii,j1,2],pred_np[ii,j2,2]])
+    #         ax3.plot3D(line_x, line_y, line_z, c = color/255)
 
             # pt1, pt2, pt3 = (pred_np[:,j1, 0], pred_np[:,j1, 1]), (kp_2d[j2, 0], kp_2d[j2, 1])
     ax2.set_xlabel('X axis')
     ax2.set_ylabel('Y axis')
     ax2.set_zlabel('Z axis')
-    ax3.set_xlabel('X axis')
-    ax3.set_ylabel('Y axis')
-    ax3.set_zlabel('Z axis')
+    # ax3.set_xlabel('X axis')
+    # ax3.set_ylabel('Y axis')
+    # ax3.set_zlabel('Z axis')
     ax2.view_init(azim=0, elev=0)
-    ax3.view_init(azim=0, elev=0)
+    # ax3.view_init(azim=0, elev=0)
     # ax2.azim = 180
     set_axes_equal(ax2)
-    set_axes_equal(ax3)
+    # set_axes_equal(ax3)
     plt.show()
 #plt.tight_layout(True)

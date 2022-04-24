@@ -159,7 +159,7 @@ if __name__ == "__main__":
         # import pdb; pdb.set_trace()
         # valids[:] = 1
         reduce = lambda x: x.contiguous().view((x.shape[0] * x.shape[1],) + x.shape[2:])
-        
+
         data_keyed[u_n] = {
             'features': dataset_data['features'][indexes][valids],
             'joints3D': dataset_data['joints3D'][indexes][valids],
@@ -175,10 +175,10 @@ if __name__ == "__main__":
         elif 'you2me' in data_path:
             data_keyed[u_n]['pose'] = np.zeros((len(valids), 72))
             data_keyed[u_n]['shape'] = np.zeros((len(valids), 10))
+            J_regressor = None
         else:
             data_keyed[u_n]['pose'] = dataset_data['pose'][indexes][valids]
             data_keyed[u_n]['shape'] = dataset_data['shape'][indexes][valids]
-            J_regressor = None
     dataset_data = data_keyed
 
     """ Run evaluation """
