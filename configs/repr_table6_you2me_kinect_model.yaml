@@ -18,8 +18,9 @@ LOSS:
 TRAIN:
   BATCH_SIZE: 32
   NUM_ITERS_PER_EPOCH: 500
-  PRETRAINED: '/cluster/home/qimaqi/VH/TCMR_RELEASE/experiments/24-04-2022_18-18-28_tcmr/checkpoint.pth.tar'
+  PRETRAINED: '/cluster/scratch/qimaqi/pretrained_model/tcmr_table6_mpii3d_test.pth.tar'
   PRETRAINED_REGRESSOR: 'data/base_data/spin_model_checkpoint.pth.tar'
+  EVAL_WEIGHT: '/cluster/home/qimaqi/VH/TCMR_RELEASE/experiments/24-04-2022_18-18-28_tcmr/checkpoint.pth.tar'
   RESUME: ''
   START_EPOCH: 0
   END_EPOCH: 30
