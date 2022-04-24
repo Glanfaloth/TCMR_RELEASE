@@ -774,7 +774,7 @@ def get_you2me2d_joint_names():
 def get_you2me_cmu_3d_joint_names():
     return [
         "neck",      # 0
-        "nose",      # 1
+        "headtop",      # 1 nose
         "hip",# 2
         "lshoulder", # 3
         "lelbow",    # 4
@@ -800,7 +800,7 @@ def get_you2me_kinect_3d_joint_names():
         'hips',       # 0
         'spineMid',     # 1
         'neck',       # 2
-        "head",       # 3
+        "headtop",       # 3
         "lshoulder",    # 4
         "lelbow",    # 5
         "lwrist",      # 6
