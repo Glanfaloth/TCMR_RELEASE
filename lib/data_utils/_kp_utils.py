@@ -44,9 +44,9 @@ def convert_kps(joints2d, src, dst):
                 print('out_joints2d[:, idx]', jn, joints2d[:, src_names.index(jn)])
     # todo check the convert keypoints
     # from pprint import pprint
-    if src == 'you2me2d': #== 'you2me_cmu_3d' or 'you2me_kinect_3d':
-        print('shape',np.shape(out_joints2d))
-        print('out_joints2d',out_joints2d[:,25:39,:])
+    # if src == 'you2me2d': #== 'you2me_cmu_3d' or 'you2me_kinect_3d':
+    #     print('shape',np.shape(out_joints2d))
+    #     print('out_joints2d',out_joints2d[:,25:39,:])
     # pprint(out_joints2d)
     return out_joints2d
 
@@ -797,28 +797,28 @@ def get_you2me_cmu_3d_joint_names():
 def get_you2me_kinect_3d_joint_names():
     return [
         'hips',       # 0
-        'spine1',     # 1
+        'spineMid',     # 1
         'neck',       # 2
         "head",       # 3
-        "leftShoulder",    # 4
+        "lshoulder",    # 4
         "lelbow",    # 5
         "lwrist",      # 6
-        "leftHand",     # 7
-        "rightShoulder",    # 8
+        "lhand",     # 7
+        "rshoulder",    # 8
         "relbow", # 9
         "rwrist",    # 10
-        "rightHand",    # 11
-        "leftUpLeg",      # 12
-        "leftLeg",     # 13
-        "leftFoot",    # 14
-        "leftToeBase",      # 15
-        "rightUpLeg",      # 16
-        "rightLeg",      # 17
-        "rightFoot",      # 18
-        "rightToeBase", #19
-        "spine4", #20 #TODO
-        "leftHandIndex1",
-        "leftthumbIndex1",
-        "rightHandIndex1",
-        "rightthumbIndex1",
+        "rhand",    # 11
+        "lhip",      # 12
+        "lknee",     # 13
+        "lankle",    # 14
+        "lfoot",      # 15
+        "rhip",      # 16
+        "rknee",      # 17
+        "rankle",      # 18
+        "rfoot",     #19
+        "spineShoulder",   #20 #TODO
+        "lhandtip",
+        "lthumb",
+        "rhandtip",
+        "rthumb",
     ]

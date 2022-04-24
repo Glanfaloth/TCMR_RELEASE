@@ -193,10 +193,10 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                     os.path.join(gt_skeletons_path, joints_3d_name + '.json'))
                 joints_3d_raw = np.reshape(interact_joints_3d, (1, 19, 4)) / 1000  # TODO why divide 1000
                 joints_3d_raw = joints_3d_raw[:, :, :3]
-                joints_3d = convert_kps(joints_3d_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
+                joints_3d = convert_kps(joints_3d_raw, "you2me_cmu_3d", "you2me_cmu_3d").reshape((-1, 3))
                 joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4)) / 1000  # TODO why divide 1000
                 joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
-                joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
+                joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_cmu_3d", "you2me_cmu_3d").reshape((-1, 3))
                 # print('joints_3d',joints_3d)
                 # if joints_2d:
                 #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
@@ -322,10 +322,10 @@ def read_val_data(dataset_path, device, data_type, debug=False):
 
                 joints_3d_raw = np.reshape(interact_joints_3d, (1, 25, 3))  # TODO why divide 1000
                 # joints_3d_raw = joints_3d_raw[:, :, :3]
-                joints_3d = convert_kps(joints_3d_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
+                joints_3d = convert_kps(joints_3d_raw, "you2me_kinect_3d", "you2me_kinect_3d").reshape((-1, 3))
                 joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 25, 3))   # TODO why divide 1000
                 # joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
-                joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
+                joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_kinect_3d", "you2me_kinect_3d").reshape((-1, 3))
                 # print('joints_3d',joints_3d)
                 # if joints_2d:
                 #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
