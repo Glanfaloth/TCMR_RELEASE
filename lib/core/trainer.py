@@ -320,7 +320,7 @@ class Trainer():
                 preds, _ = self.generator(inp, J_regressor=None) #
 
                 # convert to 14 keypoint format for evaluation
-                n_kp = preds[-1]['kp_3d'].shape[-2]
+                n_kp = 14 #preds[-1]['kp_3d'].shape[-2]
                 # Qi debug
                 # print("preds[-1]['kp_3d']",preds[-1]['kp_3d'].shape)
                 # [32,14,3]
