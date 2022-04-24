@@ -167,6 +167,8 @@ class Dataset3D(Dataset):
 
         is_train = self.set == 'train'
         kp_3d = self.get_sequence(start_index, end_index, self.db['joints3D'])
+        print("self.db['joints3D']",self.db['joints3D'])
+        print('kp_3d',kp_3d)
 
         bbox = self.get_sequence(start_index, end_index, self.db['bbox'])
         # img_names = self.get_sequence(start_index, end_index, self.db['img_name'])
