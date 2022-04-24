@@ -253,13 +253,15 @@ if __name__ == "__main__":
             pred_verts = np.vstack(pred_verts)
             dummy_cam = np.repeat(np.array([[1., 0., 0.]]), len(target_j3ds), axis=0)
             target_theta = np.concatenate([dummy_cam, dataset_data[seq_name]['pose'], dataset_data[seq_name]['shape']], axis=1).astype(np.float32)
-            target_j3ds, target_theta = target_j3ds[:len(pred_j3ds)], target_theta[:len(pred_j3ds)]
+            # target_j3ds, target_theta = target_j3ds[:len(pred_j3ds)], target_theta[:len(pred_j3ds)]
+            # target_j3ds, target_theta = target_j3ds[:len(pred_j3ds)], target_theta[:len(pred_j3ds)]
+            
             # Qi: Change output
             if target_dataset == 'you2me':
                 # f, (ax1, ax2, ax3) = plt.subplots(1, 3, sharey=True)
                 # ax1.imshow(img)
-                result_np = np.array(target_j3ds)
-                gt_np = np.array(pred_j3ds)
+                gt_np = np.array(target_j3ds)
+                result_np = np.array(pred_j3ds)
                 result_name = osp.join(out_dir, target_dataset+'_output', 'pred.npy')
                 gt_name = osp.join(out_dir, target_dataset+'_output', 'gt.npy')
                 Path(osp.join(out_dir, target_dataset+'_output')).mkdir(parents=True, exist_ok=True)
