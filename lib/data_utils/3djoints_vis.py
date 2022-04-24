@@ -21,8 +21,8 @@ pred_sub_np = pred_np[:, 25:39, :]
 # length = len(gt_np)
 length = 2
 for ii in range(length):
-    print('pred_sub_np[ii,:,0]',pred_np[ii,38,:])
-    print('gt_np]',gt_np[ii,:,:])
+    print('pred_sub_np[ii,:,0]',pred_np[ii,39,:])
+    print('gt_np]',gt_np[ii,-1,:])
     fig = plt.figure(figsize=plt.figaspect(0.5))
     ax2 = fig.add_subplot(2, 1, 1, projection='3d') 
     plt.title('prediction')
