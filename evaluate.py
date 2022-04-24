@@ -406,7 +406,7 @@ if __name__ == "__main__":
             else:
                 valid_map = np.arange(len(target_j3ds))
 
-            pred_j3ds = torch.from_numpy(pred_j3ds).float()
+            pred_j3ds = torch.from_numpy(pred_j3ds).float()[:,25:39,:]
             target_j3ds = torch.from_numpy(target_j3ds).float()
 
             num_eval_pose = len(valid_map)
