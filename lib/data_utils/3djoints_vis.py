@@ -96,6 +96,7 @@ def _set_axes_radius(ax, origin, radius):
     ax.set_ylim3d([y - radius, y + radius])
     ax.set_zlim3d([z - radius, z + radius])
 # target path
+#  '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_kinect/you2me_output
 target_path = '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
 gt_path = osp.join(target_path,'gt.npy')
 pred_path = osp.join(target_path,'pred.npy')
@@ -113,7 +114,7 @@ pred_np = pred_np[:, 25:39, :]
 color_list  = np.array([0]*12 + [10] )
 
 # length = len(gt_np)
-length = 50
+length = 5
 for ii in range(length):
     # print('pred_sub_np[ii,:,0]',pred_np[ii,39,:])
     # print('gt_np]',gt_np[ii,-1,:])
