@@ -39,12 +39,12 @@ def convert_kps(joints2d, src, dst):
             # print('jn',jn)
             # print('src_names.index(jn)',src_names.index(jn))
             out_joints2d[:, idx] = joints2d[:, src_names.index(jn)]
-            if src == 'you2me_cmu_3d' or 'you2me_kinect_3d':
+            if src == 'you2me2d':#'you2me_cmu_3d' or 'you2me_kinect_3d':
                 print('showing 3d correspondece')
                 print('out_joints2d[:, idx]', jn, joints2d[:, src_names.index(jn)])
     # todo check the convert keypoints
     # from pprint import pprint
-    if src == 'you2me_cmu_3d' or 'you2me_kinect_3d':
+    if src == 'you2me2d': #== 'you2me_cmu_3d' or 'you2me_kinect_3d':
         print('shape',np.shape(out_joints2d))
         print('out_joints2d',out_joints2d[:,25:39,:])
     # pprint(out_joints2d)

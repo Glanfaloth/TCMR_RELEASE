@@ -8,8 +8,8 @@ target_path = '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/
 gt_path = osp.join(target_path,'gt.npy')
 pred_path = osp.join(target_path,'pred.npy')
 
-gt_np = np.load(gt_path)
-pred_np = np.load(pred_path)
+pred_np = np.load(gt_path)
+gt_np = np.load(pred_path)
 
 print('shape of gt',np.shape(gt_np))
 print('shape of pred',np.shape(pred_np))
