@@ -96,9 +96,9 @@ if __name__ == "__main__":
         checkpoint = torch.load(cfg.TRAIN.EVAL_WEIGHT)
         best_performance = checkpoint['performance']
         model.load_state_dict(checkpoint['gen_state_dict'])
-        print(f"==> Loaded pretrained model from {cfg.TRAIN.PRETRAINED}...")
+        print(f"==> Loaded pretrained model from {cfg.TRAIN.EVAL_WEIGHT}...")
     else:
-        print(f"{cfg.TRAIN.PRETRAINED} is not a pretrained model! Exiting...")
+        print(f"{cfg.TRAIN.EVAL_WEIGHT} is not a pretrained model! Exiting...")
         import sys; sys.exit()
 
     model.regressor.smpl = SMPL(
