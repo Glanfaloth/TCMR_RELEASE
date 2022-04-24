@@ -269,7 +269,7 @@ if __name__ == "__main__":
                 result_np = np.array(pred_j3ds)
                 result_name = osp.join(out_dir, cfg.TITLE+'_output', 'pred.npy')
                 gt_name = osp.join(out_dir, cfg.TITLE+'_output', 'gt.npy')
-                Path(osp.join(out_dir, target_dataset+'_output')).mkdir(parents=True, exist_ok=True)
+                Path(osp.join(out_dir, cfg.TITLE+'_output')).mkdir(parents=True, exist_ok=True)
                 np.save(gt_name, gt_np)
                 np.save(result_name,result_np )
                 #result_np.tofile(result_name)
