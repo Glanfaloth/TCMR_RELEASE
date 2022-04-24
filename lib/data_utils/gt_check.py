@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-
+import json
 def draw_joints(joints, ax):
 	ax.scatter(joints[:,0], joints[:,2], joints[:,1])
 	# ax.plot3D(joints[0:2,0], joints[0:2,2], joints[0:2,1])
@@ -34,6 +34,13 @@ def _set_axes_radius(ax, origin, radius):
     ax.set_ylim3d([y - radius, y + radius])
     ax.set_zlim3d([z - radius, z + radius])
 
+def _set_axes_radius(ax, origin, radius):
+    x, y, z = origin
+    ax.set_xlim3d([x - radius, x + radius])
+    ax.set_ylim3d([y - radius, y + radius])
+    ax.set_zlim3d([z - radius, z + radius])
+
+    
 def show_upp(joints):
 	fig = plt.figure()
 	ax = fig.gca(projection='3d')
@@ -55,12 +62,35 @@ def show_upp(joints):
 # show_upp(body_0_joints)
 
 # show_upp(body_1_joints)
+
+# check cmu
+json_pth = '/media/qimaqi/Alexander/you2me/cmu/1-catch1/synchronized/gt-skeletons/body3DScene_1.json'
+
+# check kinect
 txt_path = '/media/qimaqi/Alexander/you2me/kinect/catch37/synchronized/gt-interactee/pose2_216.txt'
 
-# with open(txt_path, 'r') as f:
-file = open(txt_path)
-h = np.array(file.read().split()).astype(np.float64).reshape(25,3)
-print("h",h)
-show_upp(h)
+def read_body3DScene(json_file):
+    json_data = json.load(open(json_file, 'r'))
+    people = json_data['bodies']
+    body_0_joints = people[0]["joints19"]
+    body_1_joints = people[1]["joints19"]
+    return body_0_joints, body_1_joints
+
+interactee_kp,ego_kp = read_body3DScene(json_pth)
+print('interactee_kp shape',np.shape(interactee_kp))
+joints_3d_raw = np.reshape(interactee_kp, (1, 19, 4)) / 1000
+fig = plt.figure(figsize=plt.figaspect(0.5))
+ax2 = fig.add_subplot(1, 1, 1, projection='3d')
+color_list = np.array([10]+[0]*18)
+ax2.scatter(joints_3d_raw[:,:,0],joints_3d_raw[:,:,1],joints_3d_raw[:,:,2], c=color_list, s = 30)
+set_axes_equal(ax2)
+plt.show()
+# ax2.set_box_aspect
+# ax2.set_box_aspect((1, 1, 1))
+# # with open(txt_path, 'r') as f:
+# file = open(txt_path)
+# h = np.array(file.read().split()).astype(np.float64).reshape(25,3)
+# print("h",h)
+# show_upp(h)
 # print('h',len(h))
 
