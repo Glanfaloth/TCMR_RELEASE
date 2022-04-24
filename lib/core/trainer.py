@@ -198,10 +198,11 @@ class Trainer():
 
             preds, scores = self.generator(inp, is_train=True)
 
-            # visualize
-            n_kp = preds[-1]['kp_3d'].shape[-2]
-            pred_j3d = preds[-1]['kp_3d'].view(-1, n_kp, 3).cpu().numpy()
-            print('pred_j3d',pred_j3d)
+            # # visualize
+            # n_kp = preds[-1]['kp_3d'].shape[-2]
+            # pred_j3d = preds[-1]['kp_3d'].view(-1, n_kp, 3).detach().cpu().numpy()
+            # print('pred_j3d shape',np.shape(pred_j3d))
+            # print('pred_j3d',(pred_j3d))
 
             timer['forward'] = time.time() - start
             start = time.time()
