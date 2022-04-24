@@ -6,7 +6,7 @@ import joblib
 
 
 db_path = '/Users/qima/Downloads/Klasse/Virtual Humans/dataset/preprocessed_data/'
-db_file = osp.join(db_path, 'you2me_train_db_cmu.pt')
+db_file = osp.join(db_path, 'you2me_train_db_kinect.pt')
 db = joblib.load(db_file) 
 joints3D_np = db['joints3D']
 print(np.shape(joints3D_np))
