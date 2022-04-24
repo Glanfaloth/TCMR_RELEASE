@@ -55,6 +55,11 @@ def show_upp(joints):
 # show_upp(body_0_joints)
 
 # show_upp(body_1_joints)
+
+# check cmu
+json_ptth = '/media/qimaqi/Alexander/you2me/kinect/catch37/synchronized/gt-interactee/pose2_216.txt'
+
+# check kinect
 txt_path = '/media/qimaqi/Alexander/you2me/kinect/catch37/synchronized/gt-interactee/pose2_216.txt'
 
 # with open(txt_path, 'r') as f:
