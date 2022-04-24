@@ -317,7 +317,7 @@ class Trainer():
                 inp = target['features']
                 batch = len(inp)
                 # Qi: using J regressor from h36 will lead to different output size
-                preds, _ = self.generator(inp, J_regressor=J_regressor)
+                preds, _ = self.generator(inp, J_regressor=None) #
 
                 # convert to 14 keypoint format for evaluation
                 n_kp = preds[-1]['kp_3d'].shape[-2]
@@ -328,7 +328,7 @@ class Trainer():
                 # [32,3,49,3]
         
                 target_j3d_reduced = (target['kp_3d'][:,0,:,:])[:, 25:39, :]
-                pred_j3d = preds[-1]['kp_3d'].view(-1, n_kp, 3).cpu().numpy()
+                pred_j3d = preds[-1]['kp_3d'][:, 25:39, :].view(-1, n_kp, 3).cpu().numpy()
                 target_j3d = target_j3d_reduced.view(-1, n_kp, 3).cpu().numpy()
 
                 # print("pred_j3d",np.shape(pred_j3d))
