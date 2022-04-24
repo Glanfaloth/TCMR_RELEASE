@@ -127,6 +127,8 @@ for ii in range(length):
     common_lr = [0,0,1,1,0,0,0,0,1,0,0,1,1,1,0]
 
     plt.title('prediction')
+    print('gt_sub_np',gt_sub_np[ii,:,:])
+    print('pred_np',pred_np[ii,:,:])
     ax2.scatter(gt_sub_np[ii,:-1,0],gt_sub_np[ii,:-1,1],gt_sub_np[ii,:-1,2], c=color_list)
     ax3.scatter(pred_np[ii,:,0],pred_np[ii,:,1],pred_np[ii,:,2],c = np.array([0]*12 + [10,10]))
     skeleton = get_common_skeleton()

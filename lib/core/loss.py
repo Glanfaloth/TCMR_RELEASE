@@ -199,8 +199,9 @@ class TCMRLoss(nn.Module):
         """
         pred_keypoints_3d = pred_keypoints_3d[:, 25:39, :]
         gt_keypoints_3d = gt_keypoints_3d[:, 25:39, :]
-        # print('show middle reuslt pred', pred_keypoints_3d)
-        # print('show middle reuslt target', gt_keypoints_3d)
+        for i in range(14):
+            print('show middle reuslt pred and target', pred_keypoints_3d[:,i,:],gt_keypoints_3d[:,i,:])
+            # print('show middle reuslt target', gt_keypoints_3d)
 
         # conf = gt_keypoints_3d[:, :, -1].unsqueeze(-1).clone()
         # gt_keypoints_3d = gt_keypoints_3d[:, :, :-1].clone()
