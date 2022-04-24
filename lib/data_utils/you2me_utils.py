@@ -597,6 +597,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 ego_1_joints_3d = read_pose3Dtxt(os.path.join(gt_egopose_path,joints_3d_name_ego+ '.txt'))
 
                 joints_3d_raw = np.reshape(interact_joints_3d, (1, 25, 3))  # TODO why divide 1000
+                # print('joints_3d_raw',joints_3d_raw[:,3,:])
                 # joints_3d_raw = joints_3d_raw[:, :, :3]
                 joints_3d = convert_kps(joints_3d_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
                 joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 25, 3))   # TODO why divide 1000
