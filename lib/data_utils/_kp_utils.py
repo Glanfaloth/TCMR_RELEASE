@@ -798,8 +798,8 @@ def get_you2me_kinect_3d_joint_names():
     return [
         'hips',       # 0
         'spine1',     # 1
-        'neck', # 2
-        "head", # 3
+        'neck',       # 2
+        "head",       # 3
         "leftShoulder",    # 4
         "lelbow",    # 5
         "lwrist",      # 6

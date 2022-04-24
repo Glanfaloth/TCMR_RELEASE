@@ -76,21 +76,22 @@ def read_body3DScene(json_file):
     body_1_joints = people[1]["joints19"]
     return body_0_joints, body_1_joints
 
-interactee_kp,ego_kp = read_body3DScene(json_pth)
-print('interactee_kp shape',np.shape(interactee_kp))
-joints_3d_raw = np.reshape(interactee_kp, (1, 19, 4)) / 1000
-fig = plt.figure(figsize=plt.figaspect(0.5))
-ax2 = fig.add_subplot(1, 1, 1, projection='3d')
-color_list = np.array([10]+[0]*18)
-ax2.scatter(joints_3d_raw[:,:,0],joints_3d_raw[:,:,1],joints_3d_raw[:,:,2], c=color_list, s = 30)
-set_axes_equal(ax2)
-plt.show()
+# interactee_kp,ego_kp = read_body3DScene(json_pth)
+# print('interactee_kp shape',np.shape(interactee_kp))
+# joints_3d_raw = np.reshape(interactee_kp, (1, 19, 4)) / 1000
+# fig = plt.figure(figsize=plt.figaspect(0.5))
+# ax2 = fig.add_subplot(1, 1, 1, projection='3d')
+# color_list = np.array([10]+[0]*18)
+# ax2.scatter(joints_3d_raw[:,:,0],joints_3d_raw[:,:,1],joints_3d_raw[:,:,2], c=color_list, s = 30)
+# set_axes_equal(ax2)
+# plt.show()
+
 # ax2.set_box_aspect
 # ax2.set_box_aspect((1, 1, 1))
 # # with open(txt_path, 'r') as f:
-# file = open(txt_path)
-# h = np.array(file.read().split()).astype(np.float64).reshape(25,3)
-# print("h",h)
+file = open(txt_path)
+h = np.array(file.read().split()).astype(np.float64).reshape(25,3)
+print("h",np.shape(h))
 # show_upp(h)
 # print('h',len(h))
 
