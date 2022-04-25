@@ -191,10 +191,10 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 joints_3d_name = 'body3DScene_' + img_name.split('x')[-1].split('.')[0]
                 interact_joints_3d, ego_1_joints_3d = read_body3DScene(
                     os.path.join(gt_skeletons_path, joints_3d_name + '.json'))
-                joints_3d_raw = np.reshape(interact_joints_3d, (1, 19, 4)) / 1000  # TODO why divide 1000
+                joints_3d_raw = np.reshape(interact_joints_3d, (1, 19, 4)) / 200  # TODO why divide 1000
                 joints_3d_raw = joints_3d_raw[:, :, :3]
                 joints_3d = convert_kps(joints_3d_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
-                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4)) / 1000  # TODO why divide 1000
+                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4)) / 200  # TODO why divide 1000
                 joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
                 joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
                 # print('joints_3d',joints_3d)
@@ -467,10 +467,10 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 joints_3d_name = 'body3DScene_' + img_name.split('x')[-1].split('.')[0]
                 interact_joints_3d, ego_1_joints_3d = read_body3DScene(
                     os.path.join(gt_skeletons_path, joints_3d_name + '.json'))
-                joints_3d_raw = np.reshape(interact_joints_3d, (1, 19, 4)) / 100  # TODO why divide 1000
+                joints_3d_raw = np.reshape(interact_joints_3d, (1, 19, 4)) / 200  # TODO why divide 1000
                 joints_3d_raw = joints_3d_raw[:, :, :3]
                 joints_3d = convert_kps(joints_3d_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
-                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4)) / 100  # TODO why divide 1000
+                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4)) / 200  # TODO why divide 1000
                 joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
                 joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
                 # print('joints_3d',joints_3d)
