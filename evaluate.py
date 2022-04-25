@@ -412,7 +412,8 @@ if __name__ == "__main__":
 
             # j regressor do not need set range
             pred_j3ds = torch.from_numpy(pred_j3ds).float()# [:,25:39,:]
-            target_j3ds = torch.from_numpy(target_j3ds).float()[:,25:39,:]
+            target_j3ds = torch.from_numpy(target_j3ds).float()# [:,25:39,:]
+            print('target_j3ds',np.shape(target_j3ds))
 
             num_eval_pose = len(valid_map)
             print(f"Evaluating on {num_eval_pose} data (number of poses) in {seq_name}...")
@@ -422,7 +423,10 @@ if __name__ == "__main__":
                 pred_pelvis = pred_j3ds[:, [-3], :]
                 target_pelvis = target_j3ds[:, [-3], :]
             else:
+
                 pred_pelvis = (pred_j3ds[:, [2], :] + pred_j3ds[:, [3], :]) / 2.0
+                print('target_j3ds',np.shape(target_j3ds))
+                print('target_j3ds',np.shape(target_j3ds[:, [2], :] ))
                 target_pelvis = (target_j3ds[:, [2], :] + target_j3ds[:, [3], :]) / 2.0
 
             pred_j3ds -= pred_pelvis
