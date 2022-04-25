@@ -8,5 +8,4 @@ experiments
 results
 .DS_Store
 *.jpg
-*npy
 video/*
