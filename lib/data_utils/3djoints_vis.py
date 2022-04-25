@@ -97,7 +97,8 @@ def _set_axes_radius(ax, origin, radius):
     ax.set_zlim3d([z - radius, z + radius])
 # target path
 #  '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_kinect/you2me_output
-target_path = '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
+target_path = '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/04_25_11/repr_table6_you2me_kinect_model_output'
+#'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 #'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
@@ -120,7 +121,7 @@ pred_np = pred_np[:, 25:39, :]
 color_list  = np.array([0]*12 + [10,10] )
 
 # length = len(gt_np)
-length = 3
+length = 10
 for ii in range(length):
     # print('pred_sub_np[ii,:,0]',pred_np[ii,39,:])
     # print('gt_np]',gt_np[ii,-1,:])
@@ -142,20 +143,20 @@ for ii in range(length):
     ax3.scatter(pred_np[ii,:,0],pred_np[ii,:,1],pred_np[ii,:,2],c = color_list)
     skeleton = get_common_skeleton()
     for i,(j1,j2) in enumerate(skeleton):
-        if gt_sub_np[ii, j1, 2] * gt_sub_np[ii, j2, 2] > 0: # if visible
-            color = np.array(rcolor) if common_lr[i] == 0 else np.array(lcolor)
-            line_x = np.array([gt_sub_np[ii,j1,0],gt_sub_np[ii,j2,0]])
-            line_y = np.array([gt_sub_np[ii,j1,1],gt_sub_np[ii,j2,1]])
-            line_z =  np.array([gt_sub_np[ii,j1,2],gt_sub_np[ii,j2,2]])
-            ax2.plot3D(line_x, line_y, line_z, c = color/255)
+        # if gt_sub_np[ii, j1, 2] * gt_sub_np[ii, j2, 2] >= 0: # if visible
+        color = np.array(rcolor) if common_lr[i] == 0 else np.array(lcolor)
+        line_x = np.array([gt_sub_np[ii,j1,0],gt_sub_np[ii,j2,0]])
+        line_y = np.array([gt_sub_np[ii,j1,1],gt_sub_np[ii,j2,1]])
+        line_z =  np.array([gt_sub_np[ii,j1,2],gt_sub_np[ii,j2,2]])
+        ax2.plot3D(line_x, line_y, line_z, c = color/255)
 
     for i,(j1,j2) in enumerate(skeleton):
-        if gt_sub_np[ii, j1, 2] * gt_sub_np[ii, j2, 2] > 0: # if visible
-            color = np.array(rcolor) if common_lr[i] == 0 else np.array(lcolor)
-            line_x = np.array([pred_np[ii,j1,0],pred_np[ii,j2,0]])
-            line_y = np.array([pred_np[ii,j1,1],pred_np[ii,j2,1]])
-            line_z =  np.array([pred_np[ii,j1,2],pred_np[ii,j2,2]])
-            ax3.plot3D(line_x, line_y, line_z, c = color/255)
+        # if gt_sub_np[ii, j1, 2] * gt_sub_np[ii, j2, 2] >= 0: # if visible
+        color = np.array(rcolor) if common_lr[i] == 0 else np.array(lcolor)
+        line_x = np.array([pred_np[ii,j1,0],pred_np[ii,j2,0]])
+        line_y = np.array([pred_np[ii,j1,1],pred_np[ii,j2,1]])
+        line_z =  np.array([pred_np[ii,j1,2],pred_np[ii,j2,2]])
+        ax3.plot3D(line_x, line_y, line_z, c = color/255)
 
     ax2.set_xlabel('X axis')
     ax2.set_ylabel('Y axis')
@@ -163,8 +164,10 @@ for ii in range(length):
     ax3.set_xlabel('X axis')
     ax3.set_ylabel('Y axis')
     ax3.set_zlabel('Z axis')
-    ax2.view_init(azim=-90, elev=-80)
-    ax3.view_init(azim=-90, elev=-80)  # kinect -90 110
+    ax2.view_init(azim=-100, elev=110) # kinect
+    ax3.view_init(azim=-100, elev=110)
+    # ax2.view_init(azim=-90, elev=-80) # cmu
+    # ax3.view_init(azim=-90, elev=-80)  # kinect -90 110
     # ax2.azim = 180
     set_axes_equal(ax2)
     set_axes_equal(ax3)

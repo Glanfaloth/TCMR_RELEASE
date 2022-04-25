@@ -166,6 +166,7 @@ if __name__ == "__main__":
             'vid_name': dataset_data['vid_name'][indexes][valids],
             'imgname': dataset_data['img_name'][indexes][valids],
             'bbox': dataset_data['bbox'][indexes][valids],
+            
         }
         if 'mpii3d' in data_path:
             data_keyed[u_n]['pose'] = np.zeros((len(valids), 72))
@@ -175,6 +176,7 @@ if __name__ == "__main__":
         elif 'you2me' in data_path:
             data_keyed[u_n]['pose'] = np.zeros((len(valids), 72))
             data_keyed[u_n]['shape'] = np.zeros((len(valids), 10))
+            data_keyed[u_n]['egojoints3D'] = dataset_data['egojoints3D'][indexes][valids],
             J_regressor = None
         else:
             data_keyed[u_n]['pose'] = dataset_data['pose'][indexes][valids]

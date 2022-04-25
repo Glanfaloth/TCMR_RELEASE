@@ -31,10 +31,11 @@ def _set_axes_radius(ax, origin, radius):
     ax.set_ylim3d([y - radius, y + radius])
     ax.set_zlim3d([z - radius, z + radius])
 
-db_path = '/Users/qima/Downloads/Klasse/Virtual Humans/dataset/preprocessed_data/'
-db_file = osp.join(db_path, 'you2me_val_db_kinect.pt')
+db_path = '/Users/qima/Downloads/Klasse/Virtual Humans/dataset/preprocessed_data_2/'
+db_file = osp.join(db_path, 'you2me_val_db_cmu.pt')
 db = joblib.load(db_file) 
 joints3D_np = db['joints3D']
+print(db.keys())
 print(np.shape(joints3D_np))
 print('len(joints3D_np[0,25:39,:])',len(joints3D_np[0,25:40,:]))
 
