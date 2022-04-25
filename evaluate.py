@@ -277,7 +277,7 @@ if __name__ == "__main__":
                 np.save(result_name,result_np )
                 #result_np.tofile(result_name)
                 #gt_np.tofile(gt_name)
-            target_j3ds = target_j3ds[:,25:39,:]
+            # target_j3ds = target_j3ds[:,25:39,:]
 
             """ Rendering """
             if render:
@@ -410,8 +410,9 @@ if __name__ == "__main__":
             else:
                 valid_map = np.arange(len(target_j3ds))
 
-            pred_j3ds = torch.from_numpy(pred_j3ds).float()[:,25:39,:]
-            target_j3ds = torch.from_numpy(target_j3ds).float()
+            # j regressor do not need set range
+            pred_j3ds = torch.from_numpy(pred_j3ds).float()# [:,25:39,:]
+            target_j3ds = torch.from_numpy(target_j3ds).float()[:,25:39,:]
 
             num_eval_pose = len(valid_map)
             print(f"Evaluating on {num_eval_pose} data (number of poses) in {seq_name}...")
