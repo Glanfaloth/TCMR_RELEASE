@@ -269,6 +269,7 @@ if __name__ == "__main__":
                 # ax1.imshow(img)
                 gt_np = np.array(target_j3ds)
                 result_np = np.array(pred_j3ds)
+                print('with j regressor', np.shape(pred_j3ds))
                 result_name = osp.join(out_dir, cfg.TITLE+'_output', 'pred.npy')
                 gt_name = osp.join(out_dir, cfg.TITLE+'_output', 'gt.npy')
                 Path(osp.join(out_dir, cfg.TITLE+'_output')).mkdir(parents=True, exist_ok=True)
