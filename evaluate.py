@@ -411,9 +411,9 @@ if __name__ == "__main__":
                 valid_map = np.arange(len(target_j3ds))
 
             # j regressor do not need set range
-            pred_j3ds = torch.from_numpy(pred_j3ds).float()# [:,25:39,:]
+            pred_j3ds = torch.from_numpy(pred_j3ds).float()[:,25:39,:]
             target_j3ds = torch.from_numpy(target_j3ds).float()# [:,25:39,:]
-            print('target_j3ds',np.shape(target_j3ds))
+            # print('target_j3ds',np.shape(target_j3ds))
 
             num_eval_pose = len(valid_map)
             print(f"Evaluating on {num_eval_pose} data (number of poses) in {seq_name}...")
