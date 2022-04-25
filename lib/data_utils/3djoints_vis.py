@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import json
-
+import time
 def get_colors():
     colors = {
         'pink': np.array([197, 27, 125]),  # L lower leg
@@ -97,7 +97,7 @@ def _set_axes_radius(ax, origin, radius):
     ax.set_zlim3d([z - radius, z + radius])
 # target path
 #  '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_kinect/you2me_output
-target_path = '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/04_25_11/repr_table6_you2me_kinect_model_output'
+target_path = '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/04_25_13/repr_table6_you2me_kinect_model_output'
 #'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 #'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
@@ -119,13 +119,19 @@ gt_sub_np = gt_np[:, 25:39, :]
 pred_np = pred_np[:, 25:39, :]
 
 color_list  = np.array([0]*12 + [10,10] )
+def close_event():
+    plt.close() #timer calls this function after 3 seconds and closes the window 
+
 
 # length = len(gt_np)
-length = 10
+length = 200
 for ii in range(length):
     # print('pred_sub_np[ii,:,0]',pred_np[ii,39,:])
     # print('gt_np]',gt_np[ii,-1,:])
     fig = plt.figure(figsize=plt.figaspect(0.5))
+
+    timer = fig.canvas.new_timer(interval = 3000) #creating a timer object and setting an interval of 3000 milliseconds
+    timer.add_callback(close_event)
     ax2 = fig.add_subplot(2, 1, 1, projection='3d') 
     plt.title('ground truth')
     ax3 = fig.add_subplot(2, 1, 2, projection='3d')
@@ -164,12 +170,15 @@ for ii in range(length):
     ax3.set_xlabel('X axis')
     ax3.set_ylabel('Y axis')
     ax3.set_zlabel('Z axis')
-    ax2.view_init(azim=-100, elev=110) # kinect
-    ax3.view_init(azim=-100, elev=110)
+    ax2.view_init(azim=-90, elev=110) # kinect
+    ax3.view_init(azim=-90, elev=110)
     # ax2.view_init(azim=-90, elev=-80) # cmu
     # ax3.view_init(azim=-90, elev=-80)  # kinect -90 110
     # ax2.azim = 180
     set_axes_equal(ax2)
     set_axes_equal(ax3)
+    timer.start()
     plt.show()
+    # plt.pause(3)
+
 #plt.tight_layout(True)
