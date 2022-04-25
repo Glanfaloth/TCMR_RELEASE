@@ -10,7 +10,7 @@
 import cv2
 import os
 import tqdm
-frame_path = '/home/qimaqi/Downloads/07-14/video_folder'
+frame_path = './video'
 # '/media/qimaqi/My Passport/record_20220315/recording_20220315_s1_06_qi_cuixi/master/color_img/'#'/tmp/amz_kpi/kpi_video'# '/tmp/amz_kpi/filter_result/image'
 frame_rate=5
 output='out.avi'
