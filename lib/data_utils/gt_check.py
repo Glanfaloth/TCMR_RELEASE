@@ -79,18 +79,46 @@ def read_body3DScene(json_file):
     body_1_joints = people[1]["joints19"]
     return body_0_joints, body_1_joints
 
-json_dir = osp.dirname(json_pth)
-json_files = glob.glob(osp.join(json_dir,'*.json'))
-print('json_dir',json_dir)
-keypoints_list = []
-for json_file_i in json_files:
-    interactee_kp,ego_kp = read_body3DScene(json_file_i)
-    keypoints_list.append(np.reshape(interactee_kp, (1, 19, 4)))
-    keypoints_list.append(np.reshape(ego_kp, (1, 19, 4)))
+##########################################################################
+# json_dir = osp.dirname(json_pth)
+# json_files = glob.glob(osp.join(json_dir,'*.json'))
+# print('json_dir',json_dir)
+# height_list = []
+# for json_file_i in json_files:
+#     interactee_kp,ego_kp = read_body3DScene(json_file_i)
+#     interactee_kp = np.reshape(interactee_kp, (1, 19, 4))
+#     if np.sum(interactee_kp[:,1,:]*interactee_kp[:,2,:]*interactee_kp[:,2,:])!=0:
+#         height = np.linalg.norm(interactee_kp[:,1,:] - (interactee_kp[:,8,:]+interactee_kp[:,14,:])/2) #interactee_kp[:,2,:])#(
+#         print('height',height)
+#         height_list.append(height)
+#     # keypoints_list.append(np.reshape(interactee_kp, (1, 19, 4)))
+#     # keypoints_list.append(np.reshape(ego_kp, (1, 19, 4)))
 
-keypoints_np = np.array(keypoints_list) 
+# keypoints_np = np.array(keypoints_list) 
 
-print('interactee_kp shape',np.shape(keypoints_np))
+########################################################################
+txt_dir = osp.dirname(txt_path)
+txt_files = glob.glob(osp.join(txt_dir,'*.txt'))
+print('txt_dir',txt_dir)
+height_list = []
+for txt_file_i in txt_files:
+    file = open(txt_file_i)
+    joints_3d_raw = np.array(file.read().split()).astype(np.float64).reshape(25,3)
+
+    if np.sum(joints_3d_raw[3,:]*joints_3d_raw[14,:]*joints_3d_raw[18,:])!=0:
+        height = np.linalg.norm(joints_3d_raw[3,:] - (joints_3d_raw[14,:]+joints_3d_raw[18,:])/2) #interactee_kp[:,2,:])#(
+        print('height',height)
+        height_list.append(height)
+    # keypoints_list.append(np.reshape(interactee_kp, (1, 19, 4)))
+    # keypoints_list.append(np.reshape(ego_kp, (1, 19, 4)))
+
+# keypoints_np = np.array(keypoints_list) 
+
+print('interactee_kp height_list',np.shape(height_list))
+print('range',np.average(height_list))
+
+# print('interactee_kp height_list',np.shape(height_list))
+# print('range',np.average(height_list))
 
 # joints_3d_raw = np.reshape(interactee_kp, (1, 19, 4)) # / 1000
 # fig = plt.figure(figsize=plt.figaspect(0.5))
