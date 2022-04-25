@@ -28,15 +28,17 @@ VIS_THRESH = 0.3
 # '11-hand2', '12-hand3', '3-catch3'  '8-convo5', '9-convo6'
 cmu_train_list = ['1-catch1', '10-hand1',
                   '13-sports1', '14-sports2',
-                  '2-catch2',
+                  '11-hand2',
+                  '2-catch2','3-catch3',
                   '4-convo1', '5-convo2', '6-convo3', '7-convo4']
-cmu_val_list = ['2-catch2','7-convo4']
+cmu_val_list = ['12-hand3', '2-catch2', '8-convo5',  '9-convo6']
 
 kinect_train_list = ['catch36', 'catch37', 'catch39', 'catch40', 'catch41', 'catch42', 
-                     'convo43', 'convo46', 'convo47', 'convo53', 
-                     'patty26', 'patty27', 'patty28', 'patty30', 'patty31', 'patty32', 'patty34']
+                     'convo43', 'convo46', 'convo47', 'convo53', 'convo59',
+                     'patty26', 'patty27', 'patty28', 'patty30', 'patty31', 'patty32', 'patty34',
+                     'sport56', 'sport57',]
 
-kinect_val_list = ['catch55', 'convo54','patty35']
+kinect_val_list = ['catch55', 'convo54','patty35','sport58']
 # ['catch36', 'catch37', 'catch39', 'catch40', 'catch41', 'catch42', 'catch55',
 #                      'convo43', 'convo46', 'convo47', 'convo53', 'convo54', 'convo59',
 #                      'patty1', 'patty2', 'patty26', 'patty27', 'patty28', 'patty30', 'patty31', 'patty32', 'patty34',
@@ -320,10 +322,10 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 interact_joints_3d = read_pose3Dtxt(os.path.join(gt_interactee_path,joints_3d_name_interact+ '.txt'))
                 ego_1_joints_3d = read_pose3Dtxt(os.path.join(gt_egopose_path,joints_3d_name_ego+ '.txt'))
 
-                joints_3d_raw = np.reshape(interact_joints_3d, (1, 25, 3))  # TODO why divide 1000
+                joints_3d_raw = np.reshape(interact_joints_3d, (1, 25, 3))*1.25  # TODO why divide 1000
                 # joints_3d_raw = joints_3d_raw[:, :, :3]
                 joints_3d = convert_kps(joints_3d_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
-                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 25, 3))   # TODO why divide 1000
+                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 25, 3))*1.25   # TODO why divide 1000
                 # joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
                 joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
                 # print('joints_3d',joints_3d)
@@ -596,11 +598,11 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 interact_joints_3d = read_pose3Dtxt(os.path.join(gt_interactee_path,joints_3d_name_interact+ '.txt'))
                 ego_1_joints_3d = read_pose3Dtxt(os.path.join(gt_egopose_path,joints_3d_name_ego+ '.txt'))
 
-                joints_3d_raw = np.reshape(interact_joints_3d, (1, 25, 3))  # TODO why divide 1000
+                joints_3d_raw = np.reshape(interact_joints_3d, (1, 25, 3))*1.25 # TODO why divide 1000
                 # print('joints_3d_raw',joints_3d_raw[:,3,:])
                 # joints_3d_raw = joints_3d_raw[:, :, :3]
                 joints_3d = convert_kps(joints_3d_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
-                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 25, 3))   # TODO why divide 1000
+                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 25, 3))*1.25   # TODO why divide 1000
                 # joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
                 joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
                 # print('joints_3d',joints_3d)
