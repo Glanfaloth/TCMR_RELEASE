@@ -177,7 +177,7 @@ if __name__ == "__main__":
             data_keyed[u_n]['pose'] = np.zeros((len(valids), 72))
             data_keyed[u_n]['shape'] = np.zeros((len(valids), 10))
             data_keyed[u_n]['egojoints3D'] = dataset_data['egojoints3D'][indexes][valids],
-            # J_regressor = None
+            J_regressor = None
         else:
             data_keyed[u_n]['pose'] = dataset_data['pose'][indexes][valids]
             data_keyed[u_n]['shape'] = dataset_data['shape'][indexes][valids]
@@ -270,8 +270,8 @@ if __name__ == "__main__":
                 gt_np = np.array(target_j3ds)
                 result_np = np.array(pred_j3ds)
                 # print('with j regressor', np.shape(pred_j3ds))
-                result_name = osp.join(out_dir, cfg.TITLE+'_output', 'pred.npy')
-                gt_name = osp.join(out_dir, cfg.TITLE+'_output', 'gt.npy')
+                result_name = osp.join(out_dir, cfg.TITLE+'_output', seq_name + '_pred.npy')
+                gt_name = osp.join(out_dir, cfg.TITLE+'_output', seq_name +'_gt.npy')
                 Path(osp.join(out_dir, cfg.TITLE+'_output')).mkdir(parents=True, exist_ok=True)
                 np.save(gt_name, gt_np)
                 np.save(result_name,result_np )
