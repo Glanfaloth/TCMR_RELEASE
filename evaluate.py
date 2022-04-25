@@ -177,7 +177,7 @@ if __name__ == "__main__":
             data_keyed[u_n]['pose'] = np.zeros((len(valids), 72))
             data_keyed[u_n]['shape'] = np.zeros((len(valids), 10))
             data_keyed[u_n]['egojoints3D'] = dataset_data['egojoints3D'][indexes][valids],
-            J_regressor = None
+            # J_regressor = None
         else:
             data_keyed[u_n]['pose'] = dataset_data['pose'][indexes][valids]
             data_keyed[u_n]['shape'] = dataset_data['shape'][indexes][valids]
