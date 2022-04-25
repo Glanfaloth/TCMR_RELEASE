@@ -1,0 +1,146 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import os.path as osp
+from mpl_toolkits.mplot3d import Axes3D
+import json
+import time
+
+import argparse
+
+import time
+from tqdm import tqdm
+import open3d as o3d
+
+def get_colors():
+    colors = {
+        'pink': np.array([197, 27, 125]),  # L lower leg
+        'light_pink': np.array([233, 163, 201]),  # L upper leg
+        'light_green': np.array([161, 215, 106]),  # L lower arm
+        'green': np.array([77, 146, 33]),  # L upper arm
+        'red': np.array([215, 48, 39]),  # head
+        'light_red': np.array([252, 146, 114]),  # head
+        'light_orange': np.array([252, 141, 89]),  # chest
+        'purple': np.array([118, 42, 131]),  # R lower leg
+        'light_purple': np.array([175, 141, 195]),  # R upper
+        'light_blue': np.array([145, 191, 219]),  # R lower arm
+        'blue': np.array([69, 117, 180]),  # R upper arm
+        'gray': np.array([130, 130, 130]),  #
+        'white': np.array([255, 255, 255]),  #
+    }
+    return colors
+
+
+# target path
+#  '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_kinect/you2me_output
+target_path = '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/04_25_13/repr_table6_you2me_kinect_model_output'
+#'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
+#'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
+# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
+# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
+# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
+gt_path = osp.join(target_path,'gt.npy')
+pred_path = osp.join(target_path,'pred.npy')
+
+gt_np= np.load(gt_path)
+pred_np= np.load(pred_path)
+
+# find the range of pred_np
+print(np.min(pred_np),np.max(pred_np))
+print('shape of gt',np.shape(gt_np))
+print('shape of pred',np.shape(pred_np))
+
+def get_common_skeleton():
+    return np.array(
+        [
+            [ 0, 1 ],
+            [ 1, 2 ],
+            [ 3, 4 ],
+            [ 4, 5 ],
+            [ 6, 7 ],
+            [ 7, 8 ],
+            [ 8, 2 ],
+            [ 8, 9 ],
+            [ 9, 3 ],
+            [ 2, 3 ],
+            [ 8, 12],
+            [ 9, 10],
+            [12, 9 ],
+            [10, 11],
+            [12, 13],
+        ]
+    )
+
+gt_sub_np = gt_np[:, 25:39, :]
+
+pred_np = pred_np[:, 25:39, :]
+
+start_t = 16
+end_t = 32
+
+LIMBS = get_common_skeleton()
+color_input = np.zeros([len(LIMBS), 3])
+
+# color_input[:,] = np.array([252, 146, 114])
+
+vis = o3d.visualization.Visualizer()
+vis.create_window()
+
+
+rcolor = get_colors()['red']
+pcolor = get_colors()['green']
+lcolor = get_colors()['blue']
+
+# build color list
+common_lr = [0,0,1,1,0,0,0,0,1,0,0,1,1,1,0]
+for index, flag in enumerate(common_lr):
+    color_input[index,:] = rcolor/255 if flag == 0 else lcolor/255
+
+color_input[-1,:] = np.array([0, 0, 0])
+# color_input[:,] = np.array([215, 48, 39])/255
+
+print('color_input',color_input)
+for t in range(start_t, end_t):
+    skeleton_input = o3d.geometry.LineSet(
+        points=o3d.utility.Vector3dVector(gt_sub_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
+        lines=o3d.utility.Vector2iVector(LIMBS))
+    
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(gt_sub_np[t])
+    mat = o3d.visualization.rendering.MaterialRecord()
+    mat.shader = 'defaultUnlit'
+    mat.point_size = 9.0    
+
+    skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
+
+    # skeleton_rec = o3d.geometry.LineSet(
+    #     points=o3d.utility.Vector3dVector(body_joints_rec[t]),
+    #     lines=o3d.utility.Vector2iVector(LIMBS))
+    # skeleton_rec.colors = o3d.utility.Vector3dVector(color_rec)
+
+    # if t in [0, 50, 100, 119]:
+    #     o3d.visualization.draw_geometries([skeleton_input, skeleton_rec, mesh_frame])
+    # print(body_joints_input[t][0])
+
+    # vis.add_geometry(mesh_frame)
+
+    # print('gt_sub_np[t]',np.shape(gt_sub_np[t]))
+    vis.add_geometry(skeleton_input)
+    
+    vis.add_geometry(pcd)
+
+
+    # o3d.visualization.draw_geometries(o3d.utility.Vector3dVector(gt_sub_np[t]))
+    # vis.add_geometry(skeleton_rec)
+
+    # ctr = vis.get_view_control()
+    # cam_param = ctr.convert_to_pinhole_camera_parameters()
+    # cam_param = update_cam(cam_param, trans)
+    # ctr.convert_from_pinhole_camera_parameters(cam_param)
+    vis.capture_screen_image('./video/'+str(t).zfill(4)+'.png')
+    vis.poll_events()
+    vis.update_renderer()
+    time.sleep(0.5)
+    vis.remove_geometry(skeleton_input)
+    vis.remove_geometry(pcd)
+    # vis.remove_geometry(skeleton_rec)
