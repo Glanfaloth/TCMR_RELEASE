@@ -33,15 +33,17 @@ def get_colors():
 
 # target path
 #  '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_kinect/you2me_output
-target_path = '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/04_25_13/repr_table6_you2me_kinect_model_output'
+target_path = './outputs/kinect/04_25_13/repr_table6_you2me_kinect_model_output'
 #'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 #'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
-# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
+# # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
 gt_path = osp.join(target_path,'gt.npy')
 pred_path = osp.join(target_path,'pred.npy')
 
+
+# 
 gt_np= np.load(gt_path)
 pred_np= np.load(pred_path)
 
@@ -75,9 +77,11 @@ gt_sub_np = gt_np[:, 25:39, :]
 
 pred_np = pred_np[:, 25:39, :]
 
-start_t = 16
-end_t = 32
+############### 580,  800
+start_t = 550 #400
+end_t = 650 #len(gt_sub_np)
 
+gt_sub_np[:,:,0] = gt_sub_np[:,:,0] -1.5 
 LIMBS = get_common_skeleton()
 color_input = np.zeros([len(LIMBS), 3])
 
@@ -99,48 +103,152 @@ for index, flag in enumerate(common_lr):
 color_input[-1,:] = np.array([0, 0, 0])
 # color_input[:,] = np.array([215, 48, 39])/255
 
-print('color_input',color_input)
 for t in range(start_t, end_t):
-    skeleton_input = o3d.geometry.LineSet(
+    skeleton_input1 = o3d.geometry.LineSet(
         points=o3d.utility.Vector3dVector(gt_sub_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
         lines=o3d.utility.Vector2iVector(LIMBS))
+
+    pcd1 = o3d.geometry.PointCloud()
+    pcd1.points = o3d.utility.Vector3dVector(gt_sub_np[t])
+
+
+    skeleton_input1.colors = o3d.utility.Vector3dVector(color_input)
+    vis.add_geometry(skeleton_input1)
+    vis.add_geometry(pcd1)
+    # vis.capture_screen_image('./video/gt/'+str(t).zfill(4)+'.png')
+
+    skeleton_input2= o3d.geometry.LineSet(
+        points=o3d.utility.Vector3dVector(pred_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
+        lines=o3d.utility.Vector2iVector(LIMBS))
+
+    pcd2 = o3d.geometry.PointCloud()
+    pcd2.points = o3d.utility.Vector3dVector(pred_np[t]) 
+
+    skeleton_input2.colors = o3d.utility.Vector3dVector(color_input)
+    vis.add_geometry(skeleton_input2)
+    vis.add_geometry(pcd2)
+
+    # vis.capture_screen_image('./video/train_result/'+str(t).zfill(4)+'.png')
+
     
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(gt_sub_np[t])
-    mat = o3d.visualization.rendering.MaterialRecord()
-    mat.shader = 'defaultUnlit'
-    mat.point_size = 9.0    
-
-    skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
-
-    # skeleton_rec = o3d.geometry.LineSet(
-    #     points=o3d.utility.Vector3dVector(body_joints_rec[t]),
-    #     lines=o3d.utility.Vector2iVector(LIMBS))
-    # skeleton_rec.colors = o3d.utility.Vector3dVector(color_rec)
-
-    # if t in [0, 50, 100, 119]:
-    #     o3d.visualization.draw_geometries([skeleton_input, skeleton_rec, mesh_frame])
-    # print(body_joints_input[t][0])
-
-    # vis.add_geometry(mesh_frame)
-
-    # print('gt_sub_np[t]',np.shape(gt_sub_np[t]))
-    vis.add_geometry(skeleton_input)
-    
-    vis.add_geometry(pcd)
-
-
-    # o3d.visualization.draw_geometries(o3d.utility.Vector3dVector(gt_sub_np[t]))
-    # vis.add_geometry(skeleton_rec)
-
-    # ctr = vis.get_view_control()
-    # cam_param = ctr.convert_to_pinhole_camera_parameters()
-    # cam_param = update_cam(cam_param, trans)
-    # ctr.convert_from_pinhole_camera_parameters(cam_param)
-    vis.capture_screen_image('./video/'+str(t).zfill(4)+'.png')
     vis.poll_events()
     vis.update_renderer()
-    time.sleep(0.5)
-    vis.remove_geometry(skeleton_input)
-    vis.remove_geometry(pcd)
+    print('time',t )
+    time.sleep(0.1)
+    vis.remove_geometry(skeleton_input1)
+    vis.remove_geometry(skeleton_input2)
+    vis.remove_geometry(pcd1)
+    vis.remove_geometry(pcd2)
     # vis.remove_geometry(skeleton_rec)
+
+
+
+# # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
+# gt_path = osp.join(target_path,'gt.npy')
+# pred_path = osp.join(target_path,'pred.npy')
+
+
+# target_path = './video/presentation_material'
+# interact_path = osp.join(target_path,'interact.npy')
+# ego_path = osp.join(target_path,'ego.npy')
+# interact_np= np.load(interact_path)
+# ego_np= np.load(ego_path)
+
+# # # find the range of pred_np
+# # print(np.min(pred_np),np.max(pred_np))
+# print('shape of gt',np.shape(interact_np))
+# print('shape of pred',np.shape(ego_np))
+
+# def get_common_skeleton():
+#     return np.array(
+#         [
+#             [ 0, 1 ],
+#             [ 1, 2 ],
+#             [ 3, 4 ],
+#             [ 4, 5 ],
+#             [ 6, 7 ],
+#             [ 7, 8 ],
+#             [ 8, 2 ],
+#             [ 8, 9 ],
+#             [ 9, 3 ],
+#             [ 2, 3 ],
+#             [ 8, 12],
+#             [ 9, 10],
+#             [12, 9 ],
+#             [10, 11],
+#             [12, 13],
+#         ]
+#     )
+
+# cmu2common = [14,13,12,6, 7,8,11,10,9,3,4,5,0,1]
+# interact_np = interact_np[:, cmu2common, :3]
+# interact_np[:,:,1] = -interact_np[:,:,1]
+# ego_np = ego_np[:, cmu2common, :3]
+# ego_np[:,:,1] = -ego_np[:,:,1]
+
+# ############### 580,  800
+# start_t = 0 #400
+# end_t = len(interact_np)
+
+# LIMBS = get_common_skeleton()
+# color_input = np.zeros([len(LIMBS), 3])
+
+# # color_input[:,] = np.array([252, 146, 114])
+
+# vis = o3d.visualization.Visualizer()
+# vis.create_window()
+
+
+# rcolor = get_colors()['red']
+# pcolor = get_colors()['green']
+# lcolor = get_colors()['blue']
+
+# # build color list
+# common_lr = [0,0,1,1,0,0,0,0,1,0,0,1,1,1,0]
+# for index, flag in enumerate(common_lr):
+#     color_input[index,:] = rcolor/255 if flag == 0 else lcolor/255
+
+# color_input[-1,:] = np.array([0, 0, 0])
+# # color_input[:,] = np.array([215, 48, 39])/255
+
+# for t in range(start_t, end_t):
+#     skeleton_input1 = o3d.geometry.LineSet(
+#         points=o3d.utility.Vector3dVector(interact_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
+#         lines=o3d.utility.Vector2iVector(LIMBS))
+
+#     pcd1 = o3d.geometry.PointCloud()
+#     pcd1.points = o3d.utility.Vector3dVector(interact_np[t])
+
+
+#     skeleton_input1.colors = o3d.utility.Vector3dVector(color_input)
+#     vis.add_geometry(skeleton_input1)
+#     vis.add_geometry(pcd1)
+
+#     skeleton_input2= o3d.geometry.LineSet(
+#         points=o3d.utility.Vector3dVector(ego_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
+#         lines=o3d.utility.Vector2iVector(LIMBS))
+
+#     pcd2 = o3d.geometry.PointCloud()
+#     pcd2.points = o3d.utility.Vector3dVector(ego_np[t]) 
+
+#     skeleton_input2.colors = o3d.utility.Vector3dVector(color_input)
+#     vis.add_geometry(skeleton_input2)
+#     vis.add_geometry(pcd2)
+
+#     # o3d.visualization.draw_geometries(o3d.utility.Vector3dVector(gt_sub_np[t]))
+#     # vis.add_geometry(skeleton_rec)
+
+#     # ctr = vis.get_view_control()
+#     # cam_param = ctr.convert_to_pinhole_camera_parameters()
+#     # cam_param = update_cam(cam_param, trans)
+#     # ctr.convert_from_pinhole_camera_parameters(cam_param)
+#     # vis.capture_screen_image('./video/'+str(t).zfill(4)+'.png')
+#     vis.poll_events()
+#     vis.update_renderer()
+#     print('time',t )
+#     time.sleep(0.1)
+#     vis.remove_geometry(skeleton_input1)
+#     vis.remove_geometry(skeleton_input2)
+#     vis.remove_geometry(pcd1)
+#     vis.remove_geometry(pcd2)
+#     # vis.remove_geometry(skeleton_rec)

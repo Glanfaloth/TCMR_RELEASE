@@ -80,42 +80,59 @@ def read_body3DScene(json_file):
     return body_0_joints, body_1_joints
 
 ##########################################################################
-# json_dir = osp.dirname(json_pth)
-# json_files = glob.glob(osp.join(json_dir,'*.json'))
-# print('json_dir',json_dir)
+json_dir = osp.dirname(json_pth)
+json_files = glob.glob(osp.join(json_dir,'*.json'))
+
+# reorder
+order_num = []
+for json_i in json_files:
+    json_name = json_i.split('/')[-1]
+    order_num.append(int(json_name.split('_')[-1].split('.')[0]))
+# reorder and get index
+new_index = np.argsort(order_num)
+jsons_list = np.array(json_files)[new_index]
+print('json_dir',jsons_list)
+interactee_kp_list = []
+ego_kp_kp_list = []
+for json_file_i in jsons_list:
+    interactee_kp,ego_kp = read_body3DScene(json_file_i)
+    interactee_kp = np.reshape(interactee_kp, (1, 19, 4))
+    # if np.sum(interactee_kp[:,1,:]*interactee_kp[:,2,:]*interactee_kp[:,2,:])!=0:
+    #     height = np.linalg.norm(interactee_kp[:,1,:] - (interactee_kp[:,8,:]+interactee_kp[:,14,:])/2) #interactee_kp[:,2,:])#(
+    #     print('height',height)
+    #     height_list.append(height)
+    interactee_kp_list.append(np.reshape(interactee_kp, (1, 19, 4)))
+    ego_kp_kp_list.append(np.reshape(ego_kp, (1, 19, 4)))
+
+interactee_kp_np = np.array(interactee_kp_list).reshape(-1,19,4)
+ego_kp_kp_np = np.array(ego_kp_kp_list).reshape(-1,19,4)
+
+save_name_interact = './video/presentation_material/interact.npy'
+save_name_ego = './video/presentation_material/ego.npy'
+np.save(save_name_interact, interactee_kp_np)
+np.save(save_name_ego,ego_kp_kp_np)
+# keypoints_np = np.array(keypoints_list) 
+
+########################################################################
+# txt_dir = osp.dirname(txt_path)
+# txt_files = glob.glob(osp.join(txt_dir,'*.txt'))
+# print('txt_dir',txt_dir)
 # height_list = []
-# for json_file_i in json_files:
-#     interactee_kp,ego_kp = read_body3DScene(json_file_i)
-#     interactee_kp = np.reshape(interactee_kp, (1, 19, 4))
-#     if np.sum(interactee_kp[:,1,:]*interactee_kp[:,2,:]*interactee_kp[:,2,:])!=0:
-#         height = np.linalg.norm(interactee_kp[:,1,:] - (interactee_kp[:,8,:]+interactee_kp[:,14,:])/2) #interactee_kp[:,2,:])#(
+# for txt_file_i in txt_files:
+#     file = open(txt_file_i)
+#     joints_3d_raw = np.array(file.read().split()).astype(np.float64).reshape(25,3)
+
+#     if np.sum(joints_3d_raw[3,:]*joints_3d_raw[14,:]*joints_3d_raw[18,:])!=0:
+#         height = np.linalg.norm(joints_3d_raw[3,:] - (joints_3d_raw[14,:]+joints_3d_raw[18,:])/2) #interactee_kp[:,2,:])#(
 #         print('height',height)
 #         height_list.append(height)
 #     # keypoints_list.append(np.reshape(interactee_kp, (1, 19, 4)))
 #     # keypoints_list.append(np.reshape(ego_kp, (1, 19, 4)))
 
-# keypoints_np = np.array(keypoints_list) 
+# # keypoints_np = np.array(keypoints_list) 
 
-########################################################################
-txt_dir = osp.dirname(txt_path)
-txt_files = glob.glob(osp.join(txt_dir,'*.txt'))
-print('txt_dir',txt_dir)
-height_list = []
-for txt_file_i in txt_files:
-    file = open(txt_file_i)
-    joints_3d_raw = np.array(file.read().split()).astype(np.float64).reshape(25,3)
-
-    if np.sum(joints_3d_raw[3,:]*joints_3d_raw[14,:]*joints_3d_raw[18,:])!=0:
-        height = np.linalg.norm(joints_3d_raw[3,:] - (joints_3d_raw[14,:]+joints_3d_raw[18,:])/2) #interactee_kp[:,2,:])#(
-        print('height',height)
-        height_list.append(height)
-    # keypoints_list.append(np.reshape(interactee_kp, (1, 19, 4)))
-    # keypoints_list.append(np.reshape(ego_kp, (1, 19, 4)))
-
-# keypoints_np = np.array(keypoints_list) 
-
-print('interactee_kp height_list',np.shape(height_list))
-print('range',np.average(height_list))
+# print('interactee_kp height_list',np.shape(height_list))
+# print('range',np.average(height_list))
 
 # print('interactee_kp height_list',np.shape(height_list))
 # print('range',np.average(height_list))
