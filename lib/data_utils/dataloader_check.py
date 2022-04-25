@@ -32,7 +32,7 @@ def _set_axes_radius(ax, origin, radius):
     ax.set_zlim3d([z - radius, z + radius])
 
 db_path = '/Users/qima/Downloads/Klasse/Virtual Humans/dataset/preprocessed_data/'
-db_file = osp.join(db_path, 'you2me_val_db_cmu.pt')
+db_file = osp.join(db_path, 'you2me_val_db_kinect.pt')
 db = joblib.load(db_file) 
 joints3D_np = db['joints3D']
 print(np.shape(joints3D_np))
@@ -42,7 +42,7 @@ print('joints3D_np example', joints3D_np[0,25:40,:])
 
 fig = plt.figure(figsize=plt.figaspect(0.5))
 ax2 = fig.add_subplot(2, 1, 1, projection='3d') 
-ax2.scatter(joints3D_np[0,:-1,0],joints3D_np[0,:-1,1],joints3D_np[0,:-1,2])
+ax2.scatter(joints3D_np[0,25:39,0],joints3D_np[0,25:39,1],joints3D_np[0,25:39,2])
 set_axes_equal(ax2)
 plt.show()
 

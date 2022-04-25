@@ -2,6 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import json
+import os.path as osp
+import glob
+
 def draw_joints(joints, ax):
 	ax.scatter(joints[:,0], joints[:,2], joints[:,1])
 	# ax.plot3D(joints[0:2,0], joints[0:2,2], joints[0:2,1])
@@ -76,9 +79,20 @@ def read_body3DScene(json_file):
     body_1_joints = people[1]["joints19"]
     return body_0_joints, body_1_joints
 
-# interactee_kp,ego_kp = read_body3DScene(json_pth)
-# print('interactee_kp shape',np.shape(interactee_kp))
-# joints_3d_raw = np.reshape(interactee_kp, (1, 19, 4)) / 1000
+json_dir = osp.dirname(json_pth)
+json_files = glob.glob(osp.join(json_dir,'*.json'))
+print('json_dir',json_dir)
+keypoints_list = []
+for json_file_i in json_files:
+    interactee_kp,ego_kp = read_body3DScene(json_file_i)
+    keypoints_list.append(np.reshape(interactee_kp, (1, 19, 4)))
+    keypoints_list.append(np.reshape(ego_kp, (1, 19, 4)))
+
+keypoints_np = np.array(keypoints_list) 
+
+print('interactee_kp shape',np.shape(keypoints_np))
+
+# joints_3d_raw = np.reshape(interactee_kp, (1, 19, 4)) # / 1000
 # fig = plt.figure(figsize=plt.figaspect(0.5))
 # ax2 = fig.add_subplot(1, 1, 1, projection='3d')
 # color_list = np.array([10]+[0]*18)
@@ -89,16 +103,16 @@ def read_body3DScene(json_file):
 # ax2.set_box_aspect
 # ax2.set_box_aspect((1, 1, 1))
 # # with open(txt_path, 'r') as f:
-file = open(txt_path)
-joints_3d_raw = np.array(file.read().split()).astype(np.float64).reshape(25,3)
-print("h",np.shape(joints_3d_raw))
+# file = open(txt_path)
+# joints_3d_raw = np.array(file.read().split()).astype(np.float64).reshape(25,3)
+# print("h",np.shape(joints_3d_raw))
 # color_list = np.array([10]+[0]*24)
-fig = plt.figure(figsize=plt.figaspect(0.5))
-ax2 = fig.add_subplot(1, 1, 1, projection='3d')
-color_list = np.array([0,30,0,0]+[0]*16 + [30,0,0,0,0])
-ax2.scatter(joints_3d_raw[:,0],joints_3d_raw[:,1],joints_3d_raw[:,2], c=color_list, s = 30)
-set_axes_equal(ax2)
-plt.show()
+# fig = plt.figure(figsize=plt.figaspect(0.5))
+# ax2 = fig.add_subplot(1, 1, 1, projection='3d')
+# color_list = np.array([0,30,0,0]+[0]*16 + [30,0,0,0,0])
+# ax2.scatter(joints_3d_raw[:,0],joints_3d_raw[:,1],joints_3d_raw[:,2], c=color_list, s = 30)
+# set_axes_equal(ax2)
+# plt.show()
 # show_upp(h)
 # print('h',len(h))
 
