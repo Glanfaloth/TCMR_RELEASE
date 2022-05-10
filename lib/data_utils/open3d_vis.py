@@ -33,7 +33,8 @@ def get_colors():
 
 # target path
 #  '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_kinect/you2me_output
-target_path = '/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
+target_path = '/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output'
+#'/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 #'/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/kinect/04_25_23/repr_table6_you2me_kinect_model_output/'
 #'./outputs/kinect/04_25_13/repr_table6_you2me_kinect_model_output'
 #'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
@@ -41,8 +42,8 @@ target_path = '/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/repr_
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
-gt_path = osp.join(target_path,'gt.npy') # catch55_gt.npy
-pred_path = osp.join(target_path,'pred.npy')
+gt_path = osp.join(target_path,'2-catch2_gt.npy') # catch55_gt.npy
+pred_path = osp.join(target_path,'2-catch2_pred.npy')
 
 
 # 
@@ -80,10 +81,13 @@ gt_sub_np = gt_np[:, 25:39, :]
 pred_np = pred_np[:, 25:39, :]
 
 ############### 580,  800
-start_t = 0 #400
-end_t = 100 #len(gt_sub_np)
+start_t = 150 #400
+end_t = 250 #len(gt_sub_np)
 
-# gt_sub_np[:,:,0] = gt_sub_np[:,:,0] # -1.5 
+gt_sub_np[:,:,1] = - gt_sub_np[:,:,1]    
+pred_np[:,:,1] = - pred_np[:,:,1]
+
+# -1.5 
 LIMBS = get_common_skeleton()
 color_input = np.zeros([len(LIMBS), 3])
 
@@ -106,31 +110,31 @@ color_input[-1,:] = np.array([0, 0, 0])
 # color_input[:,] = np.array([215, 48, 39])/255
 
 for t in range(start_t, end_t):
-    # skeleton_input = o3d.geometry.LineSet(
-    #     points=o3d.utility.Vector3dVector(gt_sub_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
-    #     lines=o3d.utility.Vector2iVector(LIMBS))
-
-    # pcd = o3d.geometry.PointCloud()
-    # pcd.points = o3d.utility.Vector3dVector(gt_sub_np[t])
-
-
-    # skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
-    # vis.add_geometry(skeleton_input)
-    # vis.add_geometry(pcd)
-    # vis.capture_screen_image('./video/sport58/gt/'+str(t).zfill(4)+'.png')
-    # ######################################################################################
-    skeleton_input= o3d.geometry.LineSet(
-        points=o3d.utility.Vector3dVector(pred_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
+    skeleton_input = o3d.geometry.LineSet(
+        points=o3d.utility.Vector3dVector(gt_sub_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
         lines=o3d.utility.Vector2iVector(LIMBS))
 
     pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(pred_np[t]) 
+    pcd.points = o3d.utility.Vector3dVector(gt_sub_np[t])
+
 
     skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
     vis.add_geometry(skeleton_input)
     vis.add_geometry(pcd)
+    vis.capture_screen_image('./video/2-catch2/gt/'+str(t).zfill(4)+'.png')
+    # ######################################################################################
+    # skeleton_input= o3d.geometry.LineSet(
+    #     points=o3d.utility.Vector3dVector(pred_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
+    #     lines=o3d.utility.Vector2iVector(LIMBS))
 
-    # vis.capture_screen_image('./video/sport58/pred/'+str(t).zfill(4)+'.png')
+    # pcd = o3d.geometry.PointCloud()
+    # pcd.points = o3d.utility.Vector3dVector(pred_np[t]) 
+
+    # skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
+    # vis.add_geometry(skeleton_input)
+    # vis.add_geometry(pcd)
+
+    # vis.capture_screen_image('./video/2-catch2/pred/'+str(t).zfill(4)+'.png')
 
     
     vis.poll_events()
