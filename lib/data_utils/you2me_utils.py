@@ -472,9 +472,11 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 joints_3d_raw = joints_3d_raw[:, :, :3]
                 joints_3d = convert_kps(joints_3d_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
                 joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4)) / 200  # TODO why divide 1000
+
+                # need to renormalize all sequence based on first frame rotation
                 joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
                 joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
-                # print('joints_3d',joints_3d)
+                print('joints_3d_ego shape',np.shape(joints_3d_ego))
                 # if joints_2d:
                 #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
                 bbox = np.array([113, 113, w, h])  # shape = (4,N)
