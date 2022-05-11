@@ -202,8 +202,30 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 # if joints_2d:
                 #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
                 bbox = np.array([113, 113, w, h])  # shape = (4,N)
-                joints_3d = joints_3d - joints_3d[39]  # 4 is the root
-                joints_3d_ego = joints_3d_ego - joints_3d_ego[39]  # 4 is the root
+
+                if i == 0: 
+                    # for interact
+                    x_axis_int = joints_3d[27, :] - joints_3d[28, :]  # [3] right hip - left hip
+                    x_axis_int[-1] = 0
+                    x_axis_int = x_axis_int / np.linalg.norm(x_axis_int)
+                    z_axis_int = np.array([0, 0, 1])
+                    y_axis_int = np.cross(z_axis_int, x_axis_int)
+                    y_axis_int = y_axis_int / np.linalg.norm(y_axis_int)
+                    transf_rotmat_int = np.stack([x_axis_int, y_axis_int, z_axis_int], axis=1)  # [3, 3]
+
+                    # for ego
+                    x_axis_ego = joints_3d_ego[27, :] - joints_3d_ego[28, :]  # [3] right hip - left hip
+                    x_axis_ego[-1] = 0
+                    x_axis_ego = x_axis_ego / np.linalg.norm(x_axis_ego)
+                    z_axis_ego = np.array([0, 0, 1])
+                    y_axis_ego = np.cross(z_axis_ego, x_axis_ego)
+                    y_axis_ego = y_axis_ego / np.linalg.norm(y_axis_ego)
+                    transf_rotmat_ego = np.stack([x_axis_ego, y_axis_ego, z_axis_ego], axis=1)  # [3, 3]
+
+                joints_3d = np.matmul(joints_3d - joints_3d[39], transf_rotmat_int)  # [T(/bs), 25, 3]
+                joints_3d_ego = np.matmul(joints_3d_ego - joints_3d_ego[39], transf_rotmat_ego) 
+                # joints_3d = joints_3d - joints_3d[39]  # 4 is the root
+                # joints_3d_ego = joints_3d_ego - joints_3d_ego[39]  # 4 is the root
 
                 # j3ds[i] = joints_3d
                 # j2ds[i] = joints_2d
@@ -331,8 +353,30 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 # if joints_2d:
                 #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
                 bbox = np.array([113, 113, w, h])  # shape = (4,N)
-                joints_3d = joints_3d - joints_3d[39]  # 4 is the root
-                joints_3d_ego = joints_3d_ego - joints_3d_ego[39]  # 4 is the root
+
+                if i == 0: 
+                    # for interact
+                    x_axis_int = joints_3d[27, :] - joints_3d[28, :]  # [3] right hip - left hip
+                    x_axis_int[-1] = 0
+                    x_axis_int = x_axis_int / np.linalg.norm(x_axis_int)
+                    z_axis_int = np.array([0, 0, 1])
+                    y_axis_int = np.cross(z_axis_int, x_axis_int)
+                    y_axis_int = y_axis_int / np.linalg.norm(y_axis_int)
+                    transf_rotmat_int = np.stack([x_axis_int, y_axis_int, z_axis_int], axis=1)  # [3, 3]
+
+                    # for ego
+                    x_axis_ego = joints_3d_ego[27, :] - joints_3d_ego[28, :]  # [3] right hip - left hip
+                    x_axis_ego[-1] = 0
+                    x_axis_ego = x_axis_ego / np.linalg.norm(x_axis_ego)
+                    z_axis_ego = np.array([0, 0, 1])
+                    y_axis_ego = np.cross(z_axis_ego, x_axis_ego)
+                    y_axis_ego = y_axis_ego / np.linalg.norm(y_axis_ego)
+                    transf_rotmat_ego = np.stack([x_axis_ego, y_axis_ego, z_axis_ego], axis=1)  # [3, 3]
+
+                joints_3d = np.matmul(joints_3d - joints_3d[39], transf_rotmat_int)  # [T(/bs), 25, 3]
+                joints_3d_ego = np.matmul(joints_3d_ego - joints_3d_ego[39], transf_rotmat_ego) 
+                # joints_3d = joints_3d - joints_3d[39]  # 4 is the root
+                # joints_3d_ego = joints_3d_ego - joints_3d_ego[39]  # 4 is the root
 
                 # j3ds[i] = joints_3d
                 # j2ds[i] = joints_2d
@@ -721,10 +765,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     dataset = read_train_data(args.dir, args.device, args.data_type, args.debug)
-    joblib.dump(dataset, osp.join(TCMR_DB_DIR, 'you2me_train_db_'+ args.data_type + '.pt'))
+    joblib.dump(dataset, osp.join(TCMR_DB_DIR, 'you2me_train_db_norm_'+ args.data_type + '.pt'))
 
     dataset = read_val_data(args.dir,args.device,args.data_type,args.debug)
-    joblib.dump(dataset, osp.join(TCMR_DB_DIR, 'you2me_val_db_'+ args.data_type + '.pt'))
+    joblib.dump(dataset, osp.join(TCMR_DB_DIR, 'you2me_val_db_norm_'+ args.data_type + '.pt'))
 
 
 
