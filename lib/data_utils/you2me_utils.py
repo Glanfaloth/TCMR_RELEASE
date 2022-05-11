@@ -168,8 +168,7 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                                          'cmu',
                                          vid_i,
                                          'features',
-                                         'openpose',
-                                         'output_json')
+                                         'keypoints')
             gt_skeletons_path = os.path.join(dataset_path,
                                              'cmu',
                                              vid_i,

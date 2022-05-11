@@ -97,7 +97,7 @@ def _set_axes_radius(ax, origin, radius):
     ax.set_zlim3d([z - radius, z + radius])
 # target path
 #  '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_kinect/you2me_output
-target_path = '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/04_25_13/repr_table6_you2me_kinect_model_output'
+target_path = '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output/'
 #'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 #'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
@@ -124,7 +124,7 @@ def close_event():
 
 
 # length = len(gt_np)
-length = 200
+length = 10
 for ii in range(length):
     # print('pred_sub_np[ii,:,0]',pred_np[ii,39,:])
     # print('gt_np]',gt_np[ii,-1,:])
