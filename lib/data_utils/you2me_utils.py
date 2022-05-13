@@ -309,8 +309,7 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                                          'kinect',
                                          vid_i,
                                          'features',
-                                         'openpose',
-                                         'output_json')
+                                         'keypoints')
             gt_egopose_path = os.path.join(dataset_path,
                                            'kinect',
                                            vid_i,
@@ -487,8 +486,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                                          'cmu',
                                          vid_i,
                                          'features',
-                                         'openpose',
-                                         'output_json')
+                                         'keypoints')
             gt_skeletons_path = os.path.join(dataset_path,
                                              'cmu',
                                              vid_i,
@@ -630,8 +628,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                                          'kinect',
                                          vid_i,
                                          'features',
-                                         'openpose',
-                                         'output_json')
+                                         'keypoints')
             gt_egopose_path = os.path.join(dataset_path,
                                            'kinect',
                                            vid_i,
