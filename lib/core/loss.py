@@ -19,6 +19,8 @@ import torch.nn as nn
 import numpy as np
 from lib.utils.geometry import batch_rodrigues
 import os.path as osp
+from lib.utils.eval_utils import compute_accel, compute_error_accel, batch_compute_similarity_transform_torch, compute_error_verts, compute_errors, plot_accel
+
 
 def perm_index_reverse(indices):
     indices_reverse = np.copy(indices)
@@ -212,17 +214,22 @@ class TCMRLoss(nn.Module):
         # gt_keypoints_3d = gt_keypoints_3d[:, :, :-1].clone()
         # gt_keypoints_3d = gt_keypoints_3d
         # conf = conf
-        pred_keypoints_3d = pred_keypoints_3d
-        if len(gt_keypoints_3d) > 0:
-            gt_pelvis = (gt_keypoints_3d[:, 2,:] + gt_keypoints_3d[:, 3,:]) / 2
-            gt_keypoints_3d = gt_keypoints_3d - gt_pelvis[:, None, :]
-            pred_pelvis = (pred_keypoints_3d[:, 2,:] + pred_keypoints_3d[:, 3,:]) / 2
-            pred_keypoints_3d = pred_keypoints_3d - pred_pelvis[:, None, :]
-            # print(conf.shape, pred_keypoints_3d.shape, gt_keypoints_3d.shape)
-            # return (conf * self.criterion_keypoints(pred_keypoints_3d, gt_keypoints_3d)).mean()
-            return self.criterion_keypoints(pred_keypoints_3d, gt_keypoints_3d).mean()
-        else:
-            return torch.FloatTensor(1).fill_(0.).to(self.device)
+        S1_hat = batch_compute_similarity_transform_torch(pred_keypoints_3d, gt_keypoints_3d)
+        mpjpe_pa = torch.sqrt(((S1_hat - gt_keypoints_3d) ** 2).sum(dim=-1))
+        # mpjpe_pa = mpjpe_pa.mean(axis=-1)
+        mpjpe_pa = mpjpe_pa.mean()
+        return mpjpe_pa
+        # pred_keypoints_3d = pred_keypoints_3d
+        # if len(gt_keypoints_3d) > 0:
+        #     gt_pelvis = (gt_keypoints_3d[:, 2,:] + gt_keypoints_3d[:, 3,:]) / 2
+        #     gt_keypoints_3d = gt_keypoints_3d - gt_pelvis[:, None, :]
+        #     pred_pelvis = (pred_keypoints_3d[:, 2,:] + pred_keypoints_3d[:, 3,:]) / 2
+        #     pred_keypoints_3d = pred_keypoints_3d - pred_pelvis[:, None, :]
+        #     # print(conf.shape, pred_keypoints_3d.shape, gt_keypoints_3d.shape)
+        #     # return (conf * self.criterion_keypoints(pred_keypoints_3d, gt_keypoints_3d)).mean()
+        #     return self.criterion_keypoints(pred_keypoints_3d, gt_keypoints_3d).mean()
+        # else:
+        #     return torch.FloatTensor(1).fill_(0.).to(self.device)
 
     def smpl_losses(self, pred_rotmat, pred_betas, gt_pose, gt_betas):
         pred_rotmat_valid = batch_rodrigues(pred_rotmat.reshape(-1,3)).reshape(-1, 24, 3, 3)
