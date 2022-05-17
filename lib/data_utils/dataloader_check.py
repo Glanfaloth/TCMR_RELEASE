@@ -8,7 +8,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import json
 
 import joblib
-
+import torch
 
 def set_axes_equal(ax):
     """Set 3D plot axes to equal scale.
@@ -36,19 +36,23 @@ db_file = osp.join(db_path, 'you2me_val_db_kinect.pt')
 db = joblib.load(db_file) 
 joints3D_np = db['joints3D']
 print(db.keys())
-print(np.shape(joints3D_np))
+# print(np.shape(joints3D_np))
 end_frame = 30
+feature_torch = db['features']
 
-for i in range(end_frame):#len(joints3D_np):
 
-    # print('len(joints3D_np[0,25:39,:])',len(joints3D_np[0,25:40,:]))
 
-    # print('joints3D_np example', joints3D_np[0,25:40,:])
 
-    fig = plt.figure(figsize=plt.figaspect(0.5))
-    ax2 = fig.add_subplot(2, 1, 1, projection='3d') 
-    ax2.scatter(joints3D_np[i,25:39,0],joints3D_np[i,25:39,1],joints3D_np[i,25:39,2])
-    set_axes_equal(ax2)
-    plt.show()
+# for i in range(end_frame):#len(joints3D_np):
+
+#     # print('len(joints3D_np[0,25:39,:])',len(joints3D_np[0,25:40,:]))
+
+#     # print('joints3D_np example', joints3D_np[0,25:40,:])
+
+#     fig = plt.figure(figsize=plt.figaspect(0.5))
+#     ax2 = fig.add_subplot(2, 1, 1, projection='3d') 
+#     ax2.scatter(joints3D_np[i,25:39,0],joints3D_np[i,25:39,1],joints3D_np[i,25:39,2])
+#     set_axes_equal(ax2)
+#     plt.show()
 
 
