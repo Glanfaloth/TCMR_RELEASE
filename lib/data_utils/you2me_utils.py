@@ -44,6 +44,10 @@ kinect_val_list = ['catch55', 'convo54','patty35','sport58']
 #                      'patty1', 'patty2', 'patty26', 'patty27', 'patty28', 'patty30', 'patty31', 'patty32', 'patty34',
 #                      'patty35', 'patty5',
 #                      'sport56', 'sport57', 'sport58']
+def read_homography(homo_file):
+    txt_data = np.loadtxt(homo_file).astype(np.float64)
+    return txt_data
+
 def read_pose3Dtxt(txt_file):
     txt_data = np.loadtxt(txt_file).astype(np.float64)
     return txt_data
@@ -54,7 +58,6 @@ def read_body3DScene(json_file):
     body_0_joints = people[0]["joints19"]
     body_1_joints = people[1]["joints19"]
     return body_0_joints, body_1_joints
-
 
 def read_openpose(json_file):  # gt_part
     # get only the arms/legs joints
@@ -124,6 +127,7 @@ def read_val_data(dataset_path, device, data_type, debug=False):
         'bbox': [],
         'img_name': [],
         'features': [],
+        'homography': []
     }
 
     # occluders = load_occluders('./data/VOC2012')
@@ -163,12 +167,20 @@ def read_val_data(dataset_path, device, data_type, debug=False):
             vid_used_joints = []
             vid_used_bbox = []
             vid_segments = []
+            no_joints_num = 0
             print('imgs_path', imgs_path)
+            homo_path = os.path.join(dataset_path,
+                                         'cmu',
+                                         vid_i,
+                                         'features',
+                                         'homography')
+
             openpose_path = os.path.join(dataset_path,
                                          'cmu',
                                          vid_i,
                                          'features',
                                          'keypoints')
+
             gt_skeletons_path = os.path.join(dataset_path,
                                              'cmu',
                                              vid_i,
@@ -179,10 +191,22 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 img_name = img_i.split('/')[-1]
                 openpose_name = img_name.split('.')[0] + '_keypoints.json'
                 openpose_i = os.path.join(openpose_path, openpose_name)
+                homo_name = 'h'+ img_name.split('x')[-1].split('.')[0] + '.txt'
+                homo_path_i = os.path.join(homo_path, homo_name)
+                # read homography 
+                # first check if it exist
+                if os.path.exists(homo_path_i):
+                    homo_i = read_homography(homo_path_i)
+                else:
+                    homo_i = homo_past
+                    homo_i = np.delete(homo_i, list(range(9)))
+                    homo_i = np.concatenate([homo_i, np.eye(3).flatten()],axis=0)
+                homo_past = homo_i
+
                 # try read you2me keypiont
                 joints_2d_raw = read_openpose(openpose_i).reshape(1, 25, 3)
                 if np.sum(joints_2d_raw.reshape(-1, 1)) == 0:
-                    print('no joints img_name', i, img_name)
+                    no_joints_num+=1
                 # joints_2d_raw[:,:,2::3] = len(joints_2d_raw[:,:,2::3][2::3])*[1] # set confidence to 1
                 # key2djnts[2::3] = len(key2djnts[2::3])*[1]
                 # print('joints_2d',joints_2d_raw)
@@ -254,6 +278,7 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 dataset['joints3D'].append(joints_3d)
                 dataset['bbox'].append(bbox)
                 dataset['egojoints3D'].append(joints_3d_ego)
+                dataset['homography'].append(homo_i)
                 vid_segments.append(vid_i)
                 vid_used_frames.append(img_i)
                 vid_used_joints.append(joints_2d)
@@ -266,7 +291,7 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
             # debug
-            # print('ids',ids) [   0. 3478.]
+            print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
                                             vid_used_bbox[int(ids[i]):int((ids[i + 1]))],
@@ -305,6 +330,11 @@ def read_val_data(dataset_path, device, data_type, debug=False):
             vid_used_bbox = []
             vid_segments = []
             print('imgs_path', imgs_path)
+            homo_path = os.path.join(dataset_path,
+                                         'kinect',
+                                         vid_i,
+                                         'features',
+                                         'homography')
             openpose_path = os.path.join(dataset_path,
                                          'kinect',
                                          vid_i,
@@ -325,17 +355,27 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 img_name = img_i.split('/')[-1]
                 openpose_name = img_name.split('.')[0] + '_keypoints.json'
                 openpose_i = os.path.join(openpose_path, openpose_name)
+                homo_name = 'h'+ img_name.split('x')[-1].split('.')[0] + '.txt'
+                homo_path_i = os.path.join(homo_path, homo_name)
+                # read homography 
+                # first check if it exist
+                if os.path.exists(homo_path_i):
+                    homo_i = read_homography(homo_path_i)
+                else:
+                    homo_i = homo_past
+                    homo_i = np.delete(homo_i, list(range(9)))
+                    homo_i = np.concatenate([homo_i, np.eye(3).flatten()],axis=0)
+                homo_past = homo_i
                 # try read you2me keypiont
                 joints_2d_raw = read_openpose(openpose_i).reshape(1, 25, 3)
                 if np.sum(joints_2d_raw.reshape(-1, 1)) == 0:
-                    print('no joints img_name', i, img_name)
+                    no_joints_num+=1
                 # joints_2d_raw[:,:,2::3] = len(joints_2d_raw[:,:,2::3][2::3])*[1] # set confidence to 1
                 # key2djnts[2::3] = len(key2djnts[2::3])*[1]
                 # print('joints_2d',joints_2d_raw)
                 joints_2d = convert_kps(joints_2d_raw, "you2me2d", "spin").reshape((-1, 3))
-                # print('joints_2d',np.shape(joints_2d))
+
                 
-                # pose2_1.txt
                 joints_3d_name_interact = 'pose2_' + img_name.split('x')[-1].split('.')[0]
                 joints_3d_name_ego = 'p' + img_name.split('x')[-1].split('.')[0]
 
@@ -404,6 +444,7 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 dataset['joints3D'].append(joints_3d)
                 dataset['bbox'].append(bbox)
                 dataset['egojoints3D'].append(joints_3d_ego)
+                dataset['homography'].append(homo_i)
                 vid_segments.append(vid_i)
                 vid_used_frames.append(img_i)
                 vid_used_joints.append(joints_2d)
@@ -416,7 +457,7 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
             # debug
-            # print('ids',ids) [   0. 3478.]
+            print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
                                             vid_used_bbox[int(ids[i]):int((ids[i + 1]))],
@@ -442,6 +483,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
         'bbox': [],
         'img_name': [],
         'features': [],
+        'homography':[]
     }
 
     # occluders = load_occluders('./data/VOC2012')
@@ -481,7 +523,13 @@ def read_train_data(dataset_path, device, data_type, debug=False):
             vid_used_joints = []
             vid_used_bbox = []
             vid_segments = []
+            no_joints_num = 0
             print('imgs_path', imgs_path)
+            homo_path = os.path.join(dataset_path,
+                                         'cmu',
+                                         vid_i,
+                                         'features',
+                                         'homography')
             openpose_path = os.path.join(dataset_path,
                                          'cmu',
                                          vid_i,
@@ -497,10 +545,21 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 img_name = img_i.split('/')[-1]
                 openpose_name = img_name.split('.')[0] + '_keypoints.json'
                 openpose_i = os.path.join(openpose_path, openpose_name)
+                homo_name = 'h'+ img_name.split('x')[-1].split('.')[0] + '.txt'
+                homo_path_i = os.path.join(homo_path, homo_name)
+                # read homography 
+                # first check if it exist
+                if os.path.exists(homo_path_i):
+                    homo_i = read_homography(homo_path_i)
+                else:
+                    homo_i = homo_past
+                    homo_i = np.delete(homo_i, list(range(9)))
+                    homo_i = np.concatenate([homo_i, np.eye(3).flatten()],axis=0)
+                homo_past = homo_i
                 # try read you2me keypiont
                 joints_2d_raw = read_openpose(openpose_i).reshape(1, 25, 3)
                 if np.sum(joints_2d_raw.reshape(-1, 1)) == 0:
-                    print('no joints img_name', i, img_name)
+                    no_joints_num +=1
                 # joints_2d_raw[:,:,2::3] = len(joints_2d_raw[:,:,2::3][2::3])*[1] # set confidence to 1
                 # key2djnts[2::3] = len(key2djnts[2::3])*[1]
                 # print('joints_2d',joints_2d_raw)
@@ -573,6 +632,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 dataset['joints3D'].append(joints_3d)
                 dataset['bbox'].append(bbox)
                 dataset['egojoints3D'].append(joints_3d_ego)
+                dataset['homography'].append(homo_i)
                 vid_segments.append(vid_i)
                 vid_used_frames.append(img_i)
                 vid_used_joints.append(joints_2d)
@@ -585,7 +645,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
             # debug
-            # print('ids',ids) [   0. 3478.]
+            print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
                                             vid_used_bbox[int(ids[i]):int((ids[i + 1]))],
@@ -623,7 +683,13 @@ def read_train_data(dataset_path, device, data_type, debug=False):
             vid_used_joints = []
             vid_used_bbox = []
             vid_segments = []
+            no_joints_num = 0
             print('imgs_path', imgs_path)
+            homo_path = os.path.join(dataset_path,
+                                         'kinect',
+                                         vid_i,
+                                         'features',
+                                         'homography')
             openpose_path = os.path.join(dataset_path,
                                          'kinect',
                                          vid_i,
@@ -644,10 +710,21 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 img_name = img_i.split('/')[-1]
                 openpose_name = img_name.split('.')[0] + '_keypoints.json'
                 openpose_i = os.path.join(openpose_path, openpose_name)
+                homo_name = 'h'+ img_name.split('x')[-1].split('.')[0] + '.txt'
+                homo_path_i = os.path.join(homo_path, homo_name)
+                # read homography 
+                # first check if it exist
+                if os.path.exists(homo_path_i):
+                    homo_i = read_homography(homo_path_i)
+                else:
+                    homo_i = homo_past
+                    homo_i = np.delete(homo_i, list(range(9)))
+                    homo_i = np.concatenate([homo_i, np.eye(3).flatten()],axis=0)
+                homo_past = homo_i
                 # try read you2me keypiont
                 joints_2d_raw = read_openpose(openpose_i).reshape(1, 25, 3)
                 if np.sum(joints_2d_raw.reshape(-1, 1)) == 0:
-                    print('no joints img_name', i, img_name)
+                    no_joints_num+=1
                 # joints_2d_raw[:,:,2::3] = len(joints_2d_raw[:,:,2::3][2::3])*[1] # set confidence to 1
                 # key2djnts[2::3] = len(key2djnts[2::3])*[1]
                 # print('joints_2d',joints_2d_raw)
@@ -725,6 +802,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 dataset['joints3D'].append(joints_3d)
                 dataset['bbox'].append(bbox)
                 dataset['egojoints3D'].append(joints_3d_ego)
+                dataset['homography'].append(homo_i)
                 vid_segments.append(vid_i)
                 vid_used_frames.append(img_i)
                 vid_used_joints.append(joints_2d)
@@ -737,7 +815,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
             # debug
-            # print('ids',ids) [   0. 3478.]
+            print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
                                             vid_used_bbox[int(ids[i]):int((ids[i + 1]))],
