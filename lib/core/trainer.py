@@ -189,7 +189,12 @@ class Trainer():
             if target_2d and target_3d:
                 inp = torch.cat((target_2d['features'], target_3d['features']), dim=0).cuda()
             elif target_3d:
+                # concat the feature with wearer and homography and openpose
+                #### option 1: feature only
+                # inp = target_3d['features'].cuda()
+                #### option 2: feature + wearer
                 inp = target_3d['features'].cuda()
+                print('inp shape',inp.size())
             else:
                 inp = target_2d['features'].cuda()
 
