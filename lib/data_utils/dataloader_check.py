@@ -39,7 +39,7 @@ print(db.keys())
 # print(np.shape(joints3D_np))
 end_frame = 30
 feature_torch = db['features']
-
+print(np.shape(feature_torch))
 
 
 

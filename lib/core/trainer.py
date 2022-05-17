@@ -194,7 +194,13 @@ class Trainer():
                 # inp = target_3d['features'].cuda()
                 #### option 2: feature + wearer
                 inp = target_3d['features'].cuda()
+                homography_ = target_3d['homography'].cuda()
+                openpose_ = target_3d['joints2D'].cuda()
+                wearer_ = target_3d['egojoints3D'].cuda()
                 print('inp shape',inp.size())
+                print('homography_ shape',homography_.size())
+                print('openpose_ shape',openpose_.size())
+                print('wearer_ shape',wearer_.size())
             else:
                 inp = target_2d['features'].cuda()
 
