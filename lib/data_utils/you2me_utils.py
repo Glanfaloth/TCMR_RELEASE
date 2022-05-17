@@ -329,6 +329,8 @@ def read_val_data(dataset_path, device, data_type, debug=False):
             vid_used_joints = []
             vid_used_bbox = []
             vid_segments = []
+            no_joints_num = 0
+            
             print('imgs_path', imgs_path)
             homo_path = os.path.join(dataset_path,
                                          'kinect',
