@@ -184,7 +184,7 @@ class Dataset3D(Dataset):
         kp_3d_tensor = np.zeros((self.seqlen, 49,3), dtype=np.float16)
         kp_2d_tensor = np.zeros((self.seqlen, 49,3), dtype=np.float16)
         kp_ego_tensor = np.zeros((self.seqlen, 49,3), dtype=np.float16)
-        homo_tensor = np.zeros((self.seqlen, 135), dtype=np.float16)
+        homo_tensor = np.zeros((self.seqlen, 135,1), dtype=np.float16)
 
         for idx in range(self.seqlen):
             # crop image and transform 2d keypoints
@@ -199,7 +199,7 @@ class Dataset3D(Dataset):
             #     do_augment=False,
             # )
             #
-            kp_2d[idx, :, :2] = normalize_2d_kp(kp_2d[idx, :, :2], 224)
+            kp_2d[idx, :, :2] = normalize_2d_kp(kp_2d[idx, :, :2], 227)
             kp_2d_tensor[idx] = kp_2d[idx]
             homo_[idx] = homo_[idx].reshape(-1,1)
             homo_tensor[idx] = homo_[idx]
