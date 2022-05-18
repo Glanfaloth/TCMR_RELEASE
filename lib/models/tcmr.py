@@ -50,7 +50,8 @@ class TemporalEncoder(nn.Module):
     ):
         super(TemporalEncoder, self).__init__()
 
-        # self.preprocess_conv = nn.
+        self.preprocess_conv = nn.Linear(2195, 2048) #nn.Conv1d(in_channels=16, out_channels = 16, 3, stride=2)
+        
         self.gru_cur = nn.GRU(
             input_size=2048,
             hidden_size=hidden_size,
@@ -81,8 +82,8 @@ class TemporalEncoder(nn.Module):
     def forward(self, x, is_train=False):
         # NTF -> TNF
         # check input size 
-
-        print("x input size",x.size())
+        x = self.preprocess_conv(x)
+        print("x input size",x.size()) ## ([32, 16, 2195])
         y, state = self.gru_cur(x.permute(1,0,2))  # y: Tx N x (num_dirs x hidden size)
 
         x_bef = x[:, :self.mid_frame]
