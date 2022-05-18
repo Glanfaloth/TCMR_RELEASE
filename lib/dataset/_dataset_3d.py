@@ -182,7 +182,7 @@ class Dataset3D(Dataset):
         input = torch.from_numpy(self.get_sequence(start_index, end_index, self.db['features'])).float()
 
         kp_3d_tensor = np.zeros((self.seqlen, 49,3), dtype=np.float16)
-        kp_2d_tensor = np.zeros((self.seqlen, 25,3), dtype=np.float16)
+        kp_2d_tensor = np.zeros((self.seqlen, 49,3), dtype=np.float16)
         kp_ego_tensor = np.zeros((self.seqlen, 49,3), dtype=np.float16)
         homo_tensor = np.zeros((self.seqlen, 135), dtype=np.float16)
 
