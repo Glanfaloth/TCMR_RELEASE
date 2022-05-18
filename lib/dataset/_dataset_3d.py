@@ -201,7 +201,8 @@ class Dataset3D(Dataset):
             #
             kp_2d[idx, :, :2] = normalize_2d_kp(kp_2d[idx, :, :2], 227)
             kp_2d_tensor[idx] = kp_2d[idx]
-            homo_[idx] = homo_[idx].reshape(-1,1)
+            print('homo_[idx]',np.shape(homo_[idx]))
+            # homo_[idx] = homo_[idx].reshape(-1,1)
             homo_tensor[idx] = homo_[idx]
 
             # theta shape (85,)
