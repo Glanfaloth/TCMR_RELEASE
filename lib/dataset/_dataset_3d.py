@@ -167,6 +167,9 @@ class Dataset3D(Dataset):
 
         is_train = self.set == 'train'
         kp_3d = self.get_sequence(start_index, end_index, self.db['joints3D'])
+        kp_2d = self.get_sequence(start_index, end_index, self.db['joints2D'])
+        kp_ego = self.get_sequence(start_index, end_index, self.db['egojoints3D'])
+        homo_ = self.get_sequence(start_index, end_index, self.db['homography'])
         # try to save one joints and kp
         
 
@@ -179,6 +182,9 @@ class Dataset3D(Dataset):
         input = torch.from_numpy(self.get_sequence(start_index, end_index, self.db['features'])).float()
 
         kp_3d_tensor = np.zeros((self.seqlen, 49,3), dtype=np.float16)
+        kp_2d_tensor = np.zeros((self.seqlen, 25,3), dtype=np.float16)
+        kp_ego_tensor = np.zeros((self.seqlen, 49,3), dtype=np.float16)
+        homo_tensor = np.zeros((self.seqlen, 135), dtype=np.float16)
 
         for idx in range(self.seqlen):
             # crop image and transform 2d keypoints
@@ -193,7 +199,10 @@ class Dataset3D(Dataset):
             #     do_augment=False,
             # )
             #
-            # kp_2d[idx, :, :2] = normalize_2d_kp(kp_2d[idx, :, :2], 224)
+            kp_2d[idx, :, :2] = normalize_2d_kp(kp_2d[idx, :, :2], 224)
+            kp_2d_tensor[idx] = kp_2d[idx]
+            homo_[idx] = homo_[idx].reshape(-1,1)
+            homo_tensor[idx] = homo_[idx]
 
             # theta shape (85,)
             # theta = np.concatenate((np.array([1., 0., 0.]), pose[idx], shape[idx]), axis=0)
@@ -202,6 +211,7 @@ class Dataset3D(Dataset):
             # theta_tensor[idx] = theta
             # [32, 49, 3]
             kp_3d_tensor[idx] = kp_3d[idx]
+            kp_ego_tensor[idx] = kp_ego[idx]
 
         # (N-2)xnjx3
         # accel_gt = kp_3d_tensor[:-2] - 2 * kp_3d_tensor[1:-1] + kp_3d_tensor[2:]
@@ -213,10 +223,12 @@ class Dataset3D(Dataset):
             'features': input,
             # 'theta': torch.from_numpy(theta_tensor).float()[self.mid_frame].repeat(repeat_num, 1),
             # camera, pose and shape
-            # 'kp_2d': torch.from_numpy(kp_2d_tensor).float()[self.mid_frame].repeat(repeat_num, 1, 1),
+            'kp_2d': torch.from_numpy(kp_2d_tensor).float()[self.mid_frame].repeat(repeat_num, 1, 1),
             # 2D keypoints transformed according to bbox cropping
             'kp_3d': torch.from_numpy(kp_3d_tensor).float()[self.mid_frame].repeat(repeat_num, 1, 1),  # 3D keypoints
             # [32,3,49,3]
+            'homography': torch.from_numpy(homo_tensor).float()[self.mid_frame].repeat(repeat_num, 1, 1),
+            'egojoints3D': torch.from_numpy(kp_ego_tensor).float()[self.mid_frame].repeat(repeat_num, 1, 1),
             # 'w_smpl': w_smpl[self.mid_frame].repeat(repeat_num),
             # 'w_3d': w_3d[self.mid_frame].repeat(repeat_num),
         }

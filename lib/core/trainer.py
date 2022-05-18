@@ -190,17 +190,25 @@ class Trainer():
                 inp = torch.cat((target_2d['features'], target_3d['features']), dim=0).cuda()
             elif target_3d:
                 # concat the feature with wearer and homography and openpose
-                #### option 1: feature only
-                # inp = target_3d['features'].cuda()
-                #### option 2: feature + wearer
-                inp = target_3d['features'].cuda()
+                inp_ = target_3d['features'].cuda()
                 homography_ = target_3d['homography'].cuda()
                 openpose_ = target_3d['joints2D'].cuda()
                 wearer_ = target_3d['egojoints3D'].cuda()
-                print('inp shape',inp.size())
+                #### debug
+                print('inp shape',inp_.size())
                 print('homography_ shape',homography_.size())
                 print('openpose_ shape',openpose_.size())
                 print('wearer_ shape',wearer_.size())
+                #### option 1: feature only
+                # inp = target_3d['features'].cuda()
+                #### option 2: feature + wearer
+                inp = torch.cat([inp_, wearer_], dim=1 )
+                #### option 3: feature + openpose
+                inp = torch.cat([inp_, openpose_], dim=1 )
+                #### option 4: feature + homography
+                inp = torch.cat([inp_, homography_], dim=1 )
+
+
             else:
                 inp = target_2d['features'].cuda()
 
