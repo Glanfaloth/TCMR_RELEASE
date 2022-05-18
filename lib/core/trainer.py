@@ -192,7 +192,7 @@ class Trainer():
                 # concat the feature with wearer and homography and openpose
                 inp_ = target_3d['features'].cuda()
                 homography_ = target_3d['homography'].cuda()
-                openpose_ = target_3d['joints2D'].cuda()
+                openpose_ = target_3d['kp_2d'].cuda()
                 wearer_ = target_3d['egojoints3D'].cuda()
                 #### debug
                 print('inp shape',inp_.size())
