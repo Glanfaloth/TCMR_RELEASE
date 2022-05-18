@@ -195,18 +195,18 @@ class Trainer():
                 openpose_ = target_3d['kp_2d'].cuda()
                 wearer_ = target_3d['egojoints3D'].cuda()
                 #### debug
-                print('inp shape',inp_.size())
-                print('homography_ shape',homography_.size())
-                print('openpose_ shape',openpose_.size())
-                print('wearer_ shape',wearer_.size())
+                # print('inp shape',inp_.size())
+                # print('homography_ shape',homography_.size())
+                # print('openpose_ shape',openpose_.size())
+                # print('wearer_ shape',wearer_.size())
                 #### option 1: feature only
                 # inp = target_3d['features'].cuda()
                 #### option 2: feature + wearer
                 inp = torch.cat([inp_, wearer_], dim=2 )
                 #### option 3: feature + openpose
-                inp = torch.cat([inp_, openpose_], dim=2 )
-                #### option 4: feature + homography
-                inp = torch.cat([inp_, homography_], dim=2 )
+                # inp = torch.cat([inp_, openpose_], dim=2 )
+                # #### option 4: feature + homography
+                # inp = torch.cat([inp_, homography_], dim=2 )
 
 
             else:
