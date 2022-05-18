@@ -82,7 +82,7 @@ class TemporalEncoder(nn.Module):
         # NTF -> TNF
         # check input size 
 
-        print("x input size",x.size)
+        print("x input size",x.size())
         y, state = self.gru_cur(x.permute(1,0,2))  # y: Tx N x (num_dirs x hidden size)
 
         x_bef = x[:, :self.mid_frame]
