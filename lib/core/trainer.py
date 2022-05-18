@@ -333,7 +333,20 @@ class Trainer():
             with torch.no_grad():
                  # to reduce time dimension
                 reduce = lambda x: x.contiguous().view((x.shape[0] * x.shape[1],) + x.shape[2:])
-                inp = target['features']
+                inp_ = target['features']
+                homography_ = target['homography'].cuda()
+                openpose_ = target['kp_2d'].cuda()
+                wearer_ = target['egojoints3D'].cuda()
+                #### debug
+                # print('inp shape',inp_.size())
+                # print('homography_ shape',homography_.size())
+                # print('openpose_ shape',openpose_.size())
+                # print('wearer_ shape',wearer_.size())
+                #### option 1: feature only
+                # inp = target_3d['features'].cuda()
+                #### option 2: feature + wearer
+                inp = torch.cat([inp_, wearer_], dim=2 )
+
                 batch = len(inp)
                 # Qi: using J regressor from h36 will lead to different output size
                 preds, _ = self.generator(inp, J_regressor=None) #
