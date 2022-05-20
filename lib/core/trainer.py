@@ -349,7 +349,7 @@ class Trainer():
 
                 batch = len(inp)
                 # Qi: using J regressor from h36 will lead to different output size
-                preds, _ = self.generator(inp, J_regressor=None) #
+                preds, _ = self.generator(inp, J_regressor=J_regressor) #
 
                 # convert to 14 keypoint format for evaluation
                 n_kp = 14 #preds[-1]['kp_3d'].shape[-2]
