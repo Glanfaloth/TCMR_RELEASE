@@ -202,7 +202,7 @@ class Trainer():
                 #### option 1: feature only
                 # inp = target_3d['features'].cuda()
                 #### option 2: feature + wearer
-                inp = torch.cat([inp_, wearer_], dim=2 )
+                inp = inp_ #torch.cat([inp_, wearer_], dim=2 )
                 #### option 3: feature + openpose
                 # inp = torch.cat([inp_, openpose_], dim=2 )
                 # #### option 4: feature + homography

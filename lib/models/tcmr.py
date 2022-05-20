@@ -82,7 +82,7 @@ class TemporalEncoder(nn.Module):
     def forward(self, x, is_train=False):
         # NTF -> TNF
         # check input size 
-        x = self.preprocess_conv(x)
+        # x = self.preprocess_conv(x)
         # print("x input size",x.size()) ## ([32, 16, 2195])
         y, state = self.gru_cur(x.permute(1,0,2))  # y: Tx N x (num_dirs x hidden size)
 
