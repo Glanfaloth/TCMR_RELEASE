@@ -191,9 +191,9 @@ class Trainer():
             elif target_3d:
                 # concat the feature with wearer and homography and openpose
                 inp_ = target_3d['features'].cuda()
-                homography_ = target_3d['homography'].cuda()
-                openpose_ = target_3d['kp_2d'].cuda()
-                wearer_ = target_3d['egojoints3D'].cuda()
+                # homography_ = target_3d['homography'].cuda()
+                # openpose_ = target_3d['kp_2d'].cuda()
+                # wearer_ = target_3d['egojoints3D'].cuda()
                 #### debug
                 # print('inp shape',inp_.size())
                 # print('homography_ shape',homography_.size())
@@ -334,18 +334,18 @@ class Trainer():
                  # to reduce time dimension
                 reduce = lambda x: x.contiguous().view((x.shape[0] * x.shape[1],) + x.shape[2:])
                 inp_ = target['features']
-                homography_ = target['homography'].cuda()
-                openpose_ = target['kp_2d'].cuda()
-                wearer_ = target['egojoints3D'].cuda()
+                # homography_ = target['homography'].cuda()
+                # openpose_ = target['kp_2d'].cuda()
+                # wearer_ = target['egojoints3D'].cuda()
                 #### debug
                 # print('inp shape',inp_.size())
                 # print('homography_ shape',homography_.size())
                 # print('openpose_ shape',openpose_.size())
                 # print('wearer_ shape',wearer_.size())
                 #### option 1: feature only
-                # inp = target_3d['features'].cuda()
+                inp = target_3d['features'].cuda()
                 #### option 2: feature + wearer
-                inp = torch.cat([inp_, wearer_], dim=2 )
+                # inp = torch.cat([inp_, wearer_], dim=2 )
 
                 batch = len(inp)
                 # Qi: using J regressor from h36 will lead to different output size
