@@ -228,8 +228,8 @@ class Dataset3D(Dataset):
             # 2D keypoints transformed according to bbox cropping
             'kp_3d': torch.from_numpy(kp_3d_tensor).float()[self.mid_frame].repeat(repeat_num, 1, 1),  # 3D keypoints
             # [32,3,49,3]
-            'homography': torch.from_numpy(homo_).float(),
-            'egojoints3D': torch.from_numpy(kp_ego).float().reshape(-1,147),
+            # 'homography': torch.from_numpy(homo_).float(),
+            # 'egojoints3D': torch.from_numpy(kp_ego).float().reshape(-1,147),
             # 'w_smpl': w_smpl[self.mid_frame].repeat(repeat_num),
             # 'w_3d': w_3d[self.mid_frame].repeat(repeat_num),
         }
