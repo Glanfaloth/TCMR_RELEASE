@@ -42,8 +42,8 @@ target_path = '/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/repr_
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
-gt_path = osp.join(target_path,'2-catch2_gt.npy') # catch55_gt.npy
-pred_path = osp.join(target_path,'2-catch2_pred.npy')
+gt_path = osp.join(target_path,'gt.npy') # catch55_gt.npy 2-catch2_
+pred_path = osp.join(target_path,'pred.npy') # 2-catch2_
 
 
 # 
@@ -84,8 +84,8 @@ pred_np = pred_np[:, 25:39, :]
 start_t = 150 #400
 end_t = 250 #len(gt_sub_np)
 
-gt_sub_np[:,:,1] = - gt_sub_np[:,:,1]    
-pred_np[:,:,1] = - pred_np[:,:,1]
+# gt_sub_np[:,:,1] = - gt_sub_np[:,:,1]    
+# pred_np[:,:,1] = - pred_np[:,:,1]
 
 # -1.5 
 LIMBS = get_common_skeleton()
@@ -109,44 +109,74 @@ for index, flag in enumerate(common_lr):
 color_input[-1,:] = np.array([0, 0, 0])
 # color_input[:,] = np.array([215, 48, 39])/255
 
-for t in range(start_t, end_t):
-    skeleton_input = o3d.geometry.LineSet(
-        points=o3d.utility.Vector3dVector(gt_sub_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
-        lines=o3d.utility.Vector2iVector(LIMBS))
+# pred_rhip = pred_np[:,27,0]
+# pred_lhip = 
+x_pred = pred_np[:,:,0]
+y_pred= pred_np[:,:,1]
+z_pred = pred_np[:,:,2]
+pred_hip_distance = np.linalg.norm(pred_np[:,2,:] - pred_np[:,3,:],axis=1 )
 
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(gt_sub_np[t])
+head_pred = pred_np[:,-1,:]
+
+x_gt = gt_sub_np[:,:,0]
+y_gt = gt_sub_np[:,:,1]
+z_gt = gt_sub_np[:,:,2]
+gt_pred = pred_np[:,-1,:]
+gt_hip_distance = np.linalg.norm(gt_sub_np[:,2,:] - gt_sub_np[:,3,:],axis=1 )
+print("gt_hip_distance",np.mean(gt_hip_distance))
 
 
-    skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
-    vis.add_geometry(skeleton_input)
-    vis.add_geometry(pcd)
-    vis.capture_screen_image('./video/2-catch2/gt/'+str(t).zfill(4)+'.png')
-    # ######################################################################################
-    # skeleton_input= o3d.geometry.LineSet(
-    #     points=o3d.utility.Vector3dVector(pred_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
+
+hip_ratio = pred_hip_distance / gt_hip_distance
+print("hip_ratio",np.shape(hip_ratio),np.mean(hip_ratio))
+# ## show first 5
+# print("x_pred first 5", x_pred[:5,-1])
+# print("gt first 5", x_gt[:5,-1])
+
+### show head average
+
+
+## for t in range(start_t, end_t):
+    #### drawing
+    # skeleton_input = o3d.geometry.LineSet(
+    #     points=o3d.utility.Vector3dVector(gt_sub_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
     #     lines=o3d.utility.Vector2iVector(LIMBS))
 
     # pcd = o3d.geometry.PointCloud()
-    # pcd.points = o3d.utility.Vector3dVector(pred_np[t]) 
+    # pcd.points = o3d.utility.Vector3dVector(gt_sub_np[t])
+
 
     # skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
     # vis.add_geometry(skeleton_input)
     # vis.add_geometry(pcd)
+    # vis.capture_screen_image('./video/2-catch2/gt/'+str(t).zfill(4)+'.png')
+    # # ######################################################################################
+    # # skeleton_input= o3d.geometry.LineSet(
+    # #     points=o3d.utility.Vector3dVector(pred_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
+    # #     lines=o3d.utility.Vector2iVector(LIMBS))
 
-    # vis.capture_screen_image('./video/2-catch2/pred/'+str(t).zfill(4)+'.png')
+    # # pcd = o3d.geometry.PointCloud()
+    # # pcd.points = o3d.utility.Vector3dVector(pred_np[t]) 
+
+    # # skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
+    # # vis.add_geometry(skeleton_input)
+    # # vis.add_geometry(pcd)
+
+    # # vis.capture_screen_image('./video/2-catch2/pred/'+str(t).zfill(4)+'.png')
 
     
-    vis.poll_events()
-    vis.update_renderer()
-    print('time',t )
-    time.sleep(0.1)
-    vis.remove_geometry(skeleton_input)
-    #vis.remove_geometry(skeleton_input2)
-    vis.remove_geometry(pcd)
-    #vis.remove_geometry(pcd2)
-    # vis.remove_geometry(skeleton_rec)
+    # vis.poll_events()
+    # vis.update_renderer()
+    # print('time',t )
+    # time.sleep(0.1)
+    # vis.remove_geometry(skeleton_input)
+    # #vis.remove_geometry(skeleton_input2)
+    # vis.remove_geometry(pcd)
+    # #vis.remove_geometry(pcd2)
+    # # vis.remove_geometry(skeleton_rec)
 
+
+####################### Kinect #########################################
 
 
 # # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'

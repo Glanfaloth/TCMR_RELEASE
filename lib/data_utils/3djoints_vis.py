@@ -97,14 +97,14 @@ def _set_axes_radius(ax, origin, radius):
     ax.set_zlim3d([z - radius, z + radius])
 # target path
 #  '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_kinect/you2me_output
-target_path = '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output/'
+target_path = '/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 #'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 #'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
-gt_path = osp.join(target_path,'gt.npy')
-pred_path = osp.join(target_path,'pred.npy')
+gt_path = osp.join(target_path,'7-convo4_gt.npy')
+pred_path = osp.join(target_path,'7-convo4_pred.npy')
 
 gt_np= np.load(gt_path)
 pred_np= np.load(pred_path)
@@ -124,14 +124,14 @@ def close_event():
 
 
 # length = len(gt_np)
-length = 10
+length = 1
 for ii in range(length):
     # print('pred_sub_np[ii,:,0]',pred_np[ii,39,:])
     # print('gt_np]',gt_np[ii,-1,:])
     fig = plt.figure(figsize=plt.figaspect(0.5))
 
-    timer = fig.canvas.new_timer(interval = 3000) #creating a timer object and setting an interval of 3000 milliseconds
-    timer.add_callback(close_event)
+    # timer = fig.canvas.new_timer(interval = 3000) #creating a timer object and setting an interval of 3000 milliseconds
+    # timer.add_callback(close_event)
     ax2 = fig.add_subplot(2, 1, 1, projection='3d') 
     plt.title('ground truth')
     ax3 = fig.add_subplot(2, 1, 2, projection='3d')
@@ -170,14 +170,14 @@ for ii in range(length):
     ax3.set_xlabel('X axis')
     ax3.set_ylabel('Y axis')
     ax3.set_zlabel('Z axis')
-    ax2.view_init(azim=-90, elev=110) # kinect
-    ax3.view_init(azim=-90, elev=110)
+    # ax2.view_init(azim=-90, elev=110) # kinect
+    # ax3.view_init(azim=-90, elev=110)
     # ax2.view_init(azim=-90, elev=-80) # cmu
     # ax3.view_init(azim=-90, elev=-80)  # kinect -90 110
     # ax2.azim = 180
     set_axes_equal(ax2)
     set_axes_equal(ax3)
-    timer.start()
+    # timer.start()
     plt.show()
     # plt.pause(3)
 

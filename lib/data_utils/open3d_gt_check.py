@@ -94,162 +94,163 @@ def read_body3DScene(json_file):
     body_1_joints = people[1]["joints19"]
     return body_0_joints, body_1_joints
 
-# # target path using cmu
-# data_root = '/media/qimaqi/Alexander/you2me/cmu'
-# target_path = '1-catch1'
-# ground_truth = os.path.join(data_root, target_path + '/synchronized/gt-skeletons')
-# json_files_list = glob.glob(ground_truth + '/*.json')
+# target path using cmu
+data_root = '/media/qimaqi/Alexander/you2me/cmu'
+target_path = '8-convo5'
+ground_truth = os.path.join(data_root, target_path + '/synchronized/gt-skeletons')
+json_files_list = glob.glob(ground_truth + '/*.json')
 
-# if not os.path.exists(osp.join(data_root, target_path,'video')):
-#     os.mkdir(osp.join(data_root, target_path,'video'))
+if not os.path.exists(osp.join(data_root, target_path,'video')):
+    os.mkdir(osp.join(data_root, target_path,'video'))
 
-# order_num = []
-# for json_file in json_files_list:
-#     json_file_name = json_file.split('/')[-1]
-#     order_num.append(int(json_file_name.split('_')[-1].split('.')[0]))
-# # reorder and get index
-# new_index = np.argsort(order_num)
-# json_files_list = np.array(json_files_list)[new_index]
+order_num = []
+for json_file in json_files_list:
+    json_file_name = json_file.split('/')[-1]
+    order_num.append(int(json_file_name.split('_')[-1].split('.')[0]))
+# reorder and get index
+new_index = np.argsort(order_num)
+json_files_list = np.array(json_files_list)[new_index]
 
-# vis = o3d.visualization.Visualizer()
-# vis.create_window()
+vis = o3d.visualization.Visualizer()
+vis.create_window()
 
-# LIMBS = get_kinect_common_skeleton()
-# # color_input_1 = np.zeros([len(LIMBS), 3])
-# # color_input_2 = np.zeros([len(LIMBS), 3])
-# red_color = np.array([252, 146, 114])/255
-# blue_color = np.array([69, 117, 180])/255
+LIMBS = get_cmu_common_skeleton() #get_kinect_common_skeleton()
+# color_input_1 = np.zeros([len(LIMBS), 3])
+# color_input_2 = np.zeros([len(LIMBS), 3])
+red_color = np.array([252, 146, 114])/255
+blue_color = np.array([69, 117, 180])/255
 
-# color_input_1 = np.expand_dims(red_color,0).repeat(len(LIMBS), axis = 0)
-# color_input_2 =  np.expand_dims(blue_color,0).repeat(len(LIMBS), axis = 0)
-# print("color_input_1" , color_input_1)
+color_input_1 = np.expand_dims(red_color,0).repeat(len(LIMBS), axis = 0)
+color_input_2 =  np.expand_dims(blue_color,0).repeat(len(LIMBS), axis = 0)
+print("color_input_1" , color_input_1)
 
-# for json_file in tqdm(json_files_list):
-#     json_file_name = json_file.split('/')[-1]
-#     order_num = (int(json_file_name.split('_')[-1].split('.')[0]))
+for json_file in tqdm(json_files_list):
+    json_file_name = json_file.split('/')[-1]
+    order_num = (int(json_file_name.split('_')[-1].split('.')[0]))
 
-#     interactee_kp,ego_kp = read_body3DScene(json_file)
-#     interactee_kp = np.array(interactee_kp).reshape(19,4)
-#     interactee_kp = interactee_kp[:,:3]
-#     interactee_kp = - interactee_kp
+    interactee_kp,ego_kp = read_body3DScene(json_file)
+    interactee_kp = np.array(interactee_kp).reshape(19,4)
+    interactee_kp = interactee_kp[:,:3]
+    interactee_kp = - interactee_kp
 
-#     ego_kp = np.array(ego_kp).reshape(19,4)
-#     ego_kp = ego_kp[:,:3]
-#     ego_kp = -ego_kp
+    ego_kp = np.array(ego_kp).reshape(19,4)
+    ego_kp = ego_kp[:,:3]
+    ego_kp = -ego_kp
 
-#     skeleton_input1 = o3d.geometry.LineSet(
-#         points=o3d.utility.Vector3dVector(interactee_kp), # Convert float64 numpy array of shape (n, 3) to Open3D format
-#         lines=o3d.utility.Vector2iVector(LIMBS))
+    skeleton_input1 = o3d.geometry.LineSet(
+        points=o3d.utility.Vector3dVector(interactee_kp), # Convert float64 numpy array of shape (n, 3) to Open3D format
+        lines=o3d.utility.Vector2iVector(LIMBS))
 
-#     pcd1 = o3d.geometry.PointCloud()
-#     pcd1.points = o3d.utility.Vector3dVector(interactee_kp)
-#     skeleton_input1.colors = o3d.utility.Vector3dVector(color_input_1)
+    pcd1 = o3d.geometry.PointCloud()
+    pcd1.points = o3d.utility.Vector3dVector(interactee_kp)
+    skeleton_input1.colors = o3d.utility.Vector3dVector(color_input_1)
         
-#     vis.add_geometry(skeleton_input1)
-#     vis.add_geometry(pcd1)
+    vis.add_geometry(skeleton_input1)
+    vis.add_geometry(pcd1)
 
-#     skeleton_input2= o3d.geometry.LineSet(
-#         points=o3d.utility.Vector3dVector(ego_kp), # Convert float64 numpy array of shape (n, 3) to Open3D format
-#         lines=o3d.utility.Vector2iVector(LIMBS))
+    skeleton_input2= o3d.geometry.LineSet(
+        points=o3d.utility.Vector3dVector(ego_kp), # Convert float64 numpy array of shape (n, 3) to Open3D format
+        lines=o3d.utility.Vector2iVector(LIMBS))
 
-#     pcd2 = o3d.geometry.PointCloud()
-#     pcd2.points = o3d.utility.Vector3dVector(ego_kp) 
+    pcd2 = o3d.geometry.PointCloud()
+    pcd2.points = o3d.utility.Vector3dVector(ego_kp) 
 
-#     skeleton_input2.colors = o3d.utility.Vector3dVector(color_input_2)
-#     vis.add_geometry(skeleton_input2)
-#     vis.add_geometry(pcd2)
+    skeleton_input2.colors = o3d.utility.Vector3dVector(color_input_2)  ### ego
+    vis.add_geometry(skeleton_input2)
+    vis.add_geometry(pcd2)
 
-#     vis.poll_events()
-#     vis.update_renderer()
-#     time.sleep(0.2)
-#     vis.capture_screen_image(osp.join(data_root, target_path,'video',str(order_num).zfill(4)+'.png'))
-#     vis.remove_geometry(skeleton_input1)
-#     vis.remove_geometry(skeleton_input2)
-#     vis.remove_geometry(pcd1)
-#     vis.remove_geometry(pcd2)
+    vis.poll_events()
+    vis.update_renderer()
+    time.sleep(0.2)
+    vis.capture_screen_image(osp.join(data_root, target_path,'video',str(order_num).zfill(4)+'.png'))
+    vis.remove_geometry(skeleton_input1)
+    vis.remove_geometry(skeleton_input2)
+    vis.remove_geometry(pcd1)
+    vis.remove_geometry(pcd2)
 
 #####################################################################################################################
 # kinect
 
-# target path using kinect
-data_root = '/media/qimaqi/Alexander/you2me/kinect'
-target_path_list = ['catch36', 'catch37', 'catch39', 'catch40', 'catch41', 'catch42', 'catch55', 'convo43', 'convo46', 'convo47', 'convo53', 
-'convo54', 'convo59', 'patty26', 'patty27', 'patty28', 'patty30', 'patty31', 'patty32', 'patty34', 'patty35', 'sport56', 'sport57', 'sport58']
-for target_path in tqdm(target_path_list):
-    ground_truth_ego = os.path.join(data_root, target_path + '/synchronized/gt-egopose')
-    ground_truth_int = os.path.join(data_root, target_path + '/synchronized/gt-interactee')
-    txt_files_list_int = glob.glob(ground_truth_int + '/*.txt')
+# # target path using kinect
+# data_root = '/media/qimaqi/Alexander/you2me/kinect'
+# target_path_list = ['catch36', 'catch37', 'catch39', 'catch40', 'catch41', 'catch42', 'catch55', 'convo43', 'convo46', 'convo47', 'convo53', 
+# 'convo54', 'convo59', 'patty26', 'patty27', 'patty28', 'patty30', 'patty31', 'patty32', 'patty34', 'patty35', 'sport56', 'sport57', 'sport58']
+
+# for target_path in tqdm(target_path_list):
+#     ground_truth_ego = os.path.join(data_root, target_path + '/synchronized/gt-egopose')
+#     ground_truth_int = os.path.join(data_root, target_path + '/synchronized/gt-interactee')
+#     txt_files_list_int = glob.glob(ground_truth_int + '/*.txt')
 
 
-    if not os.path.exists(osp.join(data_root, target_path,'video')):
-        os.mkdir(osp.join(data_root, target_path,'video'))
+#     if not os.path.exists(osp.join(data_root, target_path,'video')):
+#         os.mkdir(osp.join(data_root, target_path,'video'))
 
-    order_num = []
-    for txt_file_int in txt_files_list_int:
-        txt_file_int_name = txt_file_int.split('/')[-1]
-        order_num.append(int(txt_file_int_name.split('_')[-1].split('.')[0]))
-    # reorder and get index
-    new_index = np.argsort(order_num)
-    txt_files_list_int = np.array(txt_files_list_int)[new_index]
+#     order_num = []
+#     for txt_file_int in txt_files_list_int:
+#         txt_file_int_name = txt_file_int.split('/')[-1]
+#         order_num.append(int(txt_file_int_name.split('_')[-1].split('.')[0]))
+#     # reorder and get index
+#     new_index = np.argsort(order_num)
+#     txt_files_list_int = np.array(txt_files_list_int)[new_index]
 
-    vis = o3d.visualization.Visualizer()
-    vis.create_window()
+#     vis = o3d.visualization.Visualizer()
+#     vis.create_window()
 
-    LIMBS = get_kinect_common_skeleton()
-    # color_input_1 = np.zeros([len(LIMBS), 3])
-    # color_input_2 = np.zeros([len(LIMBS), 3])
-    red_color = np.array([252, 146, 114])/255 # np.array([0, 0, 0])# 
-    blue_color =  np.array([69, 117, 180])/255 # np.array([0, 0, 0])#
+#     LIMBS = get_kinect_common_skeleton()
+#     # color_input_1 = np.zeros([len(LIMBS), 3])
+#     # color_input_2 = np.zeros([len(LIMBS), 3])
+#     red_color = np.array([252, 146, 114])/255 # np.array([0, 0, 0])# 
+#     blue_color =  np.array([69, 117, 180])/255 # np.array([0, 0, 0])#
 
-    color_input_1 = np.expand_dims(red_color,0).repeat(len(LIMBS), axis = 0)
-    color_input_2 =  np.expand_dims(blue_color,0).repeat(len(LIMBS), axis = 0)
+#     color_input_1 = np.expand_dims(red_color,0).repeat(len(LIMBS), axis = 0)
+#     color_input_2 =  np.expand_dims(blue_color,0).repeat(len(LIMBS), axis = 0)
 
-    for txt_file_int in tqdm(txt_files_list_int):
-        txt_file_int_name = txt_file_int.split('/')[-1]
-        order_num = (int(txt_file_int_name.split('_')[-1].split('.')[0]))
-        # print('txt_file_int',txt_file_int)
-        # print("ground_truth_ego+'/p'+str(order_num)+'.txt'",ground_truth_ego+'/p'+str(order_num)+'.txt')
-        txt_file_ego = ground_truth_ego+'/p'+str(order_num)+'.txt'
+#     for txt_file_int in tqdm(txt_files_list_int):
+#         txt_file_int_name = txt_file_int.split('/')[-1]
+#         order_num = (int(txt_file_int_name.split('_')[-1].split('.')[0]))
+#         # print('txt_file_int',txt_file_int)
+#         # print("ground_truth_ego+'/p'+str(order_num)+'.txt'",ground_truth_ego+'/p'+str(order_num)+'.txt')
+#         txt_file_ego = ground_truth_ego+'/p'+str(order_num)+'.txt'
 
-        file_int= open(txt_file_int)
-        file_ego = open(txt_file_ego)
-        interactee_kp = np.array(file_int.read().split()).astype(np.float64).reshape(25,3)
-        # interactee_kp = np.array(interactee_kp).reshape(19,4)
-        # interactee_kp = interactee_kp[:,:3]
-        # interactee_kp = - interactee_kp
+#         file_int= open(txt_file_int)
+#         file_ego = open(txt_file_ego)
+#         interactee_kp = np.array(file_int.read().split()).astype(np.float64).reshape(25,3)
+#         # interactee_kp = np.array(interactee_kp).reshape(19,4)
+#         # interactee_kp = interactee_kp[:,:3]
+#         # interactee_kp = - interactee_kp
 
-        ego_kp =  np.array(file_ego.read().split()).astype(np.float64).reshape(25,3)
-        # ego_kp = ego_kp[:,:3]
-        # ego_kp = -ego_kp
+#         ego_kp =  np.array(file_ego.read().split()).astype(np.float64).reshape(25,3)
+#         # ego_kp = ego_kp[:,:3]
+#         # ego_kp = -ego_kp
 
-        skeleton_input1 = o3d.geometry.LineSet(
-            points=o3d.utility.Vector3dVector(interactee_kp), # Convert float64 numpy array of shape (n, 3) to Open3D format
-            lines=o3d.utility.Vector2iVector(LIMBS))
+#         skeleton_input1 = o3d.geometry.LineSet(
+#             points=o3d.utility.Vector3dVector(interactee_kp), # Convert float64 numpy array of shape (n, 3) to Open3D format
+#             lines=o3d.utility.Vector2iVector(LIMBS))
 
-        pcd1 = o3d.geometry.PointCloud()
-        pcd1.points = o3d.utility.Vector3dVector(interactee_kp)
-        skeleton_input1.colors = o3d.utility.Vector3dVector(color_input_1)
+#         pcd1 = o3d.geometry.PointCloud()
+#         pcd1.points = o3d.utility.Vector3dVector(interactee_kp)
+#         skeleton_input1.colors = o3d.utility.Vector3dVector(color_input_1)
             
-        vis.add_geometry(skeleton_input1)
-        vis.add_geometry(pcd1)
+#         vis.add_geometry(skeleton_input1)
+#         vis.add_geometry(pcd1)
 
-        skeleton_input2= o3d.geometry.LineSet(
-            points=o3d.utility.Vector3dVector(ego_kp), # Convert float64 numpy array of shape (n, 3) to Open3D format
-            lines=o3d.utility.Vector2iVector(LIMBS))
+#         skeleton_input2= o3d.geometry.LineSet(
+#             points=o3d.utility.Vector3dVector(ego_kp), # Convert float64 numpy array of shape (n, 3) to Open3D format
+#             lines=o3d.utility.Vector2iVector(LIMBS))
 
-        pcd2 = o3d.geometry.PointCloud()
-        pcd2.points = o3d.utility.Vector3dVector(ego_kp) 
+#         pcd2 = o3d.geometry.PointCloud()
+#         pcd2.points = o3d.utility.Vector3dVector(ego_kp) 
 
-        skeleton_input2.colors = o3d.utility.Vector3dVector(color_input_2)
-        # vis.add_geometry(skeleton_input2)
-        # vis.add_geometry(pcd2)
+#         skeleton_input2.colors = o3d.utility.Vector3dVector(color_input_2)
+#         # vis.add_geometry(skeleton_input2)
+#         # vis.add_geometry(pcd2)
 
-        vis.poll_events()
-        vis.update_renderer()
-        time.sleep(0.2)
-        vis.capture_screen_image(osp.join(data_root, target_path,'video',str(order_num).zfill(4)+'.png'))
-        vis.remove_geometry(skeleton_input1)
-        # vis.remove_geometry(skeleton_input2)
-        vis.remove_geometry(pcd1)
-        # vis.remove_geometry(pcd2)
+#         vis.poll_events()
+#         vis.update_renderer()
+#         time.sleep(0.2)
+#         vis.capture_screen_image(osp.join(data_root, target_path,'video',str(order_num).zfill(4)+'.png'))
+#         vis.remove_geometry(skeleton_input1)
+#         # vis.remove_geometry(skeleton_input2)
+#         vis.remove_geometry(pcd1)
+#         # vis.remove_geometry(pcd2)
 

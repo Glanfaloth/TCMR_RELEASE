@@ -67,7 +67,7 @@ def show_upp(joints):
 # show_upp(body_1_joints)
 
 # check cmu
-json_pth = '/media/qimaqi/Alexander/you2me/cmu/1-catch1/synchronized/gt-skeletons/body3DScene_1.json'
+json_pth = '/media/qimaqi/Alexander/you2me/cmu/8-convo5/synchronized/gt-skeletons/body3DScene_1.json'
 
 # check kinect
 txt_path = '/media/qimaqi/Alexander/you2me/kinect/catch37/synchronized/gt-interactee/pose2_216.txt'
@@ -107,11 +107,15 @@ for json_file_i in jsons_list:
 interactee_kp_np = np.array(interactee_kp_list).reshape(-1,19,4)
 ego_kp_kp_np = np.array(ego_kp_kp_list).reshape(-1,19,4)
 
-save_name_interact = './video/presentation_material/interact.npy'
-save_name_ego = './video/presentation_material/ego.npy'
-np.save(save_name_interact, interactee_kp_np)
-np.save(save_name_ego,ego_kp_kp_np)
-# keypoints_np = np.array(keypoints_list) 
+pred_hip_distance = np.linalg.norm(interactee_kp_np[:,6,:] - interactee_kp_np[:,12,:],axis=1 )
+print("mean pred_hip_distance", np.mean(pred_hip_distance))
+# 
+
+# save_name_interact = './video/presentation_material/interact.npy'
+# save_name_ego = './video/presentation_material/ego.npy'
+# np.save(save_name_interact, interactee_kp_np)
+# np.save(save_name_ego,ego_kp_kp_np)
+# # keypoints_np = np.array(keypoints_list) 
 
 ########################################################################
 # txt_dir = osp.dirname(txt_path)

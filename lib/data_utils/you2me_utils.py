@@ -31,7 +31,7 @@ cmu_train_list = ['1-catch1', '10-hand1',
                   '11-hand2',
                   '2-catch2','3-catch3',
                   '4-convo1', '5-convo2', '6-convo3', '7-convo4']
-cmu_val_list = ['12-hand3', '2-catch2', '8-convo5',  '9-convo6']
+cmu_val_list = ['12-hand3',  '8-convo5',  '9-convo6']
 
 kinect_train_list = ['catch36', 'catch37', 'catch39', 'catch40', 'catch41', 'catch42', 
                      'convo43', 'convo46', 'convo47', 'convo53', 'convo59',
@@ -216,12 +216,17 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 joints_3d_name = 'body3DScene_' + img_name.split('x')[-1].split('.')[0]
                 interact_joints_3d, ego_1_joints_3d = read_body3DScene(
                     os.path.join(gt_skeletons_path, joints_3d_name + '.json'))
-                joints_3d_raw = np.reshape(interact_joints_3d, (1, 19, 4)) / 200  # TODO why divide 1000
+                joints_3d_raw = np.reshape(interact_joints_3d, (1, 19, 4)) * 0.93/ 1000  # TODO why divide 1000
                 joints_3d_raw = joints_3d_raw[:, :, :3]
                 joints_3d = convert_kps(joints_3d_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
-                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4)) / 200  # TODO why divide 1000
+                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4)) * 0.93 / 1000  # TODO why divide 1000
                 joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
                 joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
+
+                if vid_i == '8-convo5':
+                    joints_3d_ego_ = joints_3d_ego
+                    joints_3d_ego = joints_3d
+                    joints_3d = joints_3d_ego_ 
                 # print('joints_3d',joints_3d)
                 # if joints_2d:
                 #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
@@ -571,13 +576,18 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 joints_3d_name = 'body3DScene_' + img_name.split('x')[-1].split('.')[0]
                 interact_joints_3d, ego_1_joints_3d = read_body3DScene(
                     os.path.join(gt_skeletons_path, joints_3d_name + '.json'))
-                joints_3d_raw = np.reshape(interact_joints_3d, (1, 19, 4)) / 200  # TODO why divide 1000
+                joints_3d_raw = np.reshape(interact_joints_3d, (1, 19, 4))*0.93 / 1000  # TODO why divide 1000
                 joints_3d_raw = joints_3d_raw[:, :, :3]
                 joints_3d = convert_kps(joints_3d_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
-                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4)) / 200  # TODO why divide 1000
+                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4))*0.93 / 1000  # TODO why divide 1000
 
                 joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
                 joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
+
+                if vid_i == '8-convo5':
+                    joints_3d_ego_ = joints_3d_ego
+                    joints_3d_ego = joints_3d
+                    joints_3d = joints_3d_ego_ 
                 # need to renormalize all sequence based on first frame rotation
                 # get x axis between two hip
                 # if i == 0: 
