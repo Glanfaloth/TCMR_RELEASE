@@ -363,6 +363,11 @@ class Trainer():
                 pred_j3d = preds[-1]['kp_3d'][:, 25:39, :].view(-1, n_kp, 3).cpu().numpy()
                 target_j3d = target_j3d_reduced.view(-1, n_kp, 3).cpu().numpy()
 
+                gt_pelvis = (target_j3d[:, 2,:] + target_j3d[:, 3,:]) / 2
+                target_j3d = target_j3d - gt_pelvis[:, None, :]
+                pred_pelvis = (pred_j3d[:, 2,:] + pred_j3d[:, 3,:]) / 2
+                pred_j3d = pred_j3d - pred_pelvis[:, None, :]
+
                 # print("pred_j3d",np.shape(pred_j3d))
                 # [32,14,3]
                 # print("target_j3d", np.shape(target_j3d))
@@ -479,6 +484,7 @@ class Trainer():
 
         pred_j3ds = self.evaluation_accumulators['pred_j3d']
         target_j3ds = self.evaluation_accumulators['target_j3d']
+
 
         pred_j3ds = torch.from_numpy(pred_j3ds).float()
         target_j3ds = torch.from_numpy(target_j3ds).float()
