@@ -168,8 +168,10 @@ class Dataset3D(Dataset):
         is_train = self.set == 'train'
         kp_3d = self.get_sequence(start_index, end_index, self.db['joints3D'])
         kp_2d = self.get_sequence(start_index, end_index, self.db['joints2D'])
-        kp_ego = self.get_sequence(start_index, end_index, self.db['egojoints3D'])
-        homo_ = self.get_sequence(start_index, end_index, self.db['homography'])
+
+        ### HOMO
+        # kp_ego = self.get_sequence(start_index, end_index, self.db['egojoints3D'])
+        # homo_ = self.get_sequence(start_index, end_index, self.db['homography'])
         # try to save one joints and kp
         
 
@@ -228,6 +230,7 @@ class Dataset3D(Dataset):
             # 2D keypoints transformed according to bbox cropping
             'kp_3d': torch.from_numpy(kp_3d_tensor).float()[self.mid_frame].repeat(repeat_num, 1, 1),  # 3D keypoints
             # [32,3,49,3]
+            ### HOMO
             # 'homography': torch.from_numpy(homo_).float(),
             # 'egojoints3D': torch.from_numpy(kp_ego).float().reshape(-1,147),
             # 'w_smpl': w_smpl[self.mid_frame].repeat(repeat_num),

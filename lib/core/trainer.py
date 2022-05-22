@@ -343,7 +343,7 @@ class Trainer():
                 # print('openpose_ shape',openpose_.size())
                 # print('wearer_ shape',wearer_.size())
                 #### option 1: feature only
-                inp = target_3d['features'].cuda()
+                inp = inp_ #target_3d['features'].cuda()
                 #### option 2: feature + wearer
                 # inp = torch.cat([inp_, wearer_], dim=2 )
 
