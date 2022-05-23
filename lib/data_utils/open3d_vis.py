@@ -33,7 +33,7 @@ def get_colors():
 
 # target path
 #  '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_kinect/you2me_output
-target_path = '/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output'
+target_path = '/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/final/repr_table6_you2me_cmu_model_output'
 #'/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 #'/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/kinect/04_25_23/repr_table6_you2me_kinect_model_output/'
 #'./outputs/kinect/04_25_13/repr_table6_you2me_kinect_model_output'
@@ -46,7 +46,7 @@ gt_path = osp.join(target_path,'gt.npy') # catch55_gt.npy 2-catch2_
 pred_path = osp.join(target_path,'pred.npy') # 2-catch2_
 
 
-# 
+# /home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/final/repr_table6_you2me_cmu_model_output/gt.npy
 gt_np= np.load(gt_path)
 pred_np= np.load(pred_path)
 
@@ -129,6 +129,9 @@ print("gt_hip_distance",np.mean(gt_hip_distance))
 
 hip_ratio = pred_hip_distance / gt_hip_distance
 print("hip_ratio",np.shape(hip_ratio),np.mean(hip_ratio))
+print("gt_hip_distance variance",np.var(gt_hip_distance))
+print("gt_hip_distance max difference",np.max(gt_hip_distance)- np.min(gt_hip_distance))
+print("gt_hip_distance mean",np.mean(gt_hip_distance))
 # ## show first 5
 # print("x_pred first 5", x_pred[:5,-1])
 # print("gt first 5", x_gt[:5,-1])
