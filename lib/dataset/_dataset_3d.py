@@ -174,7 +174,7 @@ class Dataset3D(Dataset):
         ### HOMO
         kp_ego = self.get_sequence(start_index, end_index, self.db['egojoints3D'])
         homo_ = self.get_sequence(start_index, end_index, self.db['homography'])
-
+        homo_=np.vstack(homo_).astype(np.float)
         # try to save one joints and kp
         
 
