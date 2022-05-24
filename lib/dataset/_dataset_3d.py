@@ -169,8 +169,8 @@ class Dataset3D(Dataset):
         is_train = self.set == 'train'
         kp_3d = self.get_sequence(start_index, end_index, self.db['joints3D'])
         kp_2d = self.get_sequence(start_index, end_index, self.db['joints2D'])
-        vid_mean = self.get_sequence(start_index, end_index, self.db['vid_mean'])
-        print('vid_mean',np.shape(vid_mean))
+        # vid_mean = self.get_sequence(start_index, end_index, self.db['vid_mean'])
+        # print('vid_mean',np.shape(vid_mean))
         ### HOMO
         kp_ego = self.get_sequence(start_index, end_index, self.db['egojoints3D'])
         homo_ = self.get_sequence(start_index, end_index, self.db['homography'])
@@ -232,10 +232,10 @@ class Dataset3D(Dataset):
             'kp_2d': torch.from_numpy(kp_2d).float().reshape(-1,147),
             # 2D keypoints transformed according to bbox cropping
             'kp_3d': torch.from_numpy(kp_3d_tensor).float()[self.mid_frame].repeat(repeat_num, 1, 1),  # 3D keypoints
-            'vid_mean': torch.from_numpy(vid_mean).float(),
+            # 'vid_mean': torch.from_numpy(vid_mean).float(),
             # [32,3,49,3]
             ### HOMO
-            # 'homography': torch.from_numpy(homo_),
+            'homography': torch.from_numpy(homo_.flatten()),
             'egojoints3D': torch.from_numpy(kp_ego).float().reshape(-1,147),
             # 'w_smpl': w_smpl[self.mid_frame].repeat(repeat_num),
             # 'w_3d': w_3d[self.mid_frame].repeat(repeat_num),
