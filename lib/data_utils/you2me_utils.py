@@ -140,6 +140,7 @@ def read_val_data(dataset_path, device, data_type, debug=False):
     # read cmu first
     if data_type == 'cmu':
         for seq_num, vid_i in enumerate(cmu_val_list):
+            mean_vid_list = []
             print("vid_i: ", vid_i)
             print("seq_num: ", seq_num)
             imgs_path = os.path.join(dataset_path,
@@ -298,6 +299,11 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 vid_used_frames.append(img_i)
                 vid_used_joints.append(joints_2d)
                 vid_used_bbox.append(bbox)
+                mean_vid_list.append(joints_3d)
+
+            vid_mean = np.mean(np.array(mean_vid_list),axis=0)
+            for i, img_i in tqdm_enumerate(img_list):
+                 dataset['vid_mean'].append(vid_mean)
 
             vid_segments = np.array(vid_segments)
             ids = np.zeros((len(set(vid_segments)) + 1))
@@ -307,8 +313,8 @@ def read_val_data(dataset_path, device, data_type, debug=False):
 
             # debug
             # add mean
-            dataset['vid_mean'] = [np.mean(dataset['joints3D'], axis = 0)]*len(img_list)
-            print("shape debug",np.shape( dataset['vid_mean']), np.shape(dataset['joints3D']))
+            print("shape debug",np.shape( dataset['vid_mean']), np.shape(dataset['joints3D']),np.shape(dataset['homography']))
+
             print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
@@ -318,7 +324,9 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 dataset['features'].append(features)
 
     if data_type == 'kinect':
+        
         for seq_num, vid_i in enumerate(kinect_val_list):
+            mean_vid_list = []
             print("vid_i: ", vid_i)
             print("seq_num: ", seq_num)
             imgs_path = os.path.join(dataset_path,
@@ -479,6 +487,11 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 vid_used_frames.append(img_i)
                 vid_used_joints.append(joints_2d)
                 vid_used_bbox.append(bbox)
+                mean_vid_list.append(joints_3d)
+
+            vid_mean = np.mean(np.array(mean_vid_list),axis=0)
+            for i, img_i in tqdm_enumerate(img_list):
+                 dataset['vid_mean'].append(vid_mean)
 
             vid_segments = np.array(vid_segments)
             ids = np.zeros((len(set(vid_segments)) + 1))
@@ -487,8 +500,7 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
             # debug
-            dataset['vid_mean'] = [np.mean(dataset['joints3D'], axis = 0)]*len(img_list)
-            print("shape debug",np.shape( dataset['vid_mean']), np.shape(dataset['joints3D']))
+            print("shape debug",np.shape( dataset['vid_mean']), np.shape(dataset['joints3D']),np.shape(dataset['homography']))
             print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
@@ -528,6 +540,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
     # read cmu first
     if data_type == 'cmu':
         for seq_num, vid_i in enumerate(cmu_train_list):
+            mean_vid_list = []
             print("vid_i: ", vid_i)
             print("seq_num: ", seq_num)
             imgs_path = os.path.join(dataset_path,
@@ -686,6 +699,13 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 vid_used_joints.append(joints_2d)
                 vid_used_bbox.append(bbox)
 
+                # video mean cal list
+                mean_vid_list.append(joints_3d)
+
+            vid_mean = np.mean(np.array(mean_vid_list),axis=0)
+            for i, img_i in tqdm_enumerate(img_list):
+                 dataset['vid_mean'].append(vid_mean)
+                
             vid_segments = np.array(vid_segments)
             ids = np.zeros((len(set(vid_segments)) + 1))
             ids[-1] = len(vid_used_frames) + 1
@@ -693,8 +713,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
             # debug
-            dataset['vid_mean'] = [np.mean(dataset['joints3D'], axis = 0)]*len(img_list)
-            print("shape debug",np.shape( dataset['vid_mean']), np.shape(dataset['joints3D']))
+            print("shape debug",np.shape( dataset['vid_mean']), np.shape(dataset['joints3D']),np.shape(dataset['homography']))
             print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
@@ -705,6 +724,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
 
     if data_type == 'kinect':
         for seq_num, vid_i in enumerate(kinect_train_list):
+            mean_vid_list = []
             print("vid_i: ", vid_i)
             print("seq_num: ", seq_num)
             imgs_path = os.path.join(dataset_path,
@@ -871,15 +891,18 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 vid_used_joints.append(joints_2d)
                 vid_used_bbox.append(bbox)
 
+                mean_vid_list.append(joints_3d)
+
+            vid_mean = np.mean(np.array(mean_vid_list),axis=0)
+            for i, img_i in tqdm_enumerate(img_list):
+                 dataset['vid_mean'].append(vid_mean)
             vid_segments = np.array(vid_segments)
             ids = np.zeros((len(set(vid_segments)) + 1))
             ids[-1] = len(vid_used_frames) + 1
             if (np.where(vid_segments[:-1] != vid_segments[1:])[0]).size != 0:
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
-            # debug
-            dataset['vid_mean'] = [np.mean(dataset['joints3D'], axis = 0)]*len(img_list)
-            print("shape debug",np.shape( dataset['vid_mean']), np.shape(dataset['joints3D']))
+            print("shape debug",np.shape( dataset['vid_mean']), np.shape(dataset['joints3D']),np.shape(dataset['homography']))
             print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
