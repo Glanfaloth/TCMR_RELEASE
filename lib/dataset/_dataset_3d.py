@@ -217,7 +217,7 @@ class Dataset3D(Dataset):
             # [32, 49, 3]
             kp_3d_tensor[idx] = kp_3d[idx]
             
-
+        print('debug homogrphy',np.shape(homo_))
         # (N-2)xnjx3
         # accel_gt = kp_3d_tensor[:-2] - 2 * kp_3d_tensor[1:-1] + kp_3d_tensor[2:]
         # accel_gt = np.linalg.norm(accel_gt, axis=2) # (N-2)xnj
