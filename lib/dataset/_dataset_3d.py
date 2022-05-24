@@ -235,8 +235,8 @@ class Dataset3D(Dataset):
             # 'vid_mean': torch.from_numpy(vid_mean).float(),
             # [32,3,49,3]
             ### HOMO
-            'homography': torch.from_numpy(homo_.flatten()),
-            'egojoints3D': torch.from_numpy(kp_ego).float().reshape(-1,147),
+            # 'homography': torch.from_numpy(homo_.flatten()),
+            # 'egojoints3D': torch.from_numpy(kp_ego).float().reshape(-1,147),
             # 'w_smpl': w_smpl[self.mid_frame].repeat(repeat_num),
             # 'w_3d': w_3d[self.mid_frame].repeat(repeat_num),
         }
