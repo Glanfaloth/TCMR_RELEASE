@@ -127,7 +127,8 @@ def read_val_data(dataset_path, device, data_type, debug=False):
         'bbox': [],
         'img_name': [],
         'features': [],
-        'homography': []
+        'homography': [],
+        'vid_mean': []
     }
 
     # occluders = load_occluders('./data/VOC2012')
@@ -198,6 +199,8 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 img_name = img_i.split('/')[-1]
                 openpose_name = img_name.split('.')[0] + '_keypoints.json'
                 openpose_i = os.path.join(openpose_path, openpose_name)
+                if not os.path.exists(openpose_i):
+                    openpose_i = os.path.join(openpose_path_old, openpose_name)
                 homo_name = 'h'+ img_name.split('x')[-1].split('.')[0] + '.txt'
                 homo_path_i = os.path.join(homo_path, homo_name)
                 # read homography 
@@ -303,6 +306,8 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
             # debug
+            # add mean
+            dataset['vid_mean'] = np.mean(dataset['joints3D'].append(joints_3d), axis = 0)
             print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
@@ -377,6 +382,8 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 img_name = img_i.split('/')[-1]
                 openpose_name = img_name.split('.')[0] + '_keypoints.json'
                 openpose_i = os.path.join(openpose_path, openpose_name)
+                if not os.path.exists(openpose_i):
+                    openpose_i = os.path.join(openpose_path_old, openpose_name)
                 homo_name = 'h'+ img_name.split('x')[-1].split('.')[0] + '.txt'
                 homo_path_i = os.path.join(homo_path, homo_name)
                 # read homography 
@@ -479,6 +486,7 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
             # debug
+            dataset['vid_mean'] = np.mean(dataset['joints3D'].append(joints_3d), axis = 0)
             print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
@@ -505,7 +513,8 @@ def read_train_data(dataset_path, device, data_type, debug=False):
         'bbox': [],
         'img_name': [],
         'features': [],
-        'homography':[]
+        'homography':[],
+        'vid_mean': []
     }
 
     # occluders = load_occluders('./data/VOC2012')
@@ -557,6 +566,12 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                                          vid_i,
                                          'features',
                                          'keypoints')
+            openpose_path_old = os.path.join(dataset_path,
+                                         'cmu',
+                                         vid_i,
+                                         'features',
+                                         'openpose',
+                                         'output_json')
             gt_skeletons_path = os.path.join(dataset_path,
                                              'cmu',
                                              vid_i,
@@ -567,6 +582,8 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 img_name = img_i.split('/')[-1]
                 openpose_name = img_name.split('.')[0] + '_keypoints.json'
                 openpose_i = os.path.join(openpose_path, openpose_name)
+                if not os.path.exists(openpose_i):
+                    openpose_i = os.path.join(openpose_path_old, openpose_name)
                 homo_name = 'h'+ img_name.split('x')[-1].split('.')[0] + '.txt'
                 homo_path_i = os.path.join(homo_path, homo_name)
                 # read homography 
@@ -674,6 +691,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
             # debug
+            dataset['vid_mean'] = np.mean(dataset['joints3D'].append(joints_3d), axis = 0)
             print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
@@ -747,6 +765,8 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 img_name = img_i.split('/')[-1]
                 openpose_name = img_name.split('.')[0] + '_keypoints.json'
                 openpose_i = os.path.join(openpose_path, openpose_name)
+                if not os.path.exists(openpose_i):
+                    openpose_i = os.path.join(openpose_path_old, openpose_name)
                 homo_name = 'h'+ img_name.split('x')[-1].split('.')[0] + '.txt'
                 homo_path_i = os.path.join(homo_path, homo_name)
                 # read homography 
@@ -855,6 +875,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
             # debug
+            dataset['vid_mean'] = np.mean(dataset['joints3D'].append(joints_3d), axis = 0)
             print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
