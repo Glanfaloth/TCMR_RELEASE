@@ -307,7 +307,7 @@ def read_val_data(dataset_path, device, data_type, debug=False):
 
             # debug
             # add mean
-            dataset['vid_mean'] = np.mean(dataset['joints3D'].append(joints_3d), axis = 0)
+            dataset['vid_mean'] = np.mean(dataset['joints3D'], axis = 0)
             print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
@@ -486,7 +486,7 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
             # debug
-            dataset['vid_mean'] = np.mean(dataset['joints3D'].append(joints_3d), axis = 0)
+            dataset['vid_mean'] = np.mean(dataset['joints3D'], axis = 0)
             print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
@@ -691,7 +691,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
             # debug
-            dataset['vid_mean'] = np.mean(dataset['joints3D'].append(joints_3d), axis = 0)
+            dataset['vid_mean'] = np.mean(dataset['joints3D'], axis = 0)
             print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
@@ -875,7 +875,7 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 ids[1:-1] = (np.where(vid_segments[:-1] != vid_segments[1:])[0]) + 1
 
             # debug
-            dataset['vid_mean'] = np.mean(dataset['joints3D'].append(joints_3d), axis = 0)
+            dataset['vid_mean'] = np.mean(dataset['joints3D'], axis = 0)
             print('missing openpose case',no_joints_num, " / ", len(img_list))
             for i in tqdm(range(len(set(vid_segments)))):
                 features = extract_features(model, device, None, np.array(vid_used_frames)[int(ids[i]):int(ids[i + 1])],
