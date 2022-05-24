@@ -229,6 +229,7 @@ class Dataset3D(Dataset):
             'kp_2d': torch.from_numpy(kp_2d).float().reshape(-1,147),
             # 2D keypoints transformed according to bbox cropping
             'kp_3d': torch.from_numpy(kp_3d_tensor).float()[self.mid_frame].repeat(repeat_num, 1, 1),  # 3D keypoints
+            'kp_3d_mean':torch.from_numpy(np.mean(kp_3d,axis=0)).float(),
             # [32,3,49,3]
             ### HOMO
             # 'homography': torch.from_numpy(homo_).float(),
@@ -236,6 +237,7 @@ class Dataset3D(Dataset):
             # 'w_smpl': w_smpl[self.mid_frame].repeat(repeat_num),
             # 'w_3d': w_3d[self.mid_frame].repeat(repeat_num),
         }
+        print("target['kp_3d_mean'].size()",target['kp_3d_mean'].size())
 
         if self.dataset_name == 'mpii3d' and not is_train:
             target['valid'] = self.get_sequence(start_index, end_index, self.db['valid_i'])[self.mid_frame]
