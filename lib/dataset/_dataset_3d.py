@@ -174,6 +174,7 @@ class Dataset3D(Dataset):
         ### HOMO
         kp_ego = self.get_sequence(start_index, end_index, self.db['egojoints3D'])
         homo_ = self.get_sequence(start_index, end_index, self.db['homography'])
+        print('debug homogrphy',np.shape(homo_))
         # try to save one joints and kp
         
 
@@ -217,7 +218,7 @@ class Dataset3D(Dataset):
             # [32, 49, 3]
             kp_3d_tensor[idx] = kp_3d[idx]
             
-        print('debug homogrphy',np.shape(homo_))
+       
         # (N-2)xnjx3
         # accel_gt = kp_3d_tensor[:-2] - 2 * kp_3d_tensor[1:-1] + kp_3d_tensor[2:]
         # accel_gt = np.linalg.norm(accel_gt, axis=2) # (N-2)xnj
@@ -234,7 +235,7 @@ class Dataset3D(Dataset):
             'vid_mean': torch.from_numpy(vid_mean).float(),
             # [32,3,49,3]
             ### HOMO
-            'homography': torch.from_numpy(homo_).float(),
+            'homography': torch.from_numpy(homo_),
             'egojoints3D': torch.from_numpy(kp_ego).float().reshape(-1,147),
             # 'w_smpl': w_smpl[self.mid_frame].repeat(repeat_num),
             # 'w_3d': w_3d[self.mid_frame].repeat(repeat_num),
