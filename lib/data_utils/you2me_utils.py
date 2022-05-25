@@ -228,78 +228,81 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 interact_joints_3d, ego_1_joints_3d = read_body3DScene(
                     os.path.join(gt_skeletons_path, joints_3d_name + '.json'))
                 joints_3d_raw = np.reshape(interact_joints_3d, (1, 19, 4)) * 0.93/ 1000  # TODO why divide 1000
-                joints_3d_raw = joints_3d_raw[:, :, :3]
-                joints_3d = convert_kps(joints_3d_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
-                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4)) * 0.93 / 1000  # TODO why divide 1000
-                joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
-                joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
+                if np.isnan(joints_3d_raw).any():
+                    break
+                else:
+                    joints_3d_raw = joints_3d_raw[:, :, :3]
+                    joints_3d = convert_kps(joints_3d_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
+                    joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4)) * 0.93 / 1000  # TODO why divide 1000
+                    joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
+                    joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
 
-                if vid_i == '8-convo5':
-                    joints_3d_ego_ = joints_3d_ego
-                    joints_3d_ego = joints_3d
-                    joints_3d = joints_3d_ego_ 
-                # print('joints_3d',joints_3d)
-                # if joints_2d:
-                #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
-                bbox = np.array([113, 113, w, h])  # shape = (4,N)
+                    if vid_i == '8-convo5':
+                        joints_3d_ego_ = joints_3d_ego
+                        joints_3d_ego = joints_3d
+                        joints_3d = joints_3d_ego_ 
+                    # print('joints_3d',joints_3d)
+                    # if joints_2d:
+                    #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
+                    bbox = np.array([113, 113, w, h])  # shape = (4,N)
 
-                # if i == 0: 
-                #     # for interact
-                #     x_axis_int = joints_3d[27, :] - joints_3d[28, :]  # [3] right hip - left hip
-                #     x_axis_int[-1] = 0
-                #     x_axis_int = x_axis_int / np.linalg.norm(x_axis_int)
-                #     z_axis_int = np.array([0, 0, 1])
-                #     y_axis_int = np.cross(z_axis_int, x_axis_int)
-                #     y_axis_int = y_axis_int / np.linalg.norm(y_axis_int)
-                #     transf_rotmat_int = np.stack([x_axis_int, y_axis_int, z_axis_int], axis=1)  # [3, 3]
+                    # if i == 0: 
+                    #     # for interact
+                    #     x_axis_int = joints_3d[27, :] - joints_3d[28, :]  # [3] right hip - left hip
+                    #     x_axis_int[-1] = 0
+                    #     x_axis_int = x_axis_int / np.linalg.norm(x_axis_int)
+                    #     z_axis_int = np.array([0, 0, 1])
+                    #     y_axis_int = np.cross(z_axis_int, x_axis_int)
+                    #     y_axis_int = y_axis_int / np.linalg.norm(y_axis_int)
+                    #     transf_rotmat_int = np.stack([x_axis_int, y_axis_int, z_axis_int], axis=1)  # [3, 3]
 
-                #     # for ego
-                #     x_axis_ego = joints_3d_ego[27, :] - joints_3d_ego[28, :]  # [3] right hip - left hip
-                #     x_axis_ego[-1] = 0
-                #     x_axis_ego = x_axis_ego / np.linalg.norm(x_axis_ego)
-                #     z_axis_ego = np.array([0, 0, 1])
-                #     y_axis_ego = np.cross(z_axis_ego, x_axis_ego)
-                #     y_axis_ego = y_axis_ego / np.linalg.norm(y_axis_ego)
-                #     transf_rotmat_ego = np.stack([x_axis_ego, y_axis_ego, z_axis_ego], axis=1)  # [3, 3]
+                    #     # for ego
+                    #     x_axis_ego = joints_3d_ego[27, :] - joints_3d_ego[28, :]  # [3] right hip - left hip
+                    #     x_axis_ego[-1] = 0
+                    #     x_axis_ego = x_axis_ego / np.linalg.norm(x_axis_ego)
+                    #     z_axis_ego = np.array([0, 0, 1])
+                    #     y_axis_ego = np.cross(z_axis_ego, x_axis_ego)
+                    #     y_axis_ego = y_axis_ego / np.linalg.norm(y_axis_ego)
+                    #     transf_rotmat_ego = np.stack([x_axis_ego, y_axis_ego, z_axis_ego], axis=1)  # [3, 3]
 
-                # joints_3d = np.matmul(joints_3d - joints_3d[39], transf_rotmat_int)  # [T(/bs), 25, 3]
-                # joints_3d_ego = np.matmul(joints_3d_ego - joints_3d_ego[39], transf_rotmat_ego) 
-                joints_3d = joints_3d - joints_3d[39]  # 4 is the root
-                joints_3d_ego = joints_3d_ego - joints_3d_ego[39]  # 4 is the root
+                    # joints_3d = np.matmul(joints_3d - joints_3d[39], transf_rotmat_int)  # [T(/bs), 25, 3]
+                    # joints_3d_ego = np.matmul(joints_3d_ego - joints_3d_ego[39], transf_rotmat_ego) 
+                    joints_3d = joints_3d - joints_3d[39]  # 4 is the root
+                    joints_3d_ego = joints_3d_ego - joints_3d_ego[39]  # 4 is the root
 
-                # j3ds[i] = joints_3d
-                # j2ds[i] = joints_2d
-                # check that all joints are visible
-                # joint x loc inside the image
-                # since we generate it from openpose so always in
-                # TODO other way
-                # manual set
-                x_in = np.logical_and(joints_2d[:, 0] < w, joints_2d[:, 0] >= 0)
-                y_in = np.logical_and(joints_2d[:, 1] < h, joints_2d[:, 1] >= 0)
-                ok_pts = np.logical_and(x_in, y_in)
-                if np.sum(ok_pts) < joints_2d.shape[0]:
-                    print('np.sum(ok_pts)', np.sum(ok_pts))
-                    print(' joints_2d.shape[0]', joints_2d.shape[0])
-                    print('img_name', img_name)
-                    # vid_uniq_id = "_".join(vid_uniq_id.split("_")[:-1])+ "_seg" +\
-                    #                     str(int(dataset['vid_name'][-1].split("_")[-1][3:])+1)
-                    continue
-                # bbox_params, time_pt1, time_pt2 = get_smooth_bbox_params(j2ds, vis_thresh=VIS_THRESH, sigma=8)
+                    # j3ds[i] = joints_3d
+                    # j2ds[i] = joints_2d
+                    # check that all joints are visible
+                    # joint x loc inside the image
+                    # since we generate it from openpose so always in
+                    # TODO other way
+                    # manual set
+                    x_in = np.logical_and(joints_2d[:, 0] < w, joints_2d[:, 0] >= 0)
+                    y_in = np.logical_and(joints_2d[:, 1] < h, joints_2d[:, 1] >= 0)
+                    ok_pts = np.logical_and(x_in, y_in)
+                    if np.sum(ok_pts) < joints_2d.shape[0]:
+                        print('np.sum(ok_pts)', np.sum(ok_pts))
+                        print(' joints_2d.shape[0]', joints_2d.shape[0])
+                        print('img_name', img_name)
+                        # vid_uniq_id = "_".join(vid_uniq_id.split("_")[:-1])+ "_seg" +\
+                        #                     str(int(dataset['vid_name'][-1].split("_")[-1][3:])+1)
+                        continue
+                    # bbox_params, time_pt1, time_pt2 = get_smooth_bbox_params(j2ds, vis_thresh=VIS_THRESH, sigma=8)
 
-                # TODO video name
-                dataset['vid_name'].append(vid_i)
-                dataset['frame_id'].append(img_name.split(".")[0])
-                dataset['img_name'].append(img_i)
-                dataset['joints2D'].append(joints_2d)
-                dataset['joints3D'].append(joints_3d)
-                dataset['bbox'].append(bbox)
-                dataset['egojoints3D'].append(joints_3d_ego)
-                dataset['homography'].append(homo_i)
-                vid_segments.append(vid_i)
-                vid_used_frames.append(img_i)
-                vid_used_joints.append(joints_2d)
-                vid_used_bbox.append(bbox)
-                mean_vid_list.append(joints_3d)
+                    # TODO video name
+                    dataset['vid_name'].append(vid_i)
+                    dataset['frame_id'].append(img_name.split(".")[0])
+                    dataset['img_name'].append(img_i)
+                    dataset['joints2D'].append(joints_2d)
+                    dataset['joints3D'].append(joints_3d)
+                    dataset['bbox'].append(bbox)
+                    dataset['egojoints3D'].append(joints_3d_ego)
+                    dataset['homography'].append(homo_i)
+                    vid_segments.append(vid_i)
+                    vid_used_frames.append(img_i)
+                    vid_used_joints.append(joints_2d)
+                    vid_used_bbox.append(bbox)
+                    mean_vid_list.append(joints_3d)
 
             vid_mean = np.mean(np.array(mean_vid_list),axis=0)
             for i, img_i in tqdm_enumerate(img_list):
@@ -421,73 +424,76 @@ def read_val_data(dataset_path, device, data_type, debug=False):
                 ego_1_joints_3d = read_pose3Dtxt(os.path.join(gt_egopose_path,joints_3d_name_ego+ '.txt'))
 
                 joints_3d_raw = np.reshape(interact_joints_3d, (1, 25, 3))*1.25  # TODO why divide 1000
-                # joints_3d_raw = joints_3d_raw[:, :, :3]
-                joints_3d = convert_kps(joints_3d_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
-                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 25, 3))*1.25   # TODO why divide 1000
-                # joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
-                joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
-                # print('joints_3d',joints_3d)
-                # if joints_2d:
-                #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
-                bbox = np.array([113, 113, w, h])  # shape = (4,N)
+                if np.isnan(joints_3d_raw).any():
+                    break
+                else:
+                    # joints_3d_raw = joints_3d_raw[:, :, :3]
+                    joints_3d = convert_kps(joints_3d_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
+                    joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 25, 3))*1.25   # TODO why divide 1000
+                    # joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
+                    joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
+                    # print('joints_3d',joints_3d)
+                    # if joints_2d:
+                    #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
+                    bbox = np.array([113, 113, w, h])  # shape = (4,N)
 
-                # if i == 0: 
-                #     # for interact
-                #     x_axis_int = joints_3d[27, :] - joints_3d[28, :]  # [3] right hip - left hip
-                #     x_axis_int[-1] = 0
-                #     x_axis_int = x_axis_int / np.linalg.norm(x_axis_int)
-                #     z_axis_int = np.array([0, 0, 1])
-                #     y_axis_int = np.cross(z_axis_int, x_axis_int)
-                #     y_axis_int = y_axis_int / np.linalg.norm(y_axis_int)
-                #     transf_rotmat_int = np.stack([x_axis_int, y_axis_int, z_axis_int], axis=1)  # [3, 3]
+                    # if i == 0: 
+                    #     # for interact
+                    #     x_axis_int = joints_3d[27, :] - joints_3d[28, :]  # [3] right hip - left hip
+                    #     x_axis_int[-1] = 0
+                    #     x_axis_int = x_axis_int / np.linalg.norm(x_axis_int)
+                    #     z_axis_int = np.array([0, 0, 1])
+                    #     y_axis_int = np.cross(z_axis_int, x_axis_int)
+                    #     y_axis_int = y_axis_int / np.linalg.norm(y_axis_int)
+                    #     transf_rotmat_int = np.stack([x_axis_int, y_axis_int, z_axis_int], axis=1)  # [3, 3]
 
-                #     # for ego
-                #     x_axis_ego = joints_3d_ego[27, :] - joints_3d_ego[28, :]  # [3] right hip - left hip
-                #     x_axis_ego[-1] = 0
-                #     x_axis_ego = x_axis_ego / np.linalg.norm(x_axis_ego)
-                #     z_axis_ego = np.array([0, 0, 1])
-                #     y_axis_ego = np.cross(z_axis_ego, x_axis_ego)
-                #     y_axis_ego = y_axis_ego / np.linalg.norm(y_axis_ego)
-                #     transf_rotmat_ego = np.stack([x_axis_ego, y_axis_ego, z_axis_ego], axis=1)  # [3, 3]
+                    #     # for ego
+                    #     x_axis_ego = joints_3d_ego[27, :] - joints_3d_ego[28, :]  # [3] right hip - left hip
+                    #     x_axis_ego[-1] = 0
+                    #     x_axis_ego = x_axis_ego / np.linalg.norm(x_axis_ego)
+                    #     z_axis_ego = np.array([0, 0, 1])
+                    #     y_axis_ego = np.cross(z_axis_ego, x_axis_ego)
+                    #     y_axis_ego = y_axis_ego / np.linalg.norm(y_axis_ego)
+                    #     transf_rotmat_ego = np.stack([x_axis_ego, y_axis_ego, z_axis_ego], axis=1)  # [3, 3]
 
-                # joints_3d = np.matmul(joints_3d - joints_3d[39], transf_rotmat_int)  # [T(/bs), 25, 3]
-                # joints_3d_ego = np.matmul(joints_3d_ego - joints_3d_ego[39], transf_rotmat_ego) 
-                joints_3d = joints_3d - joints_3d[39]  # 4 is the root
-                joints_3d_ego = joints_3d_ego - joints_3d_ego[39]  # 4 is the root
+                    # joints_3d = np.matmul(joints_3d - joints_3d[39], transf_rotmat_int)  # [T(/bs), 25, 3]
+                    # joints_3d_ego = np.matmul(joints_3d_ego - joints_3d_ego[39], transf_rotmat_ego) 
+                    joints_3d = joints_3d - joints_3d[39]  # 4 is the root
+                    joints_3d_ego = joints_3d_ego - joints_3d_ego[39]  # 4 is the root
 
-                # j3ds[i] = joints_3d
-                # j2ds[i] = joints_2d
-                # check that all joints are visible
-                # joint x loc inside the image
-                # since we generate it from openpose so always in
-                # TODO other way
-                # manual set
-                x_in = np.logical_and(joints_2d[:, 0] < w, joints_2d[:, 0] >= 0)
-                y_in = np.logical_and(joints_2d[:, 1] < h, joints_2d[:, 1] >= 0)
-                ok_pts = np.logical_and(x_in, y_in)
-                if np.sum(ok_pts) < joints_2d.shape[0]:
-                    print('np.sum(ok_pts)', np.sum(ok_pts))
-                    print(' joints_2d.shape[0]', joints_2d.shape[0])
-                    print('img_name', img_name)
-                    # vid_uniq_id = "_".join(vid_uniq_id.split("_")[:-1])+ "_seg" +\
-                    #                     str(int(dataset['vid_name'][-1].split("_")[-1][3:])+1)
-                    continue
-                # bbox_params, time_pt1, time_pt2 = get_smooth_bbox_params(j2ds, vis_thresh=VIS_THRESH, sigma=8)
+                    # j3ds[i] = joints_3d
+                    # j2ds[i] = joints_2d
+                    # check that all joints are visible
+                    # joint x loc inside the image
+                    # since we generate it from openpose so always in
+                    # TODO other way
+                    # manual set
+                    x_in = np.logical_and(joints_2d[:, 0] < w, joints_2d[:, 0] >= 0)
+                    y_in = np.logical_and(joints_2d[:, 1] < h, joints_2d[:, 1] >= 0)
+                    ok_pts = np.logical_and(x_in, y_in)
+                    if np.sum(ok_pts) < joints_2d.shape[0]:
+                        print('np.sum(ok_pts)', np.sum(ok_pts))
+                        print(' joints_2d.shape[0]', joints_2d.shape[0])
+                        print('img_name', img_name)
+                        # vid_uniq_id = "_".join(vid_uniq_id.split("_")[:-1])+ "_seg" +\
+                        #                     str(int(dataset['vid_name'][-1].split("_")[-1][3:])+1)
+                        continue
+                    # bbox_params, time_pt1, time_pt2 = get_smooth_bbox_params(j2ds, vis_thresh=VIS_THRESH, sigma=8)
 
-                # TODO video name
-                dataset['vid_name'].append(vid_i)
-                dataset['frame_id'].append(img_name.split(".")[0])
-                dataset['img_name'].append(img_i)
-                dataset['joints2D'].append(joints_2d)
-                dataset['joints3D'].append(joints_3d)
-                dataset['bbox'].append(bbox)
-                dataset['egojoints3D'].append(joints_3d_ego)
-                dataset['homography'].append(homo_i)
-                vid_segments.append(vid_i)
-                vid_used_frames.append(img_i)
-                vid_used_joints.append(joints_2d)
-                vid_used_bbox.append(bbox)
-                mean_vid_list.append(joints_3d)
+                    # TODO video name
+                    dataset['vid_name'].append(vid_i)
+                    dataset['frame_id'].append(img_name.split(".")[0])
+                    dataset['img_name'].append(img_i)
+                    dataset['joints2D'].append(joints_2d)
+                    dataset['joints3D'].append(joints_3d)
+                    dataset['bbox'].append(bbox)
+                    dataset['egojoints3D'].append(joints_3d_ego)
+                    dataset['homography'].append(homo_i)
+                    vid_segments.append(vid_i)
+                    vid_used_frames.append(img_i)
+                    vid_used_joints.append(joints_2d)
+                    vid_used_bbox.append(bbox)
+                    mean_vid_list.append(joints_3d)
 
             vid_mean = np.mean(np.array(mean_vid_list),axis=0)
             for i, img_i in tqdm_enumerate(img_list):
@@ -624,83 +630,86 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 interact_joints_3d, ego_1_joints_3d = read_body3DScene(
                     os.path.join(gt_skeletons_path, joints_3d_name + '.json'))
                 joints_3d_raw = np.reshape(interact_joints_3d, (1, 19, 4))*0.93 / 1000  # TODO why divide 1000
-                joints_3d_raw = joints_3d_raw[:, :, :3]
-                joints_3d = convert_kps(joints_3d_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
-                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4))*0.93 / 1000  # TODO why divide 1000
+                if np.isnan(joints_3d_raw).any():
+                    break
+                else:
+                    joints_3d_raw = joints_3d_raw[:, :, :3]
+                    joints_3d = convert_kps(joints_3d_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
+                    joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 19, 4))*0.93 / 1000  # TODO why divide 1000
 
-                joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
-                joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
+                    joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
+                    joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_cmu_3d", "spin").reshape((-1, 3))
 
-                if vid_i == '8-convo5':
-                    joints_3d_ego_ = joints_3d_ego
-                    joints_3d_ego = joints_3d
-                    joints_3d = joints_3d_ego_ 
-                # need to renormalize all sequence based on first frame rotation
-                # get x axis between two hip
-                # if i == 0: 
-                #     # for interact
-                #     x_axis_int = joints_3d[27, :] - joints_3d[28, :]  # [3] right hip - left hip
-                #     x_axis_int[-1] = 0
-                #     x_axis_int = x_axis_int / np.linalg.norm(x_axis_int)
-                #     z_axis_int = np.array([0, 0, 1])
-                #     y_axis_int = np.cross(z_axis_int, x_axis_int)
-                #     y_axis_int = y_axis_int / np.linalg.norm(y_axis_int)
-                #     transf_rotmat_int = np.stack([x_axis_int, y_axis_int, z_axis_int], axis=1)  # [3, 3]
+                    if vid_i == '8-convo5':
+                        joints_3d_ego_ = joints_3d_ego
+                        joints_3d_ego = joints_3d
+                        joints_3d = joints_3d_ego_ 
+                    # need to renormalize all sequence based on first frame rotation
+                    # get x axis between two hip
+                    # if i == 0: 
+                    #     # for interact
+                    #     x_axis_int = joints_3d[27, :] - joints_3d[28, :]  # [3] right hip - left hip
+                    #     x_axis_int[-1] = 0
+                    #     x_axis_int = x_axis_int / np.linalg.norm(x_axis_int)
+                    #     z_axis_int = np.array([0, 0, 1])
+                    #     y_axis_int = np.cross(z_axis_int, x_axis_int)
+                    #     y_axis_int = y_axis_int / np.linalg.norm(y_axis_int)
+                    #     transf_rotmat_int = np.stack([x_axis_int, y_axis_int, z_axis_int], axis=1)  # [3, 3]
 
-                #     # for ego
-                #     x_axis_ego = joints_3d_ego[27, :] - joints_3d_ego[28, :]  # [3] right hip - left hip
-                #     x_axis_ego[-1] = 0
-                #     x_axis_ego = x_axis_ego / np.linalg.norm(x_axis_ego)
-                #     z_axis_ego = np.array([0, 0, 1])
-                #     y_axis_ego = np.cross(z_axis_ego, x_axis_ego)
-                #     y_axis_ego = y_axis_ego / np.linalg.norm(y_axis_ego)
-                #     transf_rotmat_ego = np.stack([x_axis_ego, y_axis_ego, z_axis_ego], axis=1)  # [3, 3]
+                    #     # for ego
+                    #     x_axis_ego = joints_3d_ego[27, :] - joints_3d_ego[28, :]  # [3] right hip - left hip
+                    #     x_axis_ego[-1] = 0
+                    #     x_axis_ego = x_axis_ego / np.linalg.norm(x_axis_ego)
+                    #     z_axis_ego = np.array([0, 0, 1])
+                    #     y_axis_ego = np.cross(z_axis_ego, x_axis_ego)
+                    #     y_axis_ego = y_axis_ego / np.linalg.norm(y_axis_ego)
+                    #     transf_rotmat_ego = np.stack([x_axis_ego, y_axis_ego, z_axis_ego], axis=1)  # [3, 3]
 
-                # joints_3d = np.matmul(joints_3d - joints_3d[39], transf_rotmat_int)  # [T(/bs), 25, 3]
-                # joints_3d_ego = np.matmul(joints_3d_ego - joints_3d_ego[39], transf_rotmat_ego) 
-                joints_3d = joints_3d - joints_3d[39]
-                joints_3d_ego = joints_3d_ego - joints_3d_ego[39]
+                    # joints_3d = np.matmul(joints_3d - joints_3d[39], transf_rotmat_int)  # [T(/bs), 25, 3]
+                    # joints_3d_ego = np.matmul(joints_3d_ego - joints_3d_ego[39], transf_rotmat_ego) 
+                    joints_3d = joints_3d - joints_3d[39]
+                    joints_3d_ego = joints_3d_ego - joints_3d_ego[39]
 
-                #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
-                bbox = np.array([113, 113, w, h])  # shape = (4,N)
-                # joints_3d = joints_3d - joints_3d[39]  # 4 is the root
-                # joints_3d_ego = joints_3d_ego - joints_3d_ego[39]  # 4 is the root
+                    #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
+                    bbox = np.array([113, 113, w, h])  # shape = (4,N)
+                    # joints_3d = joints_3d - joints_3d[39]  # 4 is the root
+                    # joints_3d_ego = joints_3d_ego - joints_3d_ego[39]  # 4 is the root
 
-                # j3ds[i] = joints_3d
-                # j2ds[i] = joints_2d
-                # check that all joints are visible
-                # joint x loc inside the image
-                # since we generate it from openpose so always in
-                # TODO other way
-                # manual set
-                x_in = np.logical_and(joints_2d[:, 0] < w, joints_2d[:, 0] >= 0)
-                y_in = np.logical_and(joints_2d[:, 1] < h, joints_2d[:, 1] >= 0)
-                ok_pts = np.logical_and(x_in, y_in)
-                if np.sum(ok_pts) < joints_2d.shape[0]:
-                    print('np.sum(ok_pts)', np.sum(ok_pts))
-                    print(' joints_2d.shape[0]', joints_2d.shape[0])
-                    print('img_name', img_name)
-                    # vid_uniq_id = "_".join(vid_uniq_id.split("_")[:-1])+ "_seg" +\
-                    #                     str(int(dataset['vid_name'][-1].split("_")[-1][3:])+1)
-                    continue
-                # bbox_params, time_pt1, time_pt2 = get_smooth_bbox_params(j2ds, vis_thresh=VIS_THRESH, sigma=8)
+                    # j3ds[i] = joints_3d
+                    # j2ds[i] = joints_2d
+                    # check that all joints are visible
+                    # joint x loc inside the image
+                    # since we generate it from openpose so always in
+                    # TODO other way
+                    # manual set
+                    x_in = np.logical_and(joints_2d[:, 0] < w, joints_2d[:, 0] >= 0)
+                    y_in = np.logical_and(joints_2d[:, 1] < h, joints_2d[:, 1] >= 0)
+                    ok_pts = np.logical_and(x_in, y_in)
+                    if np.sum(ok_pts) < joints_2d.shape[0]:
+                        print('np.sum(ok_pts)', np.sum(ok_pts))
+                        print(' joints_2d.shape[0]', joints_2d.shape[0])
+                        print('img_name', img_name)
+                        # vid_uniq_id = "_".join(vid_uniq_id.split("_")[:-1])+ "_seg" +\
+                        #                     str(int(dataset['vid_name'][-1].split("_")[-1][3:])+1)
+                        continue
+                    # bbox_params, time_pt1, time_pt2 = get_smooth_bbox_params(j2ds, vis_thresh=VIS_THRESH, sigma=8)
 
-                # TODO video name
-                dataset['vid_name'].append(vid_i)
-                dataset['frame_id'].append(img_name.split(".")[0])
-                dataset['img_name'].append(img_i)
-                dataset['joints2D'].append(joints_2d)
-                dataset['joints3D'].append(joints_3d)
-                dataset['bbox'].append(bbox)
-                dataset['egojoints3D'].append(joints_3d_ego)
-                dataset['homography'].append(homo_i)
-                vid_segments.append(vid_i)
-                vid_used_frames.append(img_i)
-                vid_used_joints.append(joints_2d)
-                vid_used_bbox.append(bbox)
+                    # TODO video name
+                    dataset['vid_name'].append(vid_i)
+                    dataset['frame_id'].append(img_name.split(".")[0])
+                    dataset['img_name'].append(img_i)
+                    dataset['joints2D'].append(joints_2d)
+                    dataset['joints3D'].append(joints_3d)
+                    dataset['bbox'].append(bbox)
+                    dataset['egojoints3D'].append(joints_3d_ego)
+                    dataset['homography'].append(homo_i)
+                    vid_segments.append(vid_i)
+                    vid_used_frames.append(img_i)
+                    vid_used_joints.append(joints_2d)
+                    vid_used_bbox.append(bbox)
 
-                # video mean cal list
-                mean_vid_list.append(joints_3d)
+                    # video mean cal list
+                    mean_vid_list.append(joints_3d)
 
             vid_mean = np.mean(np.array(mean_vid_list),axis=0)
             for i, img_i in tqdm_enumerate(img_list):
@@ -818,78 +827,83 @@ def read_train_data(dataset_path, device, data_type, debug=False):
                 interact_joints_3d = read_pose3Dtxt(os.path.join(gt_interactee_path,joints_3d_name_interact+ '.txt'))
                 ego_1_joints_3d = read_pose3Dtxt(os.path.join(gt_egopose_path,joints_3d_name_ego+ '.txt'))
 
+
                 joints_3d_raw = np.reshape(interact_joints_3d, (1, 25, 3))*1.25 # TODO why divide 1000
-                # print('joints_3d_raw',joints_3d_raw[:,3,:])
-                # joints_3d_raw = joints_3d_raw[:, :, :3]
-                joints_3d = convert_kps(joints_3d_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
-                joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 25, 3))*1.25   # TODO why divide 1000
-                # joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
-                joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
-                # print('joints_3d',joints_3d)
-                # if joints_2d:
-                #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
 
-                # if i == 0: 
-                #     # for interact
-                #     x_axis_int = joints_3d[27, :] - joints_3d[28, :]  # [3] right hip - left hip
-                #     x_axis_int[-1] = 0
-                #     x_axis_int = x_axis_int / np.linalg.norm(x_axis_int)
-                #     z_axis_int = np.array([0, 0, 1])
-                #     y_axis_int = np.cross(z_axis_int, x_axis_int)
-                #     y_axis_int = y_axis_int / np.linalg.norm(y_axis_int)
-                #     transf_rotmat_int = np.stack([x_axis_int, y_axis_int, z_axis_int], axis=1)  # [3, 3]
+                if np.isnan(joints_3d_raw).any():
+                    break
+                else:
+                    # print('joints_3d_raw',joints_3d_raw[:,3,:])
+                    # joints_3d_raw = joints_3d_raw[:, :, :3]
+                    joints_3d = convert_kps(joints_3d_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
+                    joints_3d_ego_raw = np.reshape(ego_1_joints_3d, (1, 25, 3))*1.25   # TODO why divide 1000
+                    # joints_3d_ego_raw = joints_3d_ego_raw[:, :, :3]
+                    joints_3d_ego = convert_kps(joints_3d_ego_raw, "you2me_kinect_3d", "spin").reshape((-1, 3))
+                    # print('joints_3d',joints_3d)
+                    # if joints_2d:
+                    #     bbox = get_bbox_from_kp2d(joints_2d[~np.all(joints_2d == 0, axis=1)]).reshape(4)
 
-                #     # for ego
-                #     x_axis_ego = joints_3d_ego[27, :] - joints_3d_ego[28, :]  # [3] right hip - left hip
-                #     x_axis_ego[-1] = 0
-                #     x_axis_ego = x_axis_ego / np.linalg.norm(x_axis_ego)
-                #     z_axis_ego = np.array([0, 0, 1])
-                #     y_axis_ego = np.cross(z_axis_ego, x_axis_ego)
-                #     y_axis_ego = y_axis_ego / np.linalg.norm(y_axis_ego)
-                #     transf_rotmat_ego = np.stack([x_axis_ego, y_axis_ego, z_axis_ego], axis=1)  # [3, 3]
+                    # if i == 0: 
+                    #     # for interact
+                    #     x_axis_int = joints_3d[27, :] - joints_3d[28, :]  # [3] right hip - left hip
+                    #     x_axis_int[-1] = 0
+                    #     x_axis_int = x_axis_int / np.linalg.norm(x_axis_int)
+                    #     z_axis_int = np.array([0, 0, 1])
+                    #     y_axis_int = np.cross(z_axis_int, x_axis_int)
+                    #     y_axis_int = y_axis_int / np.linalg.norm(y_axis_int)
+                    #     transf_rotmat_int = np.stack([x_axis_int, y_axis_int, z_axis_int], axis=1)  # [3, 3]
 
-                # joints_3d = np.matmul(joints_3d - joints_3d[39], transf_rotmat_int)  # [T(/bs), 25, 3]
-                # joints_3d_ego = np.matmul(joints_3d_ego - joints_3d_ego[39], transf_rotmat_ego) 
+                    #     # for ego
+                    #     x_axis_ego = joints_3d_ego[27, :] - joints_3d_ego[28, :]  # [3] right hip - left hip
+                    #     x_axis_ego[-1] = 0
+                    #     x_axis_ego = x_axis_ego / np.linalg.norm(x_axis_ego)
+                    #     z_axis_ego = np.array([0, 0, 1])
+                    #     y_axis_ego = np.cross(z_axis_ego, x_axis_ego)
+                    #     y_axis_ego = y_axis_ego / np.linalg.norm(y_axis_ego)
+                    #     transf_rotmat_ego = np.stack([x_axis_ego, y_axis_ego, z_axis_ego], axis=1)  # [3, 3]
 
-                joints_3d = joints_3d - joints_3d[39]
-                joints_3d_ego = joints_3d_ego - joints_3d_ego[39]
+                    # joints_3d = np.matmul(joints_3d - joints_3d[39], transf_rotmat_int)  # [T(/bs), 25, 3]
+                    # joints_3d_ego = np.matmul(joints_3d_ego - joints_3d_ego[39], transf_rotmat_ego) 
 
-                bbox = np.array([113, 113, w, h])  # shape = (4,N)
-                # joints_3d = joints_3d - joints_3d[39]  # 0 is hip
-                # joints_3d_ego = joints_3d_ego - joints_3d_ego[39]  # 4 is the root
+                    joints_3d = joints_3d - joints_3d[39]
+                    joints_3d_ego = joints_3d_ego - joints_3d_ego[39]
 
-                # j3ds[i] = joints_3d
-                # j2ds[i] = joints_2d
-                # check that all joints are visible
-                # joint x loc inside the image
-                # since we generate it from openpose so always in
-                # TODO other way
-                # manual set
-                x_in = np.logical_and(joints_2d[:, 0] < w, joints_2d[:, 0] >= 0)
-                y_in = np.logical_and(joints_2d[:, 1] < h, joints_2d[:, 1] >= 0)
-                ok_pts = np.logical_and(x_in, y_in)
-                if np.sum(ok_pts) < joints_2d.shape[0]:
-                    print('np.sum(ok_pts)', np.sum(ok_pts))
-                    print(' joints_2d.shape[0]', joints_2d.shape[0])
-                    print('img_name', img_name)
-                    # vid_uniq_id = "_".join(vid_uniq_id.split("_")[:-1])+ "_seg" +\
-                    #                     str(int(dataset['vid_name'][-1].split("_")[-1][3:])+1)
-                    continue
-                # bbox_params, time_pt1, time_pt2 = get_smooth_bbox_params(j2ds, vis_thresh=VIS_THRESH, sigma=8)
+                    bbox = np.array([113, 113, w, h])  # shape = (4,N)
+                    # joints_3d = joints_3d - joints_3d[39]  # 0 is hip
+                    # joints_3d_ego = joints_3d_ego - joints_3d_ego[39]  # 4 is the root
 
-                # TODO video name
-                dataset['vid_name'].append(vid_i)
-                dataset['frame_id'].append(img_name.split(".")[0])
-                dataset['img_name'].append(img_i)
-                dataset['joints2D'].append(joints_2d)
-                dataset['joints3D'].append(joints_3d)
-                dataset['bbox'].append(bbox)
-                dataset['egojoints3D'].append(joints_3d_ego)
-                dataset['homography'].append(homo_i)
-                vid_segments.append(vid_i)
-                vid_used_frames.append(img_i)
-                vid_used_joints.append(joints_2d)
-                vid_used_bbox.append(bbox)
+                    # j3ds[i] = joints_3d
+                    # j2ds[i] = joints_2d
+                    # check that all joints are visible
+                    # joint x loc inside the image
+                    # since we generate it from openpose so always in
+                    # TODO other way
+                    # manual set
+                    x_in = np.logical_and(joints_2d[:, 0] < w, joints_2d[:, 0] >= 0)
+                    y_in = np.logical_and(joints_2d[:, 1] < h, joints_2d[:, 1] >= 0)
+                    ok_pts = np.logical_and(x_in, y_in)
+                    if np.sum(ok_pts) < joints_2d.shape[0]:
+                        print('np.sum(ok_pts)', np.sum(ok_pts))
+                        print(' joints_2d.shape[0]', joints_2d.shape[0])
+                        print('img_name', img_name)
+                        # vid_uniq_id = "_".join(vid_uniq_id.split("_")[:-1])+ "_seg" +\
+                        #                     str(int(dataset['vid_name'][-1].split("_")[-1][3:])+1)
+                        continue
+                    # bbox_params, time_pt1, time_pt2 = get_smooth_bbox_params(j2ds, vis_thresh=VIS_THRESH, sigma=8)
+
+                    # TODO video name
+                    dataset['vid_name'].append(vid_i)
+                    dataset['frame_id'].append(img_name.split(".")[0])
+                    dataset['img_name'].append(img_i)
+                    dataset['joints2D'].append(joints_2d)
+                    dataset['joints3D'].append(joints_3d)
+                    dataset['bbox'].append(bbox)
+                    dataset['egojoints3D'].append(joints_3d_ego)
+                    dataset['homography'].append(homo_i)
+                    vid_segments.append(vid_i)
+                    vid_used_frames.append(img_i)
+                    vid_used_joints.append(joints_2d)
+                    vid_used_bbox.append(bbox)
 
                 mean_vid_list.append(joints_3d)
 

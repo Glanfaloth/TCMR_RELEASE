@@ -33,9 +33,9 @@ def _set_axes_radius(ax, origin, radius):
     ax.set_zlim3d([z - radius, z + radius])
 
 db_path = '/Users/qima/Downloads/Klasse/Virtual Humans/dataset/preprocessed_data_mean/mean_data'#'/Users/qima/Downloads/Klasse/Virtual Humans/dataset/preprocessed_data_2/' # 
-db_file = osp.join(db_path, 'you2me_val_db_kinect.pt')
+db_file = osp.join(db_path, 'you2me_train_db_kinect.pt')
 db = joblib.load(db_file) 
-joints3D_np = db['vid_mean']
+joints3D_np = db['joints3D'] #['vid_mean']
 print(db.keys())
 print(np.shape(joints3D_np))
 start_frame = 0
@@ -43,7 +43,8 @@ end_frame = 30
 # feature_torch = db['features']
 # print(np.shape(feature_torch))
 unique_arr = np.unique(joints3D_np, axis=0)
-print("unique_arr",np.shape(unique_arr))
+print("unique_arr",np.shape(unique_arr),unique_arr)
+print("if nan", np.argwhere(np.isnan(joints3D_np)))
 
 # for i in range(start_frame, end_frame):#len(joints3D_np):
 
