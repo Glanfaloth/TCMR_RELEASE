@@ -205,11 +205,7 @@ class TCMRLoss(nn.Module):
         train_gt_np = gt_keypoints_3d[:, 25:39, :].detach().cpu().numpy()
         target_name = 'train.npy'
         np.save(target_name, train_gt_np)
-
-        conf = gt_keypoints_3d[:, :, -1].unsqueeze(-1).clone()
-        gt_keypoints_3d = gt_keypoints_3d[:, :, :-1].clone()
-        gt_keypoints_3d = gt_keypoints_3d
-        conf = conf
+        ### pa mpjpe train
         S1_hat = batch_compute_similarity_transform_torch(pred_keypoints_3d, gt_keypoints_3d)
         mpjpe_pa = torch.sqrt(((S1_hat - gt_keypoints_3d) ** 2).sum(dim=-1))
         # mpjpe_pa = mpjpe_pa.mean(axis=-1)
