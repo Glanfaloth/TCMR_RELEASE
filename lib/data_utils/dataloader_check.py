@@ -1,3 +1,4 @@
+from enum import unique
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -31,29 +32,29 @@ def _set_axes_radius(ax, origin, radius):
     ax.set_ylim3d([y - radius, y + radius])
     ax.set_zlim3d([z - radius, z + radius])
 
-db_path = '/Users/qima/Downloads/Klasse/Virtual Humans/dataset/preprocessed_data_2/' # 
+db_path = '/Users/qima/Downloads/Klasse/Virtual Humans/dataset/preprocessed_data_mean/mean_data'#'/Users/qima/Downloads/Klasse/Virtual Humans/dataset/preprocessed_data_2/' # 
 db_file = osp.join(db_path, 'you2me_val_db_kinect.pt')
 db = joblib.load(db_file) 
-joints3D_np = db['joints3D']
-# print(db.keys())
-# # print(np.shape(joints3D_np))
+joints3D_np = db['vid_mean']
+print(db.keys())
+print(np.shape(joints3D_np))
 start_frame = 0
 end_frame = 30
 # feature_torch = db['features']
 # print(np.shape(feature_torch))
+unique_arr = np.unique(joints3D_np, axis=0)
+print("unique_arr",np.shape(unique_arr))
 
+# for i in range(start_frame, end_frame):#len(joints3D_np):
 
+#     # print('len(joints3D_np[0,25:39,:])',len(joints3D_np[0,25:40,:]))
 
-for i in range(start_frame, end_frame):#len(joints3D_np):
+#     # print('joints3D_np example', joints3D_np[0,25:40,:])
 
-    # print('len(joints3D_np[0,25:39,:])',len(joints3D_np[0,25:40,:]))
-
-    # print('joints3D_np example', joints3D_np[0,25:40,:])
-
-    fig = plt.figure(figsize=plt.figaspect(0.5))
-    ax2 = fig.add_subplot(2, 1, 1, projection='3d') 
-    ax2.scatter(joints3D_np[i,25:39,0],joints3D_np[i,25:39,1],joints3D_np[i,25:39,2])
-    set_axes_equal(ax2)
-    plt.show()
+#     fig = plt.figure(figsize=plt.figaspect(0.5))
+#     ax2 = fig.add_subplot(2, 1, 1, projection='3d') 
+#     ax2.scatter(joints3D_np[i,25:39,0],joints3D_np[i,25:39,1],joints3D_np[i,25:39,2])
+#     set_axes_equal(ax2)
+#     plt.show()
 
 

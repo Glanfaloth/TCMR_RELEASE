@@ -507,6 +507,7 @@ class Trainer():
         # pve = np.mean(compute_error_verts(target_theta=target_theta, pred_verts=pred_verts)) * m2mm
         accel = np.mean(compute_accel(pred_j3ds)) * m2mm
         accel_err = np.mean(compute_error_accel(joints_pred=pred_j3ds, joints_gt=target_j3ds)) * m2mm
+        pa_accel_err = np.mean(compute_error_accel(joints_pred=S1_hat, joints_gt=target_j3ds)) * m2mm
         mpjpe = np.mean(errors) * m2mm
         pa_mpjpe = np.mean(errors_pa) * m2mm
 
@@ -514,7 +515,8 @@ class Trainer():
             'mpjpe': mpjpe,
             'pa-mpjpe': pa_mpjpe,
             'accel': accel,
-            'accel_err': accel_err
+            'accel_err': accel_err,
+            'pa_accel_err': pa_accel_err,
         }
 
         log_str = f'Epoch {self.epoch}, '
