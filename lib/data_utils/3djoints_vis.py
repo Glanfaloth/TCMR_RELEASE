@@ -97,14 +97,14 @@ def _set_axes_radius(ax, origin, radius):
     ax.set_zlim3d([z - radius, z + radius])
 # target path
 #  '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_kinect/you2me_output
-target_path = '/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/final/repr_table6_you2me_cmu_model_output'
+target_path = '/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/kinect/final/trainseq/repr_table6_you2me_kinect_model_output'
 #'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 #'/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
-gt_path = osp.join(target_path,'gt.npy')
-pred_path = osp.join(target_path,'pred.npy')
+gt_path = osp.join(target_path,'catch40_gt.npy')
+pred_path = osp.join(target_path,'catch40_pred.npy')
 
 gt_np= np.load(gt_path)
 pred_np= np.load(pred_path)
@@ -114,9 +114,54 @@ print(np.min(pred_np),np.max(pred_np))
 print('shape of gt',np.shape(gt_np))
 print('shape of pred',np.shape(pred_np))
 
-gt_sub_np = gt_np[:, 25:39, :]
+gt_sub_np = gt_np# [:, 25:39, :]
 
-pred_np = pred_np[:, 25:39, :]
+pred_np = pred_np# [:, 25:39, :]
+
+# normalize the rotation
+# or seq_num in range(len(gt_sub_np)):
+seq_num = 0
+zxy2xyz_rotmat = np.array([[1, 0, 0 ],
+                          [0, 0, 1,],
+                          [0, -1, 0]])
+gt_sub_np = np.matmul(gt_sub_np, zxy2xyz_rotmat)
+x_axis_int = gt_sub_np[seq_num,2, :] - gt_sub_np[seq_num,3, :]
+x_axis_int[-1] = 0
+x_axis_int = x_axis_int / np.linalg.norm(x_axis_int)
+z_axis_int = np.array([0, 0, 1])
+y_axis_int = np.cross(z_axis_int, x_axis_int)
+y_axis_int = y_axis_int / np.linalg.norm(y_axis_int)
+transf_rotmat_int = np.stack([x_axis_int, y_axis_int, z_axis_int], axis=1)  # [3, 3]
+
+gt_sub_np = np.matmul(gt_sub_np[:,:] - np.expand_dims(gt_sub_np[:,0]+gt_sub_np[:,5], axis=1)/2, transf_rotmat_int)  # [T(/bs), 25, 3]
+
+# gt_sub_np = gt_sub_np*3
+# cal max diff
+max_height = np.max(gt_sub_np[0,:,2])
+min_height = np.min(gt_sub_np[0,:,2])
+print("max diff", max_height - min_height,max_height,min_height)
+height_init = max_height - min_height
+scale = 1.8/height_init
+gt_sub_np = gt_sub_np*scale
+# if i == 0: 
+#     # for interact
+#     x_axis_int = joints_3d[27, :] - joints_3d[28, :]  # [3] right hip - left hip
+#     x_axis_int[-1] = 0
+#     x_axis_int = x_axis_int / np.linalg.norm(x_axis_int)
+#     z_axis_int = np.array([0, 0, 1])
+#     y_axis_int = np.cross(z_axis_int, x_axis_int)
+#     y_axis_int = y_axis_int / np.linalg.norm(y_axis_int)
+#     transf_rotmat_int = np.stack([x_axis_int, y_axis_int, z_axis_int], axis=1)  # [3, 3]
+
+#     # for ego
+#     x_axis_ego = joints_3d_ego[27, :] - joints_3d_ego[28, :]  # [3] right hip - left hip
+#     x_axis_ego[-1] = 0
+#     x_axis_ego = x_axis_ego / np.linalg.norm(x_axis_ego)
+#     z_axis_ego = np.array([0, 0, 1])
+#     y_axis_ego = np.cross(z_axis_ego, x_axis_ego)
+#     y_axis_ego = y_axis_ego / np.linalg.norm(y_axis_ego)
+#     transf_rotmat_ego = np.stack([x_axis_ego, y_axis_ego, z_axis_ego], axis=1)  # [3, 3]
+
 
 color_list  = np.array([0]*12 + [10,10] )
 def close_event():

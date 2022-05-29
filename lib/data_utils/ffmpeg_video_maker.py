@@ -11,7 +11,7 @@ import cv2
 import os
 import tqdm
 import numpy as np
-frame_path = '/media/qimaqi/Alexander/you2me/kinect/catch37/features/openpose/keypoints_vis_img'
+frame_path = '/media/qimaqi/Alexander/you2me/kinect/sport57/synchronized/frames'
 # '/media/qimaqi/My Passport/record_20220315/recording_20220315_s1_06_qi_cuixi/master/color_img/'#'/tmp/amz_kpi/kpi_video'# '/tmp/amz_kpi/filter_result/image'
 frame_rate=20
 output='out.avi'
@@ -37,8 +37,9 @@ fourcc = cv2.VideoWriter_fourcc(*"MJPG")
 video = cv2.VideoWriter(save_path, fourcc, frame_rate, (width, height),isColor =True)
 count = 0
 for img_name in tqdm.tqdm(img_name_list):
-    video.write(cv2.imread(os.path.join(frame_path, img_name)))
+    if count > 200:
+        video.write(cv2.imread(os.path.join(frame_path, img_name)))
     
-
+    count+=1
 cv2.destroyAllWindows()
 video.release()

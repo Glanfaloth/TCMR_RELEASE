@@ -7,10 +7,16 @@ import json
 import time
 
 import argparse
-
+import sys
 import time
 from tqdm import tqdm
 import open3d as o3d
+sys.path.append('/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/lib')
+from utils.eval_utils import batch_compute_similarity_transform_torch
+import torch
+
+
+
 
 def get_colors():
     colors = {
@@ -30,10 +36,18 @@ def get_colors():
     }
     return colors
 
+parser = argparse.ArgumentParser(description='Vis ego joints.')
+parser.add_argument("--target_path", default='/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/kinect/final/trainseq/repr_table6_you2me_kinect_model_output')  # 'C:/Users/siwei/Desktop/record_20210907'
+# set start/end frame (start/end frame = 10/1000: from frame_00010.jpg to frame_01000.jpg), only need for keypoints_folder_name='keypoints'
+parser.add_argument("--start_frame", default=0, type=int)
+parser.add_argument("--end_frame", default=1, type=int)
+parser.add_argument("--vis_object", default='gt', choices=['gt', 'pred'])
+args = parser.parse_args()
 
 # target path
 #  '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_kinect/you2me_output
-target_path = '/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/final/repr_table6_you2me_cmu_model_output'
+target_path = args.target_path
+vis_object = args.vis_object
 #'/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 #'/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/kinect/04_25_23/repr_table6_you2me_kinect_model_output/'
 #'./outputs/kinect/04_25_13/repr_table6_you2me_kinect_model_output'
@@ -42,8 +56,8 @@ target_path = '/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/final
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
-gt_path = osp.join(target_path,'gt.npy') # catch55_gt.npy 2-catch2_
-pred_path = osp.join(target_path,'pred.npy') # 2-catch2_
+gt_path = osp.join(target_path,'catch36_gt.npy') # catch55_gt.npy 2-catch2_
+pred_path = osp.join(target_path,'catch36_pred.npy') # 2-catch2_
 
 
 # /home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/final/repr_table6_you2me_cmu_model_output/gt.npy
@@ -76,13 +90,18 @@ def get_common_skeleton():
         ]
     )
 
-gt_sub_np = gt_np[:, 25:39, :]
+gt_sub_np = gt_np#[:, 25:39, :]
 
-pred_np = pred_np[:, 25:39, :]
+pred_np = pred_np#[:, 25:39, :]
 
+pred_j3ds = torch.from_numpy(pred_np).float()
+target_j3ds = torch.from_numpy(gt_sub_np).float()
+
+S1_hat = batch_compute_similarity_transform_torch(pred_j3ds, target_j3ds)
+pred_np = S1_hat.cpu().numpy()
 ############### 580,  800
-start_t = 150 #400
-end_t = 250 #len(gt_sub_np)
+start_t = args.start_frame
+end_t = args.end_frame #len(gt_sub_np)
 
 # gt_sub_np[:,:,1] = - gt_sub_np[:,:,1]    
 # pred_np[:,:,1] = - pred_np[:,:,1]
@@ -132,57 +151,63 @@ print("hip_ratio",np.shape(hip_ratio),np.mean(hip_ratio))
 print("gt_hip_distance variance",np.var(gt_hip_distance))
 print("gt_hip_distance max difference",np.max(gt_hip_distance)- np.min(gt_hip_distance))
 print("gt_hip_distance mean",np.mean(gt_hip_distance))
-# ## show first 5
-# print("x_pred first 5", x_pred[:5,-1])
-# print("gt first 5", x_gt[:5,-1])
 
-### show head average
+## show first 5
+print("x_pred first 5", x_pred[:5,-1])
+print("gt first 5", x_gt[:5,-1])
 
-
-## for t in range(start_t, end_t):
-    #### drawing
-    # skeleton_input = o3d.geometry.LineSet(
-    #     points=o3d.utility.Vector3dVector(gt_sub_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
-    #     lines=o3d.utility.Vector2iVector(LIMBS))
-
-    # pcd = o3d.geometry.PointCloud()
-    # pcd.points = o3d.utility.Vector3dVector(gt_sub_np[t])
+## show head average
 
 
-    # skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
-    # vis.add_geometry(skeleton_input)
-    # vis.add_geometry(pcd)
-    # vis.capture_screen_image('./video/2-catch2/gt/'+str(t).zfill(4)+'.png')
-    # # ######################################################################################
-    # # skeleton_input= o3d.geometry.LineSet(
-    # #     points=o3d.utility.Vector3dVector(pred_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
-    # #     lines=o3d.utility.Vector2iVector(LIMBS))
+for t in range(start_t, end_t):
+    ### drawing
+    if vis_object == 'gt':
+        skeleton_input = o3d.geometry.LineSet(
+            points=o3d.utility.Vector3dVector(gt_sub_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
+            lines=o3d.utility.Vector2iVector(LIMBS))
 
-    # # pcd = o3d.geometry.PointCloud()
-    # # pcd.points = o3d.utility.Vector3dVector(pred_np[t]) 
+        pcd = o3d.geometry.PointCloud()
+        pcd.points = o3d.utility.Vector3dVector(gt_sub_np[t])
 
-    # # skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
-    # # vis.add_geometry(skeleton_input)
-    # # vis.add_geometry(pcd)
 
-    # # vis.capture_screen_image('./video/2-catch2/pred/'+str(t).zfill(4)+'.png')
+        skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
+        vis.add_geometry(skeleton_input)
+        vis.add_geometry(pcd)
+        vis.capture_screen_image('./video/2-catch2/gt/'+str(t).zfill(4)+'.png')
+    # ######################################################################################
+    elif vis_object == 'pred':
+        skeleton_input= o3d.geometry.LineSet(
+            points=o3d.utility.Vector3dVector(pred_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
+            lines=o3d.utility.Vector2iVector(LIMBS))
+
+        pcd = o3d.geometry.PointCloud()
+        pcd.points = o3d.utility.Vector3dVector(pred_np[t]) 
+
+        skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
+        vis.add_geometry(skeleton_input)
+        vis.add_geometry(pcd)
+
+    # vis.capture_screen_image('./video/2-catch2/pred/'+str(t).zfill(4)+'.png')
 
     
-    # vis.poll_events()
-    # vis.update_renderer()
-    # print('time',t )
-    # time.sleep(0.1)
-    # vis.remove_geometry(skeleton_input)
-    # #vis.remove_geometry(skeleton_input2)
-    # vis.remove_geometry(pcd)
-    # #vis.remove_geometry(pcd2)
-    # # vis.remove_geometry(skeleton_rec)
+    vis.poll_events()
+    vis.update_renderer()
+    print('time',t )
+    time.sleep(0.1)
+    vis.remove_geometry(skeleton_input)
+    #vis.remove_geometry(skeleton_input2)
+    vis.remove_geometry(pcd)
+    #vis.remove_geometry(pcd2)
+    # vis.remove_geometry(skeleton_rec)
 
 
 ####################### Kinect #########################################
 
 
+######################## interact and ego
+
 # # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
+# target_path = '/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/kinect/final/repr_table6_you2me_kinect_model_output'
 # gt_path = osp.join(target_path,'gt.npy')
 # pred_path = osp.join(target_path,'pred.npy')
 
@@ -263,16 +288,16 @@ print("gt_hip_distance mean",np.mean(gt_hip_distance))
 #     vis.add_geometry(skeleton_input1)
 #     vis.add_geometry(pcd1)
 
-#     skeleton_input2= o3d.geometry.LineSet(
-#         points=o3d.utility.Vector3dVector(ego_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
-#         lines=o3d.utility.Vector2iVector(LIMBS))
+#     # skeleton_input2= o3d.geometry.LineSet(
+#     #     points=o3d.utility.Vector3dVector(ego_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
+#     #     lines=o3d.utility.Vector2iVector(LIMBS))
 
-#     pcd2 = o3d.geometry.PointCloud()
-#     pcd2.points = o3d.utility.Vector3dVector(ego_np[t]) 
+#     # pcd2 = o3d.geometry.PointCloud()
+#     # pcd2.points = o3d.utility.Vector3dVector(ego_np[t]) 
 
-#     skeleton_input2.colors = o3d.utility.Vector3dVector(color_input)
-#     vis.add_geometry(skeleton_input2)
-#     vis.add_geometry(pcd2)
+#     # skeleton_input2.colors = o3d.utility.Vector3dVector(color_input)
+#     # vis.add_geometry(skeleton_input2)
+#     # vis.add_geometry(pcd2)
 
 #     # o3d.visualization.draw_geometries(o3d.utility.Vector3dVector(gt_sub_np[t]))
 #     # vis.add_geometry(skeleton_rec)
@@ -287,7 +312,7 @@ print("gt_hip_distance mean",np.mean(gt_hip_distance))
 #     print('time',t )
 #     time.sleep(0.1)
 #     vis.remove_geometry(skeleton_input1)
-#     vis.remove_geometry(skeleton_input2)
+#     # vis.remove_geometry(skeleton_input2)
 #     vis.remove_geometry(pcd1)
-#     vis.remove_geometry(pcd2)
+#     # vis.remove_geometry(pcd2)
 #     # vis.remove_geometry(skeleton_rec)
