@@ -14,7 +14,7 @@ import open3d as o3d
 sys.path.append('/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/lib')
 from utils.eval_utils import batch_compute_similarity_transform_torch
 import torch
-
+import os
 
 
 
@@ -40,14 +40,14 @@ parser = argparse.ArgumentParser(description='Vis ego joints.')
 parser.add_argument("--target_path", default='/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/kinect/final/trainseq/repr_table6_you2me_kinect_model_output')  # 'C:/Users/siwei/Desktop/record_20210907'
 # set start/end frame (start/end frame = 10/1000: from frame_00010.jpg to frame_01000.jpg), only need for keypoints_folder_name='keypoints'
 parser.add_argument("--start_frame", default=0, type=int)
-parser.add_argument("--end_frame", default=1, type=int)
-parser.add_argument("--vis_object", default='gt', choices=['gt', 'pred'])
+parser.add_argument("--end_frame", default=-1, type=int)
+parser.add_argument("--vis_seq", default='')
+parser.add_argument("--save_dir", default='output')
 args = parser.parse_args()
 
 # target path
 #  '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/non_reg_kinect/you2me_output
 target_path = args.target_path
-vis_object = args.vis_object
 #'/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 #'/home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/kinect/04_25_23/repr_table6_you2me_kinect_model_output/'
 #'./outputs/kinect/04_25_13/repr_table6_you2me_kinect_model_output'
@@ -56,14 +56,23 @@ vis_object = args.vis_object
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
-gt_path = osp.join(target_path,'catch36_gt.npy') # catch55_gt.npy 2-catch2_
-pred_path = osp.join(target_path,'catch36_pred.npy') # 2-catch2_
+gt_path = osp.join(target_path, args.vis_seq + '_gt.npy') # catch55_gt.npy 2-catch2_
+pred_path = osp.join(target_path,args.vis_seq + '_pred.npy') # 2-catch2_
 
 
 # /home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/final/repr_table6_you2me_cmu_model_output/gt.npy
 gt_np= np.load(gt_path)
 pred_np= np.load(pred_path)
+save_folder_path = osp.join('.','video',args.vis_seq)
+print("saving images",save_folder_path)
+save_folder_gt_path = osp.join(osp.join(save_folder_path,'gt'))
+save_folder_pred_path = osp.join(osp.join(save_folder_path,'pred'))
 
+if not osp.exists(save_folder_gt_path):
+    os.makedirs(save_folder_gt_path)
+
+if not osp.exists(save_folder_pred_path):
+    os.makedirs(save_folder_pred_path)
 # find the range of pred_np
 print(np.min(pred_np),np.max(pred_np))
 print('shape of gt',np.shape(gt_np))
@@ -101,7 +110,10 @@ S1_hat = batch_compute_similarity_transform_torch(pred_j3ds, target_j3ds)
 pred_np = S1_hat.cpu().numpy()
 ############### 580,  800
 start_t = args.start_frame
-end_t = args.end_frame #len(gt_sub_np)
+if args.end_frame == -1:
+    end_t = len(gt_sub_np)  
+else:  
+    end_t = args.end_frame #len(gt_sub_np)
 
 # gt_sub_np[:,:,1] = - gt_sub_np[:,:,1]    
 # pred_np[:,:,1] = - pred_np[:,:,1]
@@ -161,39 +173,42 @@ print("gt first 5", x_gt[:5,-1])
 
 for t in range(start_t, end_t):
     ### drawing
-    if vis_object == 'gt':
-        skeleton_input = o3d.geometry.LineSet(
-            points=o3d.utility.Vector3dVector(gt_sub_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
-            lines=o3d.utility.Vector2iVector(LIMBS))
+    # if vis_object == 'gt':
+    skeleton_input = o3d.geometry.LineSet(
+        points=o3d.utility.Vector3dVector(gt_sub_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
+        lines=o3d.utility.Vector2iVector(LIMBS))
 
-        pcd = o3d.geometry.PointCloud()
-        pcd.points = o3d.utility.Vector3dVector(gt_sub_np[t])
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(gt_sub_np[t])
 
 
-        skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
-        vis.add_geometry(skeleton_input)
-        vis.add_geometry(pcd)
-        vis.capture_screen_image('./video/2-catch2/gt/'+str(t).zfill(4)+'.png')
+    skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
+    vis.add_geometry(skeleton_input)
+    vis.add_geometry(pcd)
+    vis.capture_screen_image(osp.join(save_folder_gt_path, str(t).zfill(4)+'.png'))
+    vis.remove_geometry(skeleton_input)
+    vis.remove_geometry(pcd)
+    
     # ######################################################################################
-    elif vis_object == 'pred':
-        skeleton_input= o3d.geometry.LineSet(
-            points=o3d.utility.Vector3dVector(pred_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
-            lines=o3d.utility.Vector2iVector(LIMBS))
+    # elif vis_object == 'pred':
+    skeleton_input= o3d.geometry.LineSet(
+        points=o3d.utility.Vector3dVector(pred_np[t]), # Convert float64 numpy array of shape (n, 3) to Open3D format
+        lines=o3d.utility.Vector2iVector(LIMBS))
 
-        pcd = o3d.geometry.PointCloud()
-        pcd.points = o3d.utility.Vector3dVector(pred_np[t]) 
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(pred_np[t]) 
 
-        skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
-        vis.add_geometry(skeleton_input)
-        vis.add_geometry(pcd)
+    skeleton_input.colors = o3d.utility.Vector3dVector(color_input)
+    vis.add_geometry(skeleton_input)
+    vis.add_geometry(pcd)
 
-    # vis.capture_screen_image('./video/2-catch2/pred/'+str(t).zfill(4)+'.png')
+    vis.capture_screen_image(osp.join(save_folder_pred_path, str(t).zfill(4)+'.png'))
 
     
     vis.poll_events()
     vis.update_renderer()
-    print('time',t )
-    time.sleep(0.1)
+    # print('time',t )
+    # time.sleep(0.1)
     vis.remove_geometry(skeleton_input)
     #vis.remove_geometry(skeleton_input2)
     vis.remove_geometry(pcd)
