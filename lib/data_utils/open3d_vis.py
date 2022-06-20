@@ -56,14 +56,14 @@ target_path = args.target_path
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/kinect/repr_table6_you2me_kinect_model_output'
 # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/cmu/repr_table6_you2me_cmu_model_output/'
 # # '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/rui_wang/you2me_output_kinect_new_regressor'# '/Users/qima/Downloads/Klasse/Virtual Humans/TCMR_RELEASE/outputs/you2me_test_output/you2me_output'
-gt_path = osp.join(target_path, args.vis_seq + '_gt.npy') # catch55_gt.npy 2-catch2_
-pred_path = osp.join(target_path,args.vis_seq + '_pred.npy') # 2-catch2_
-
+vis_seq = args.vis_seq
+gt_path = osp.join(target_path, vis_seq + '_gt.npy') # catch55_gt.npy 2-catch2_
+pred_path = osp.join(target_path,vis_seq + '_pred.npy') # 2-catch2_
 
 # /home/qimaqi/workspace_ra/VH_group/TCMR_RELEASE/outputs/cmu/final/repr_table6_you2me_cmu_model_output/gt.npy
 gt_np= np.load(gt_path)
 pred_np= np.load(pred_path)
-save_folder_path = osp.join('.','video',args.vis_seq)
+save_folder_path = osp.join('.','video',vis_seq)
 print("saving images",save_folder_path)
 save_folder_gt_path = osp.join(osp.join(save_folder_path,'gt'))
 save_folder_pred_path = osp.join(osp.join(save_folder_path,'pred'))
@@ -171,7 +171,7 @@ print("gt first 5", x_gt[:5,-1])
 ## show head average
 
 
-for t in range(start_t, end_t):
+for t in tqdm(range(start_t, end_t)):
     ### drawing
     # if vis_object == 'gt':
     skeleton_input = o3d.geometry.LineSet(
@@ -186,9 +186,13 @@ for t in range(start_t, end_t):
     vis.add_geometry(skeleton_input)
     vis.add_geometry(pcd)
     vis.capture_screen_image(osp.join(save_folder_gt_path, str(t).zfill(4)+'.png'))
+    vis.poll_events()
+    vis.update_renderer()  
     vis.remove_geometry(skeleton_input)
     vis.remove_geometry(pcd)
-    
+
+
+for t in tqdm(range(start_t, end_t)):    
     # ######################################################################################
     # elif vis_object == 'pred':
     skeleton_input= o3d.geometry.LineSet(
