@@ -20,7 +20,7 @@ from yacs.config import CfgNode as CN
 
 # CONSTANTS
 # You may modify them at will
-TCMR_DB_DIR = '/cluster/scratch/qimaqi/preprocessed_data'
+TCMR_DB_DIR = '/scratch/qimaqi/preprocessed_data'
 AMASS_DIR = 'data/amass'
 INSTA_DIR = 'data/insta_variety'
 MPII3D_DIR = 'data/mpi_inf_3dhp'
@@ -28,7 +28,7 @@ THREEDPW_DIR = 'data/3dpw'
 H36M_DIR = 'data/h36m'
 PENNACTION_DIR = 'data/penn_action'
 POSETRACK_DIR = 'data/posetrack'
-YOU2ME_DIR = '/cluster/scratch/qimaqi/you2me'
+YOU2ME_DIR = '/scratch/qimaqi/you2me'
 BASE_DATA_DIR = 'data/base_data'
 
 # Configuration variables
