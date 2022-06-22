@@ -111,14 +111,14 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 <!-- ACKNOWLEDGMENTS -->
 ## Demo
-[catch36](https://i.imgur.com/VeX9awy.gifv)
-[catch39](https://i.imgur.com/ahqxZ2l.gifv)
-[convo46](https://i.imgur.com/QIWCDYT.gifv)
-[dynamic2](https://i.imgur.com/zAAtYNw.gifv)
-[dynamic3](https://i.imgur.com/M4wErQX.gifv)
-[dynamic4](https://i.imgur.com/tj0qPXk.gifv)
-[patty31](https://i.imgur.com/BeMWsMX.gifv)
 
+![Demo](https://media3.giphy.com/media/wLhMcl5PH6GLFbrhoH/giphy.gif)
+![Demo](https://media3.giphy.com/media/tZ4FcA7IouGdZZs296/giphy.gif)
+![Demo](https://media3.giphy.com/media/0e65JNzfm1pEFYwETo/giphy.gif)
+![Demo](https://media3.giphy.com/media/iHTDsDLkvIjwuzPA61/giphy.gif)
+![Demo](https://media3.giphy.com/media/s7g6KAuXcC7huCVz57/giphy.gif)
+![Demo](https://media3.giphy.com/media/eBA3C1GXoIYUSZYxQy/giphy.gif)
+![Demo](https://media3.giphy.com/media/WBZ0QPcuH3O1VPVGWa/giphy.gif)
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
