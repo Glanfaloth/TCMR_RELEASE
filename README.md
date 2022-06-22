@@ -110,18 +110,14 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
-
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+## Demo
+[catch36](https://i.imgur.com/VeX9awy.gifv)
+[catch39](https://i.imgur.com/ahqxZ2l.gifv)
+[convo46](https://i.imgur.com/QIWCDYT.gifv)
+[dynamic2](https://i.imgur.com/zAAtYNw.gifv)
+[dynamic3](https://i.imgur.com/M4wErQX.gifv)
+[dynamic4](https://i.imgur.com/tj0qPXk.gifv)
+[patty31](https://i.imgur.com/BeMWsMX.gifv)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
